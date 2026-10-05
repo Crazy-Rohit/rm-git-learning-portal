@@ -1,5 +1,6 @@
 import { challengeCode } from './lib/challenge.mjs';
 import { renderResult, startMessage } from './lib/comment.mjs';
+import { buildBadge, buildCertificate, chooseKey, signCredential, verifyCredential, writeCredential } from './lib/credential.mjs';
 import { parseForm } from './lib/form.mjs';
 import { loadLearner, saveLearner } from './lib/ledger.mjs';
 import { DAILY_SUBMIT_LIMIT } from './lib/portal.mjs';
@@ -35,7 +36,24 @@ async function submissionsInLastDay(gh, portal, login) {
   return issues.filter((issue) => new Date(issue.created_at).getTime() > since).length;
 }
 
-export async function handleIssue({ gh, ledgerDir, issueNumber, portal, secret, now = () => new Date() }) {
+function award(ledgerDir, unsigned, signingKey, key) {
+  try {
+    const signed = signCredential(unsigned, signingKey);
+    if (!verifyCredential(signed, key)) return null;
+    writeCredential(ledgerDir, signed);
+    return signed;
+  } catch {
+    return null;
+  }
+}
+
+function certificateName(form, login) {
+  const typed = String(form['name on the certificate'] || '').replace(/\s+/g, ' ').trim();
+  if (typed.length >= 2 && typed.length <= 80 && !/[^\p{L}\p{M}\p{N} .'-]/u.test(typed)) return typed;
+  return login;
+}
+
+export async function handleIssue({ gh, ledgerDir, issueNumber, portal, secret, signingKey = '', keys = [], now = () => new Date() }) {
   const issue = (await gh.issues.get({
     owner: portal.owner,
     repo: portal.repo,
@@ -113,11 +131,50 @@ export async function handleIssue({ gh, ledgerDir, issueNumber, portal, secret, 
     declaredRepo: form['your lab repository'] || '',
   });
   const passed = result.checks.every((check) => check.ok);
+  let credentialId = '';
+  let signingNote = '';
   if (passed) {
-    learner.stages[stage].passedAt = now().toISOString();
+    if (!learner.stages[stage].passedAt) learner.stages[stage].passedAt = now().toISOString();
     learner.stages[stage].evidence = { ...result.evidence, issue: issueNumber };
+    const issuedAt = learner.stages[stage].passedAt;
+    const key = chooseKey(keys, issuedAt);
+    if (!learner.stages[stage].credentialId) {
+      if (!signingKey || !key) {
+        signingNote = 'The signed badge was not issued because the signing key is not configured.';
+      } else {
+        const signed = award(ledgerDir, buildBadge({
+          stage,
+          githubId: authorId,
+          login,
+          issuedAt,
+          kid: key.kid,
+          repo: result.evidence?.repo || '',
+          issue: issueNumber,
+          issuerName: portal.issuerName,
+          siteUrl: portal.siteUrl,
+        }), signingKey, key);
+        if (signed) learner.stages[stage].credentialId = signed.id;
+        else signingNote = 'The stage passed, but the badge could not be signed. The signing key does not match the public key on the site.';
+      }
+    }
+    if (Number(stage) === 7 && !learner.certificateId && signingKey && key) {
+      const earlier = [1, 2, 3, 4, 5, 6].every((number) => learner.stages[String(number)]?.passedAt);
+      if (earlier) {
+        const signed = award(ledgerDir, buildCertificate({
+          githubId: authorId,
+          login,
+          name: certificateName(form, login),
+          issuedAt,
+          kid: key.kid,
+          issuerName: portal.issuerName,
+          siteUrl: portal.siteUrl,
+        }), signingKey, key);
+        if (signed) learner.certificateId = signed.id;
+      }
+    }
+    credentialId = learner.stages[stage].credentialId || '';
   }
   saveLearner(ledgerDir, learner);
-  await say(renderResult({ stage, passed, checks: result.checks }));
+  await say(renderResult({ stage, passed, checks: result.checks, credentialId, signingNote }));
   return { closed: true, passed };
 }

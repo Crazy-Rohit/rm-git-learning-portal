@@ -10,3 +10,5 @@ Thumbs.db
 *.log
 .vite/
 *.tsbuildinfo
+Github Credentials/
+credential-previews/

@@ -8,7 +8,7 @@ The certificate, when it is issued, is a completion record from this project. It
 
 ## Learner start
 
-1. Read [stage 1](https://crazy-rohit.github.io/rm-git-learning-portal/stage-1.html), or the handbook chapters it links to.
+1. Read [stage 1](https://crazy-rohit.github.io/rm-git-learning-portal/stage-1.html), or the handbook chapters it links to. The [stage guide](HANDBOOK.md) explains every stage step by step.
 2. Use [rm-git-lab-template](https://github.com/Crazy-Rohit/rm-git-lab-template) and name the copy `git-lab`.
 3. Open a Start issue, do the work, then open a Submit issue.
 

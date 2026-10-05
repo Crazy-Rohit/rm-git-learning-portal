@@ -1,15 +1,7 @@
-type StageRecord = { startedAt?: string; passedAt?: string };
-type LearnerFile = { stages?: Record<string, StageRecord> };
+import { BADGES, LEDGER } from './catalog';
 
-const STAGE_TITLES = [
-  'First repository',
-  'Branches and pull requests',
-  'Merge conflicts',
-  'Undo and history',
-  'Fork and pull request',
-  'Automation',
-  'Capstone project',
-];
+type StageRecord = { startedAt?: string; passedAt?: string; credentialId?: string };
+type LearnerFile = { stages?: Record<string, StageRecord> };
 
 const form = document.querySelector<HTMLFormElement>('#lookup');
 const loginInput = document.querySelector<HTMLInputElement>('#login');
@@ -23,17 +15,29 @@ function setStatus(message: string) {
 function render(stages: Record<string, StageRecord>) {
   if (!list) return;
   list.replaceChildren();
-  STAGE_TITLES.forEach((title, index) => {
-    const number = index + 1;
+  BADGES.forEach((badge) => {
+    const number = badge.stage;
     const record = stages[String(number)];
     const previousPassed = number === 1 || Boolean(stages[String(number - 1)]?.passedAt);
     const item = document.createElement('li');
     const name = document.createElement('span');
-    name.textContent = `Stage ${number}. ${title}`;
+    name.className = 'stage-name';
+    name.textContent = `Stage ${number}. ${badge.title}`;
     const state = document.createElement('span');
     if (record?.passedAt) {
       state.className = 'pass';
-      state.textContent = `Passed ${record.passedAt.slice(0, 10)}`;
+      if (record.credentialId) {
+        const image = document.createElement('img');
+        image.src = `${import.meta.env.BASE_URL}badges/${badge.slug}.png`;
+        image.alt = '';
+        name.prepend(image);
+        const link = document.createElement('a');
+        link.href = `${import.meta.env.BASE_URL}verify.html?id=${encodeURIComponent(record.credentialId)}`;
+        link.textContent = `Passed ${record.passedAt.slice(0, 10)}`;
+        state.append(link);
+      } else {
+        state.textContent = `Passed ${record.passedAt.slice(0, 10)}`;
+      }
     } else if (previousPassed && number === 1) {
       state.className = 'open';
       const link = document.createElement('a');
@@ -71,7 +75,7 @@ async function lookup(login: string) {
     id = String(body.id);
     cacheSet(key, id);
   }
-  const ledger = await fetch(`https://raw.githubusercontent.com/Crazy-Rohit/rm-git-learning-portal/ledger/learners/${id}.json`);
+  const ledger = await fetch(`${LEDGER}/learners/${id}.json`);
   if (ledger.status === 404) return {};
   if (!ledger.ok) throw new Error('The progress record could not be read.');
   const file = await ledger.json() as LearnerFile;

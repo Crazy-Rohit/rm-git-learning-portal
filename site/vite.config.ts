@@ -12,6 +12,7 @@ export default defineConfig({
         main: resolve(dir, 'index.html'),
         stage1: resolve(dir, 'stage-1.html'),
         progress: resolve(dir, 'progress.html'),
+        verify: resolve(dir, 'verify.html'),
       },
     },
   },

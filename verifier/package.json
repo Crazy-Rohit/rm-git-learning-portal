@@ -12,5 +12,8 @@
   },
   "dependencies": {
     "@octokit/rest": "^21.1.1"
+  },
+  "devDependencies": {
+    "canonicalize": "^5.1.0"
   }
 }

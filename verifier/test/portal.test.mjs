@@ -1,10 +1,14 @@
 import assert from 'node:assert/strict';
-import { mkdtempSync } from 'node:fs';
+import canonicalize from 'canonicalize';
+import { generateKeyPairSync } from 'node:crypto';
+import { mkdtempSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
 import { handleIssue } from '../handle.mjs';
 import { challengeCode } from '../lib/challenge.mjs';
+import { canonical } from '../lib/canonical.mjs';
+import { buildBadge, buildCertificate, signCredential, verifyCredential } from '../lib/credential.mjs';
 import { parseForm, normaliseRepo } from '../lib/form.mjs';
 import { loadLearner } from '../lib/ledger.mjs';
 import { PORTAL } from '../lib/portal.mjs';
@@ -154,6 +158,8 @@ test('a complete stage 1 submission passes and records evidence', async () => {
   assert.equal(saved.stages['1'].passedAt, '2026-10-05T12:30:00.000Z');
   assert.deepEqual(saved.stages['1'].evidence.commits, ['abc1', 'abc2', 'abc3']);
   assert.match(gh.comments[0], /Stage 1 passed/);
+  assert.match(gh.comments[0], /signing key is not configured/);
+  assert.equal(saved.stages['1'].credentialId, undefined);
 });
 
 test('a wrong challenge code fails the stage', async () => {
@@ -188,4 +194,75 @@ test('stage 2 cannot start before stage 1 is passed', async () => {
   });
   await handleIssue({ gh, ledgerDir: dir, issueNumber: 3, portal: PORTAL, secret: SECRET });
   assert.match(gh.comments[0], /Pass stage 1/);
+});
+
+function signingMaterial() {
+  const { publicKey, privateKey } = generateKeyPairSync('ed25519');
+  return {
+    pem: privateKey.export({ type: 'pkcs8', format: 'pem' }),
+    keys: [{ kid: '2026-1', x: publicKey.export({ format: 'jwk' }).x, validFrom: '2026-01-01' }],
+  };
+}
+
+test('canonical JSON matches the signature library', () => {
+  const sample = buildBadge({
+    stage: 1, githubId: USER_ID, login: LOGIN, issuedAt: '2026-10-05T12:30:00.000Z',
+    kid: '2026-1', repo: 'learner/git-lab', issue: 2,
+    issuerName: PORTAL.issuerName, siteUrl: PORTAL.siteUrl,
+  });
+  assert.equal(canonical(sample), canonicalize(sample));
+});
+
+test('a changed credential fails the signature check', () => {
+  const { pem, keys } = signingMaterial();
+  const signed = signCredential(buildCertificate({
+    githubId: USER_ID, login: LOGIN, name: 'Rohit Learner', issuedAt: '2026-10-05T12:30:00.000Z',
+    kid: '2026-1', issuerName: PORTAL.issuerName, siteUrl: PORTAL.siteUrl,
+  }), pem);
+  assert.equal(verifyCredential(signed, keys[0]), true);
+  const tampered = { ...signed, recipient: { ...signed.recipient, name: 'Someone Else' } };
+  assert.equal(verifyCredential(tampered, keys[0]), false);
+});
+
+test('a passed stage 1 issues a signed badge and keeps it on a later pass', async () => {
+  const dir = mkdtempSync(path.join(tmpdir(), 'ledger-'));
+  const { pem, keys } = signingMaterial();
+  const code = challengeCode(USER_ID, '1', SECRET);
+  const author = { id: USER_ID, login: LOGIN };
+  await handleIssue({
+    gh: issueGh({ title: '[Start] ', body: '### Stage\n\n1\n', user: author, created_at: '2026-10-05T09:00:00Z' }),
+    ledgerDir: dir, issueNumber: 1, portal: PORTAL, secret: SECRET, signingKey: pem, keys,
+    now: () => new Date('2026-10-05T09:00:00Z'),
+  });
+  const gh = issueGh({
+    title: '[Submit] ',
+    body: '### Stage\n\n1\n\n### Your lab repository\n\nlearner/git-lab\n',
+    user: author,
+    created_at: '2026-10-05T12:30:00Z',
+  }, passingRepos(code));
+  const result = await handleIssue({
+    gh, ledgerDir: dir, issueNumber: 2, portal: PORTAL, secret: SECRET, signingKey: pem, keys,
+    now: () => new Date('2026-10-05T12:30:00Z'),
+  });
+  assert.equal(result.passed, true);
+  const saved = loadLearner(dir, USER_ID, LOGIN);
+  assert.equal(saved.stages['1'].credentialId, 'GGP-2026-42-S1');
+  const stored = JSON.parse(readFileSync(path.join(dir, 'certificates', 'GGP-2026-42-S1.json'), 'utf8'));
+  assert.equal(verifyCredential(stored, keys[0]), true);
+  assert.equal(stored.recipient.githubId, USER_ID);
+  assert.equal(stored.evidence.repo, 'learner/git-lab');
+  assert.match(gh.comments[0], /verify\.html\?id=GGP-2026-42-S1/);
+  assert.match(gh.comments[0], /badges\/first-repository\.png/);
+  const again = issueGh({
+    title: '[Submit] ',
+    body: '### Stage\n\n1\n\n### Your lab repository\n\nlearner/git-lab\n',
+    user: author,
+    created_at: '2026-10-06T12:30:00Z',
+  }, passingRepos(code));
+  await handleIssue({
+    gh: again, ledgerDir: dir, issueNumber: 3, portal: PORTAL, secret: SECRET, signingKey: pem, keys,
+    now: () => new Date('2026-10-06T12:30:00Z'),
+  });
+  assert.equal(loadLearner(dir, USER_ID, LOGIN).stages['1'].credentialId, 'GGP-2026-42-S1');
+  assert.equal(loadLearner(dir, USER_ID, LOGIN).stages['1'].passedAt, '2026-10-05T12:30:00.000Z');
 });
