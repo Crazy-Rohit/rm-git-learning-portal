@@ -1,0 +1,20 @@
+name: Submit a stage
+description: Ask the verifier to check your public repository
+title: "[Submit] "
+labels: ["submission"]
+body:
+  - type: dropdown
+    id: stage
+    attributes:
+      label: Stage
+      options: ["1", "2", "3", "4", "5", "6", "7"]
+    validations:
+      required: true
+  - type: input
+    id: repo
+    attributes:
+      label: Your lab repository
+      description: For stage 1 this is your-username/git-lab
+      placeholder: your-username/git-lab
+    validations:
+      required: true

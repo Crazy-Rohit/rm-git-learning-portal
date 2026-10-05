@@ -1,0 +1,93 @@
+<article class="chapter" id="ch4" data-title="Installing Git" data-part="1" data-no="4">
+  <div class="ch-meta"><span class="chip git">Part 1</span><span class="chip">Chapter 4</span><span>4 min read</span></div>
+  <h2>Installing Git</h2>
+  <p class="lead">Installing Git takes about five minutes on any operating system, and you can confirm it worked by running <code>git --version</code>.</p>
+
+  <h3>4.1 Pick your operating system</h3>
+  <div class="callout tip">
+    <div class="t"><svg class="i"><use href="#i-tip"/></svg>Tip</div>
+    <p>The tabs below try to open on your own operating system. Choose another tab if you set up a different machine.</p>
+  </div>
+  <div class="tabs" data-os="1">
+    <div class="tablist" role="tablist" aria-label="Operating system">
+      <button role="tab" type="button">Windows</button>
+      <button role="tab" type="button">macOS</button>
+      <button role="tab" type="button">Linux</button>
+    </div>
+    <div class="tabpanel" role="tabpanel" data-label="Windows">
+      <ol>
+        <li>Download the installer from the official website, git-scm.com.</li>
+        <li>Run it. The defaults are fine for beginners, but check these screens:
+
+          <ul>
+            <li><b>Default editor:</b> choose Visual Studio Code if you have it.</li>
+            <li><b>Initial branch name:</b> choose "Override the default branch name" and enter <code>main</code>.</li>
+            <li><b>PATH environment:</b> keep "Git from the command line and also from 3rd-party software".</li>
+          </ul></li>
+        <li>Finish, then open <b>Git Bash</b> from the Start menu.</li>
+      </ol>
+      <p>Or use one command in PowerShell:</p>
+<pre class="term"><code><span class="p">$</span> winget install --id Git.Git -e --source winget</code></pre>
+
+    </div>
+    <div class="tabpanel" role="tabpanel" data-label="macOS">
+      <p>Let macOS install the command line tools. If Git is missing, a window offers to install it.</p>
+<pre class="term"><code><span class="p">$</span> git --version</code></pre>
+
+      <p>With Homebrew you can install a newer version:</p>
+<pre class="term"><code><span class="p">$</span> brew install git</code></pre>
+
+    </div>
+    <div class="tabpanel" role="tabpanel" data-label="Linux">
+      <p>Use your distribution's package manager.</p>
+<pre class="term"><code><span class="c"># Debian, Ubuntu</span>
+<span class="p">$</span> sudo apt update
+<span class="p">$</span> sudo apt install git
+
+<span class="c"># Fedora</span>
+<span class="p">$</span> sudo dnf install git
+
+<span class="c"># Arch</span>
+<span class="p">$</span> sudo pacman -S git</code></pre>
+
+    </div>
+  </div>
+
+  <h3>4.2 Verify the installation</h3>
+  <p>Open a new terminal window and run:</p>
+<pre class="term"><code><span class="p">$</span> git --version
+<span class="o">git version 2.45.0</span></code></pre>
+
+  <p>Your version number will probably differ, and that is fine. Any reasonably recent version works with this handbook.</p>
+
+  <h3>4.3 Common mistakes</h3>
+  <ul>
+    <li><b>Terminal opened before installing.</b> It does not see new programs until you close it and open a new one.</li>
+    <li><b>"git is not recognized" on Windows.</b> The PATH option was skipped. Run the installer again and choose the recommended PATH option.</li>
+  </ul>
+  <div class="callout important">
+    <div class="t"><svg class="i"><use href="#i-imp"/></svg>Important</div>
+    <p>Download Git only from git-scm.com or your system's package manager, never from an unofficial site.</p>
+  </div>
+  <div class="panel recap">
+    <div class="panel-h"><svg class="i"><use href="#i-checkc"/></svg>Quick recap</div>
+    <div class="panel-b">
+      <ul>
+        <li>Windows: installer from git-scm.com, or <code>winget</code>.</li>
+        <li>macOS: <code>git --version</code> triggers installation, or use Homebrew.</li>
+        <li>Linux: install the <code>git</code> package.</li>
+        <li>Always confirm with <code>git --version</code>.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="panel ex">
+    <div class="panel-h"><svg class="i"><use href="#i-task"/></svg>Practice exercise</div>
+    <div class="panel-b">
+      <ul class="tasks">
+        <li><input type="checkbox" data-k="ch4-1" aria-labelledby="t41"><span id="t41">Install Git, open a fresh terminal and run <code>git --version</code>.</span></li>
+        <li><input type="checkbox" data-k="ch4-2" aria-labelledby="t42"><span id="t42">Run <code>git help</code> and read the list of common commands. You meet most of them in Part 2.</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="nextrow"><a class="btn pri" href="#ch5">Next: First-time configuration</a></div>
+</article>

@@ -1,0 +1,39 @@
+name: Verify stage
+on:
+  issues:
+    types: [opened]
+permissions:
+  contents: write
+  issues: write
+concurrency:
+  group: ledger
+  cancel-in-progress: false
+jobs:
+  verify:
+    if: startsWith(github.event.issue.title, '[Submit]') || startsWith(github.event.issue.title, '[Start]')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          ref: ledger
+          path: ledger-data
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+        working-directory: verifier
+      - run: node verifier/index.mjs
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          LEDGER_DIR: ${{ github.workspace }}/ledger-data
+          CHALLENGE_SECRET: ${{ secrets.CHALLENGE_SECRET }}
+          SIGNING_KEY_PEM: ${{ secrets.SIGNING_KEY_PEM }}
+      - name: Publish ledger changes
+        working-directory: ledger-data
+        run: |
+          git config user.name "portal-bot"
+          git config user.email "portal-bot@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet || (git commit -m "Ledger update for issue ${{ github.event.issue.number }}" && git push)

@@ -1,0 +1,13 @@
+name: Start a stage
+description: Get your personal challenge code before you do the work
+title: "[Start] "
+labels: ["start"]
+body:
+  - type: dropdown
+    id: stage
+    attributes:
+      label: Stage
+      description: Only stage 1 is open. Later stages unlock after the one before them is passed.
+      options: ["1", "2", "3", "4", "5", "6", "7"]
+    validations:
+      required: true

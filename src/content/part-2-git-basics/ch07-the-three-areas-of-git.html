@@ -1,0 +1,151 @@
+<article class="chapter" id="ch7" data-title="The three areas of Git" data-part="2" data-no="7">
+  <div class="ch-meta"><span class="chip git">Part 2</span><span class="chip">Chapter 7</span><span>4 min read</span></div>
+  <h2>The three areas of Git</h2>
+  <p class="lead">Git moves your work through three areas, and understanding them explains almost every Git command.</p>
+
+  <h3>7.1 The idea: a photo studio</h3>
+  <p>Imagine a photo studio. The <b>working directory</b> is the stage where you arrange people and props. The <b>staging area</b> is the shelf where you place exactly the items you want in the next photo. The <b>repository</b> is the album where finished photos are stored forever. You can rearrange the stage as much as you like. Only what you place on the shelf gets photographed, and once a photo is in the album it stays there.</p>
+  <figure class="fig">
+    <svg role="img" aria-label="The three areas and the commands that move work between them" viewBox="0 0 720 256" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="mk1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path class="arh" d="M0 0L10 5L0 10z"/>
+        </marker>
+      </defs>
+      <rect class="bx bxs" x="20.0" y="64" width="166.7" height="78" rx="10"/>
+      <text class="ttl" x="103.3" y="94" text-anchor="middle">Working directory</text>
+      <text class="m sm" x="103.3" y="114" text-anchor="middle">The files you edit</text>
+      <rect class="bx bxs stk-o" x="276.7" y="64" width="166.7" height="78" rx="10"/>
+      <text class="ttl" x="360.0" y="94" text-anchor="middle">Staging area</text>
+      <text class="m sm" x="360.0" y="114" text-anchor="middle">What the next commit will</text>
+      <text class="m sm" x="360.0" y="129" text-anchor="middle">contain</text>
+      <rect class="bx bxs stk-g" x="533.3" y="64" width="166.7" height="78" rx="10"/>
+      <text class="ttl" x="616.7" y="94" text-anchor="middle">Repository</text>
+      <text class="m sm" x="616.7" y="114" text-anchor="middle">Permanent history in .git</text>
+      <path class="ln2" d="M117.3 64 C117.3 18.7 346.0 18.7 346.0 64" marker-end="url(#mk1)"/>
+      <text class="mono" x="231.7" y="24.0" text-anchor="middle">git add</text>
+      <path class="ln2" d="M374.0 64 C374.0 18.7 602.7 18.7 602.7 64" marker-end="url(#mk1)"/>
+      <text class="mono" x="488.3" y="24.0" text-anchor="middle">git commit</text>
+      <path class="ln2" d="M602.7 142 C602.7 248.7 117.3 248.7 117.3 142" marker-end="url(#mk1)"/>
+      <text class="mono" x="360.0" y="240.0" text-anchor="middle">git restore, git switch</text>
+      <path class="ln2" d="M346.0 142 C346.0 187.3 117.3 187.3 117.3 142" marker-end="url(#mk1)"/>
+      <text class="mono" x="231.7" y="194.0" text-anchor="middle">git restore --staged</text>
+    </svg>
+    <figcaption>The three areas and the commands that move work between them</figcaption>
+  </figure>
+
+  <h3>7.2 Why a staging area exists</h3>
+  <p>Many beginners ask why Git does not just save everything you changed. The staging area lets you build clean commits. If you fixed a bug and also reformatted another file, you can stage and commit them separately. Each commit then tells one story, which makes history easy to read and easy to undo.</p>
+
+  <h3>7.3 Adding files with git add</h3>
+<pre class="term"><code><span class="p">$</span> git add README.md
+<span class="p">$</span> git status
+<span class="o">On branch main</span>
+
+<span class="o">No commits yet</span>
+
+<span class="o">Changes to be committed:</span>
+<span class="o">  (use "git rm --cached &lt;file&gt;..." to unstage)</span>
+<span class="o">	new file:   README.md</span></code></pre>
+  <p>The file is now <b>staged</b>. Useful variations:</p>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Command</th><th>What it stages</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>git add file.txt</code></td><td>One file</td></tr>
+        <tr><td><code>git add file1.txt file2.txt</code></td><td>Several named files</td></tr>
+        <tr><td><code>git add src/</code></td><td>Everything inside a folder</td></tr>
+        <tr><td><code>git add *.py</code></td><td>All Python files in the current folder</td></tr>
+        <tr><td><code>git add .</code></td><td>Everything new or changed from here downward</td></tr>
+        <tr><td><code>git add -A</code></td><td>Everything new, changed or deleted in the whole project</td></tr>
+        <tr><td><code>git add -p</code></td><td>Pick individual pieces of a file, one at a time</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>7.4 A file can be in two states at once</h3>
+  <p>Edit a file after staging it and Git remembers both versions: the one you staged, and the newer one in your working directory.</p>
+<pre class="term"><code><span class="p">$</span> echo "More text" &gt;&gt; README.md
+<span class="p">$</span> git status
+<span class="o">Changes to be committed:</span>
+<span class="o">	new file:   README.md</span>
+
+<span class="o">Changes not staged for commit:</span>
+<span class="o">	modified:   README.md</span></code></pre>
+  <p>Only the staged version goes into the next commit. Run <code>git add README.md</code> again to include the newer edit.</p>
+
+  <h3>7.5 Staging part of a file</h3>
+  <p><code>git add -p</code> shows each changed chunk (called a hunk) and asks what to do.</p>
+<pre class="term"><code><span class="p">$</span> git add -p
+<span class="o">@@ -1,2 +1,3 @@</span>
+<span class="o"> # Hello Git</span>
+<span class="o">+More text</span>
+<span class="o">Stage this hunk [y,n,q,a,d,s,e,?]? y</span></code></pre>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Key</th><th>Meaning</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>y</code></td><td>Stage this hunk</td></tr>
+        <tr><td><code>n</code></td><td>Do not stage this hunk</td></tr>
+        <tr><td><code>s</code></td><td>Split into smaller hunks</td></tr>
+        <tr><td><code>q</code></td><td>Quit</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>7.6 Common mistakes</h3>
+  <ul>
+    <li><b>Using <code>git add .</code> blindly.</b> It can stage secrets, build files or large data. Always run <code>git status</code> before committing.</li>
+    <li><b>Forgetting to stage again after editing.</b> The commit contains the staged version, not your latest edit.</li>
+    <li><b>Thinking <code>git add</code> saves your work.</b> Staging is only a preparation step. Nothing is saved to history until you commit.</li>
+  </ul>
+  <div class="panel recap">
+    <div class="panel-h"><svg class="i"><use href="#i-checkc"/></svg>Quick recap</div>
+    <div class="panel-b">
+      <ul>
+        <li>Working directory, staging area and repository are the three areas.</li>
+        <li><code>git add</code> moves changes into the staging area; <code>git commit</code> moves them into the repository.</li>
+        <li>The staging area lets you build small, focused commits.</li>
+        <li><code>git add -p</code> stages part of a file.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="panel quiz">
+    <div class="panel-h"><svg class="i"><use href="#i-info"/></svg>Check yourself</div>
+    <div class="panel-b">
+      <div class="q" data-a="2">
+        <p class="qt">1. What does git add do?</p>
+        <div class="opts">
+          <button type="button" class="opt">Saves the change permanently in history</button>
+          <button type="button" class="opt">Uploads the change to GitHub</button>
+          <button type="button" class="opt">Places the change in the staging area for the next commit</button>
+        </div>
+        <p class="qe" hidden>Staging prepares a commit. The commit itself is a separate step.</p>
+      </div>
+      <div class="q" data-a="0">
+        <p class="qt">2. You edit a file after staging it. Which version goes into the next commit?</p>
+        <div class="opts">
+          <button type="button" class="opt">The version you staged</button>
+          <button type="button" class="opt">The newest version in your working directory</button>
+          <button type="button" class="opt">Both versions</button>
+        </div>
+        <p class="qe" hidden>Git commits what is staged. Stage again to include the newer edit.</p>
+      </div>
+    </div>
+  </div>
+  <div class="panel ex">
+    <div class="panel-h"><svg class="i"><use href="#i-task"/></svg>Practice exercise</div>
+    <div class="panel-b">
+      <ul class="tasks">
+        <li><input type="checkbox" data-k="ch7-1" aria-labelledby="tch7-1"><span id="tch7-1">Create two files, <code>a.txt</code> and <code>b.txt</code>, and stage only <code>a.txt</code>. Check with <code>git status</code>.</span></li>
+        <li><input type="checkbox" data-k="ch7-2" aria-labelledby="tch7-2"><span id="tch7-2">Edit <code>a.txt</code> after staging it and run <code>git status</code> to see the file listed twice.</span></li>
+        <li><input type="checkbox" data-k="ch7-3" aria-labelledby="tch7-3"><span id="tch7-3">Practise <code>git add -p</code> on a file with two separate edits.</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="nextrow"><a class="btn pri" href="#ch8">Next: Making commits</a></div>
+</article>

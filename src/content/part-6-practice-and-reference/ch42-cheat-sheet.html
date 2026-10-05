@@ -1,0 +1,184 @@
+<article class="chapter" id="ch42" data-title="Cheat sheet" data-part="6" data-no="42">
+  <div class="ch-meta"><span class="chip git">Part 6</span><span class="chip">Chapter 42</span><span>3 min read</span></div>
+  <h2>Cheat sheet</h2>
+  <p class="lead">One place to look up the commands you use most, grouped by what you want to do.</p>
+
+  <h3>42.1 Setup and configuration</h3>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Command</th><th>Purpose</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>git config --global user.name "Name"</code></td><td>Set your name</td></tr>
+        <tr><td><code>git config --global user.email "mail"</code></td><td>Set your email</td></tr>
+        <tr><td><code>git config --global init.defaultBranch main</code></td><td>Default branch name</td></tr>
+        <tr><td><code>git config --list</code></td><td>Show settings</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>42.2 Starting a repository</h3>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Command</th><th>Purpose</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>git init</code></td><td>Create a repository here</td></tr>
+        <tr><td><code>git clone &lt;url&gt;</code></td><td>Copy a remote repository</td></tr>
+        <tr><td><code>git remote add origin &lt;url&gt;</code></td><td>Connect a remote</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>42.3 Snapshots</h3>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Command</th><th>Purpose</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>git status</code></td><td>Show what changed</td></tr>
+        <tr><td><code>git add &lt;file&gt;</code> / <code>git add .</code></td><td>Stage changes</td></tr>
+        <tr><td><code>git add -p</code></td><td>Stage part of a file</td></tr>
+        <tr><td><code>git commit -m "msg"</code></td><td>Commit what is staged</td></tr>
+        <tr><td><code>git commit --amend</code></td><td>Fix the last commit</td></tr>
+        <tr><td><code>git rm &lt;file&gt;</code> / <code>git mv a b</code></td><td>Delete or rename a file</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>42.4 Inspecting</h3>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Command</th><th>Purpose</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>git log --oneline --graph --all</code></td><td>Compact history graph</td></tr>
+        <tr><td><code>git show &lt;commit&gt;</code></td><td>One commit in detail</td></tr>
+        <tr><td><code>git diff</code> / <code>git diff --staged</code></td><td>Unstaged / staged changes</td></tr>
+        <tr><td><code>git blame &lt;file&gt;</code></td><td>Who changed each line</td></tr>
+        <tr><td><code>git reflog</code></td><td>Where HEAD has been</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>42.5 Branching and merging</h3>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Command</th><th>Purpose</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>git branch</code></td><td>List branches</td></tr>
+        <tr><td><code>git switch -c &lt;name&gt;</code></td><td>Create and switch</td></tr>
+        <tr><td><code>git switch &lt;name&gt;</code></td><td>Switch</td></tr>
+        <tr><td><code>git merge &lt;branch&gt;</code></td><td>Merge into the current branch</td></tr>
+        <tr><td><code>git rebase &lt;branch&gt;</code></td><td>Replay commits on another branch</td></tr>
+        <tr><td><code>git cherry-pick &lt;hash&gt;</code></td><td>Copy one commit</td></tr>
+        <tr><td><code>git branch -d &lt;name&gt;</code></td><td>Delete a merged branch</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>42.6 Remotes</h3>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Command</th><th>Purpose</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>git fetch</code></td><td>Download without merging</td></tr>
+        <tr><td><code>git pull</code> / <code>git pull --rebase</code></td><td>Fetch and merge or rebase</td></tr>
+        <tr><td><code>git push</code> / <code>git push -u origin &lt;branch&gt;</code></td><td>Upload commits</td></tr>
+        <tr><td><code>git push --force-with-lease</code></td><td>Safer force push</td></tr>
+        <tr><td><code>git remote -v</code></td><td>List remotes</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>42.7 Undoing</h3>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Command</th><th>Purpose</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>git restore &lt;file&gt;</code></td><td>Discard working changes</td></tr>
+        <tr><td><code>git restore --staged &lt;file&gt;</code></td><td>Unstage</td></tr>
+        <tr><td><code>git reset --soft HEAD~1</code></td><td>Undo commit, keep changes staged</td></tr>
+        <tr><td><code>git reset --hard HEAD~1</code></td><td>Undo commit and discard changes</td></tr>
+        <tr><td><code>git revert &lt;commit&gt;</code></td><td>Undo with a new commit</td></tr>
+        <tr><td><code>git clean -n</code></td><td>Preview removal of untracked files</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>42.8 Shelving and marking</h3>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Command</th><th>Purpose</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>git stash</code> / <code>git stash pop</code></td><td>Shelve and restore work</td></tr>
+        <tr><td><code>git stash -u</code></td><td>Include untracked files</td></tr>
+        <tr><td><code>git tag -a v1.0.0 -m "msg"</code></td><td>Annotated tag</td></tr>
+        <tr><td><code>git push origin --tags</code></td><td>Push tags</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>42.9 Advanced</h3>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Command</th><th>Purpose</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>git rebase -i HEAD~n</code></td><td>Edit the last n commits</td></tr>
+        <tr><td><code>git bisect start</code></td><td>Find a bug by binary search</td></tr>
+        <tr><td><code>git submodule update --init --recursive</code></td><td>Fetch submodules</td></tr>
+        <tr><td><code>git lfs track "*.psd"</code></td><td>Store large files with LFS</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>42.10 Symbols worth knowing</h3>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Symbol</th><th>Meaning</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>HEAD</code></td><td>The commit you are on</td></tr>
+        <tr><td><code>HEAD~1</code></td><td>One commit before HEAD</td></tr>
+        <tr><td><code>origin/main</code></td><td>Your copy of the remote main branch</td></tr>
+        <tr><td><code>main..feature</code></td><td>Commits in feature that are not in main</td></tr>
+        <tr><td><code>.</code></td><td>The current folder</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="panel recap">
+    <div class="panel-h"><svg class="i"><use href="#i-checkc"/></svg>Quick recap</div>
+    <div class="panel-b">
+      <ul>
+        <li>Bookmark this chapter for quick lookups.</li>
+        <li>Learn the groups: setup, snapshots, branches, remotes, undo.</li>
+        <li>When unsure, <code>git status</code> and <code>git log --oneline --graph --all</code> tell you where you are.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="panel ex">
+    <div class="panel-h"><svg class="i"><use href="#i-task"/></svg>Practice exercise</div>
+    <div class="panel-b">
+      <ul class="tasks">
+        <li><input type="checkbox" data-k="ch42-1" aria-labelledby="tch42-1"><span id="tch42-1">Print this chapter or keep it open while you work for one week.</span></li>
+        <li><input type="checkbox" data-k="ch42-2" aria-labelledby="tch42-2"><span id="tch42-2">Pick five commands you do not yet use and try each once.</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="nextrow"><a class="btn pri" href="#ch43">Next: Interview questions</a></div>
+</article>

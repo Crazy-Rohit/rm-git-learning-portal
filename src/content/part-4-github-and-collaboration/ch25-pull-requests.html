@@ -1,0 +1,143 @@
+<article class="chapter" id="ch25" data-title="Pull requests" data-part="4" data-no="25">
+  <div class="ch-meta"><span class="chip git">Part 4</span><span class="chip">Chapter 25</span><span>3 min read</span></div>
+  <h2>Pull requests</h2>
+  <p class="lead">A pull request asks the project to take your branch, and it is where discussion, review and automatic checks happen before merging.</p>
+
+  <h3>25.1 What a pull request is</h3>
+  <p>A <b>pull request</b> (PR) is a proposal to merge one branch into another. It is a page on GitHub that shows the changes, hosts the discussion and runs automatic checks. Even on your own project, PRs are a good habit because they record why a change was made.</p>
+  <figure class="fig">
+    <svg role="img" aria-label="The life of a pull request" viewBox="0 0 720 352" xmlns="http://www.w3.org/2000/svg">
+      <line class="ln" x1="34" y1="36" x2="34" y2="316"/>
+      <circle class="dot-b" cx="34" cy="36" r="15"/>
+      <text class="pill-t" x="34" y="40" text-anchor="middle">1</text>
+      <text class="ttl" x="68" y="33">Create a branch</text>
+      <text class="m" x="68" y="51">Never work on main directly</text>
+      <circle class="dot-b" cx="34" cy="92" r="15"/>
+      <text class="pill-t" x="34" y="96" text-anchor="middle">2</text>
+      <text class="ttl" x="68" y="89">Commit and push</text>
+      <text class="m" x="68" y="107">git push -u origin your-branch</text>
+      <circle class="dot-b" cx="34" cy="148" r="15"/>
+      <text class="pill-t" x="34" y="152" text-anchor="middle">3</text>
+      <text class="ttl" x="68" y="145">Open the pull request</text>
+      <text class="m" x="68" y="163">Compare and pull request on GitHub</text>
+      <circle class="dot-b" cx="34" cy="204" r="15"/>
+      <text class="pill-t" x="34" y="208" text-anchor="middle">4</text>
+      <text class="ttl" x="68" y="201">Review and discuss</text>
+      <text class="m" x="68" y="219">Teammates comment and request changes</text>
+      <circle class="dot-b" cx="34" cy="260" r="15"/>
+      <text class="pill-t" x="34" y="264" text-anchor="middle">5</text>
+      <text class="ttl" x="68" y="257">Checks pass</text>
+      <text class="m" x="68" y="275">Automatic tests run on every update</text>
+      <circle class="dot-b" cx="34" cy="316" r="15"/>
+      <text class="pill-t" x="34" y="320" text-anchor="middle">6</text>
+      <text class="ttl" x="68" y="313">Merge and clean up</text>
+      <text class="m" x="68" y="331">Merge, then delete the branch</text>
+    </svg>
+    <figcaption>The life of a pull request</figcaption>
+  </figure>
+
+  <h3>25.2 Opening a pull request</h3>
+<pre class="term"><code><span class="p">$</span> git switch -c fix-typo
+<span class="p">$</span> git add README.md
+<span class="p">$</span> git commit -m "Fix typo in installation steps"
+<span class="p">$</span> git push -u origin fix-typo
+<span class="o">remote: Create a pull request for 'fix-typo' on GitHub by visiting:</span>
+<span class="o">remote:   https://github.com/your-username/hello-git/pull/new/fix-typo</span></code></pre>
+  <p>GitHub shows a <b>Compare and pull request</b> button. On the form, write:</p>
+  <ul>
+    <li>A clear <b>title</b>, like a good commit message.</li>
+    <li>A <b>description</b> of what changed and why, with screenshots if the change is visual.</li>
+    <li>Closing keywords such as <code>Closes #12</code>, which automatically close issue 12 when the PR merges.</li>
+    <li><b>Reviewers</b> and <b>assignees</b>, if your team uses them.</li>
+  </ul>
+
+  <h3>25.3 Draft pull requests</h3>
+  <p>Choose <b>Create draft pull request</b> when the work is not ready. A draft cannot be merged. It tells people you want early feedback, not a final review.</p>
+
+  <h3>25.4 Reading a pull request page</h3>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Tab</th><th>Shows</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Conversation</td><td>Description, comments, review status and checks</td></tr>
+        <tr><td>Commits</td><td>Every commit in the branch</td></tr>
+        <tr><td>Checks</td><td>Results of automatic tests and workflows</td></tr>
+        <tr><td>Files changed</td><td>The diff, where reviewers leave line comments</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>25.5 Three ways to merge</h3>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Option</th><th>Result</th><th>Best for</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Merge commit</td><td>Keeps all commits and adds a merge commit</td><td>Preserving full history</td></tr>
+        <tr><td>Squash and merge</td><td>Combines the branch into one commit</td><td>Tidy <code>main</code> with one commit per change</td></tr>
+        <tr><td>Rebase and merge</td><td>Replays commits on top, no merge commit</td><td>A straight history with every commit kept</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Repository owners can allow only the styles they prefer.</p>
+
+  <h3>25.6 After the merge</h3>
+<pre class="term"><code><span class="p">$</span> git switch main
+<span class="p">$</span> git pull
+<span class="p">$</span> git branch -d fix-typo</code></pre>
+  <p>GitHub offers a <b>Delete branch</b> button after merging. Use it to keep the branch list short.</p>
+
+  <h3>25.7 Pull request templates</h3>
+  <p>A file named <code>.github/pull_request_template.md</code> fills each new PR with a checklist, which helps authors remember tests and documentation.</p>
+<pre class="code"><code>## What does this change?
+
+## How was it tested?
+
+- [ ] Tests added or updated
+- [ ] Documentation updated</code></pre>
+
+  <h3>25.8 Common mistakes</h3>
+  <ul>
+    <li><b>Huge pull requests.</b> Reviewers skim them. Keep PRs small and focused.</li>
+    <li><b>No description.</b> Explain the why, not just the what.</li>
+    <li><b>Pushing more commits after approval without telling anyone.</b> New commits usually require a fresh review.</li>
+  </ul>
+  <div class="panel recap">
+    <div class="panel-h"><svg class="i"><use href="#i-checkc"/></svg>Quick recap</div>
+    <div class="panel-b">
+      <ul>
+        <li>A pull request proposes merging a branch and hosts the review.</li>
+        <li>Write a clear title and description, and link issues with <code>Closes #n</code>.</li>
+        <li>Use draft PRs for early feedback.</li>
+        <li>Merge commit, squash and rebase are the three merge styles.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="panel quiz">
+    <div class="panel-h"><svg class="i"><use href="#i-info"/></svg>Check yourself</div>
+    <div class="panel-b">
+      <div class="q" data-a="1">
+        <p class="qt">1. What does writing "Closes #12" in a pull request do?</p>
+        <div class="opts">
+          <button type="button" class="opt">Deletes the branch</button>
+          <button type="button" class="opt">Closes issue 12 automatically when the PR merges</button>
+          <button type="button" class="opt">Blocks the merge</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="panel ex">
+    <div class="panel-h"><svg class="i"><use href="#i-task"/></svg>Practice exercise</div>
+    <div class="panel-b">
+      <ul class="tasks">
+        <li><input type="checkbox" data-k="ch25-1" aria-labelledby="tch25-1"><span id="tch25-1">Create a branch, push it, and open a pull request in your own repository.</span></li>
+        <li><input type="checkbox" data-k="ch25-2" aria-labelledby="tch25-2"><span id="tch25-2">Merge it with Squash and merge, then delete the branch.</span></li>
+        <li><input type="checkbox" data-k="ch25-3" aria-labelledby="tch25-3"><span id="tch25-3">Run <code>git pull</code> locally to bring the merged result into <code>main</code>.</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="nextrow"><a class="btn pri" href="#ch26">Next: Code review</a></div>
+</article>

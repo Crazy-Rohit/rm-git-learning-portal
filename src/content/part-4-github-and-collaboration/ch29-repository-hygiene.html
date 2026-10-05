@@ -1,0 +1,114 @@
+<article class="chapter" id="ch29" data-title="Repository hygiene" data-part="4" data-no="29">
+  <div class="ch-meta"><span class="chip git">Part 4</span><span class="chip">Chapter 29</span><span>3 min read</span></div>
+  <h2>Repository hygiene</h2>
+  <p class="lead">A well-kept repository welcomes newcomers and protects the project with a clear README, licence and contribution rules.</p>
+
+  <h3>29.1 The README: the front door</h3>
+  <p>The README is the first thing visitors see. GitHub displays it under the file list. A good README answers four questions in under a minute: What is this? How do I run it? How do I use it? How do I help?</p>
+<pre class="code"><code># Project name
+
+One sentence about what it does.
+
+## Install
+## Usage
+## Contributing
+## Licence</code></pre>
+  <p>Add a screenshot, a short code example and badges for build status if you have them. Write in Markdown.</p>
+
+  <h3>29.2 Markdown essentials</h3>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>You type</th><th>You get</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code># Heading</code></td><td>A large heading (<code>##</code> and <code>###</code> make smaller ones)</td></tr>
+        <tr><td><code>**bold**</code> and <code>*italic*</code></td><td><b>bold</b> and italic text</td></tr>
+        <tr><td><code>- item</code></td><td>A bullet list</td></tr>
+        <tr><td><code>[text](https://example.com)</code></td><td>A link</td></tr>
+        <tr><td><code>![alt](image.png)</code></td><td>An image</td></tr>
+        <tr><td>Three backticks</td><td>A code block</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>29.3 Choosing a licence</h3>
+  <p>Without a licence, nobody has permission to reuse your code, even if it is public. Add a <code>LICENSE</code> file. GitHub can create one from a template when you add a file.</p>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Licence</th><th>In short</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>MIT</td><td>Very permissive. Reuse for anything, keep the copyright notice</td></tr>
+        <tr><td>Apache 2.0</td><td>Permissive, with an explicit patent grant</td></tr>
+        <tr><td>GPL 3.0</td><td>Reusers must also release their changes under the GPL</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>This is a simplified summary, not legal advice. For serious projects read the licence text or ask someone qualified.</p>
+
+  <h3>29.4 Community files</h3>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>File</th><th>Purpose</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>CONTRIBUTING.md</code></td><td>How to report bugs, set up the project and send changes</td></tr>
+        <tr><td><code>CODE_OF_CONDUCT.md</code></td><td>How people are expected to behave</td></tr>
+        <tr><td><code>SECURITY.md</code></td><td>How to report a vulnerability privately</td></tr>
+        <tr><td><code>.github/ISSUE_TEMPLATE/</code></td><td>Forms for new issues</td></tr>
+        <tr><td><code>.github/pull_request_template.md</code></td><td>Checklist for new PRs</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>GitHub shows these in the <b>Community standards</b> page of a repository and links them from the issue and PR screens.</p>
+
+  <h3>29.5 Description, topics and social image</h3>
+  <p>Fill in the one-line <b>About</b> description and add <b>topics</b> such as <code>python</code> or <code>git-tutorial</code>. Topics help people find your project in search.</p>
+
+  <h3>29.6 A profile README</h3>
+  <p>Create a <b>public</b> repository whose name is exactly your username, and add a <code>README.md</code>. GitHub shows it at the top of your profile, which is a good place for a short introduction and links to your best work.</p>
+
+  <h3>29.7 Common mistakes</h3>
+  <ul>
+    <li><b>No licence.</b> People cannot legally reuse the code.</li>
+    <li><b>A README that only says the project name.</b> Explain installation and usage.</li>
+    <li><b>Committing generated files and secrets.</b> Use <code>.gitignore</code>.</li>
+  </ul>
+  <div class="panel recap">
+    <div class="panel-h"><svg class="i"><use href="#i-checkc"/></svg>Quick recap</div>
+    <div class="panel-b">
+      <ul>
+        <li>The README should explain what, how to run, how to use and how to contribute.</li>
+        <li>Add a <code>LICENSE</code>; MIT, Apache 2.0 and GPL 3.0 are common.</li>
+        <li><code>CONTRIBUTING.md</code>, templates and a code of conduct welcome contributors.</li>
+        <li>A repository named after you becomes your profile README.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="panel quiz">
+    <div class="panel-h"><svg class="i"><use href="#i-info"/></svg>Check yourself</div>
+    <div class="panel-b">
+      <div class="q" data-a="1">
+        <p class="qt">1. What happens if a public repository has no licence?</p>
+        <div class="opts">
+          <button type="button" class="opt">Anyone may reuse it freely</button>
+          <button type="button" class="opt">Others have no clear permission to reuse it</button>
+          <button type="button" class="opt">GitHub adds one automatically</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="panel ex">
+    <div class="panel-h"><svg class="i"><use href="#i-task"/></svg>Practice exercise</div>
+    <div class="panel-b">
+      <ul class="tasks">
+        <li><input type="checkbox" data-k="ch29-1" aria-labelledby="tch29-1"><span id="tch29-1">Write a README for one of your repositories using the four-question outline.</span></li>
+        <li><input type="checkbox" data-k="ch29-2" aria-labelledby="tch29-2"><span id="tch29-2">Add an MIT <code>LICENSE</code> file from GitHub's template and a short <code>CONTRIBUTING.md</code>.</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="nextrow"><a class="btn pri" href="#ch30">Next: Contributing to open source</a></div>
+</article>

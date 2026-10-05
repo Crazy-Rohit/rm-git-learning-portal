@@ -1,0 +1,143 @@
+<article class="chapter" id="ch17" data-title="Rebase" data-part="3" data-no="17">
+  <div class="ch-meta"><span class="chip git">Part 3</span><span class="chip">Chapter 17</span><span>3 min read</span></div>
+  <h2>Rebase</h2>
+  <p class="lead">Rebase replays your commits on top of another branch, which gives a straight, easy-to-read history.</p>
+
+  <h3>17.1 The idea</h3>
+  <p>Merging joins two histories with a merge commit. <b>Rebasing</b> takes your branch's commits and re-applies them one by one on top of the latest <code>main</code>, as if you had started your work from there.</p>
+  <figure class="fig">
+    <svg role="img" aria-label="Before: feature branched from C2, but main has moved on to C5" viewBox="0 0 720 198" xmlns="http://www.w3.org/2000/svg">
+      <path class="eg eg-b" d="M195.0 54 L305.0 54"/>
+      <path class="eg eg-b" d="M305.0 54 L525.0 54"/>
+      <path class="eg eg-p" d="M305.0 54 C360.0 54 360.0 138 415.0 138"/>
+      <path class="eg eg-p" d="M415.0 138 L525.0 138"/>
+      <circle class="dot-b" cx="195.0" cy="54" r="11"/>
+      <text x="195.0" y="86" text-anchor="middle" class="sm">C1</text>
+      <circle class="dot-b" cx="305.0" cy="54" r="11"/>
+      <text x="305.0" y="86" text-anchor="middle" class="sm">C2</text>
+      <circle class="dot-b" cx="525.0" cy="54" r="11"/>
+      <text x="525.0" y="86" text-anchor="middle" class="sm">C5</text>
+      <circle class="dot-p" cx="415.0" cy="138" r="11"/>
+      <text x="415.0" y="170" text-anchor="middle" class="sm">C3</text>
+      <circle class="dot-p" cx="525.0" cy="138" r="11"/>
+      <text x="525.0" y="170" text-anchor="middle" class="sm">C4</text>
+      <rect class="pl-b" x="500.0" y="14" width="50" height="22" rx="11"/>
+      <text class="pill-t" x="525.0" y="29" text-anchor="middle">main</text>
+      <line class="ln2" x1="525.0" y1="36" x2="525.0" y2="43"/>
+      <rect class="pl-p" x="488.0" y="98" width="74" height="22" rx="11"/>
+      <text class="pill-t" x="525.0" y="113" text-anchor="middle">feature</text>
+      <line class="ln2" x1="525.0" y1="120" x2="525.0" y2="127"/>
+    </svg>
+    <figcaption>Before: feature branched from C2, but main has moved on to C5</figcaption>
+  </figure>
+<pre class="term"><code><span class="p">$</span> git switch feature
+<span class="p">$</span> git rebase main
+<span class="o">Successfully rebased and updated refs/heads/feature.</span></code></pre>
+  <figure class="fig">
+    <svg role="img" aria-label="After: the feature commits are replayed on top of C5 (as new commits C3' and C4')" viewBox="0 0 720 198" xmlns="http://www.w3.org/2000/svg">
+      <path class="eg eg-b" d="M140.0 54 L250.0 54"/>
+      <path class="eg eg-b" d="M250.0 54 L360.0 54"/>
+      <path class="eg eg-p" d="M360.0 54 C415.0 54 415.0 138 470.0 138"/>
+      <path class="eg eg-p" d="M470.0 138 L580.0 138"/>
+      <circle class="dot-b" cx="140.0" cy="54" r="11"/>
+      <text x="140.0" y="86" text-anchor="middle" class="sm">C1</text>
+      <circle class="dot-b" cx="250.0" cy="54" r="11"/>
+      <text x="250.0" y="86" text-anchor="middle" class="sm">C2</text>
+      <circle class="dot-b" cx="360.0" cy="54" r="11"/>
+      <text x="360.0" y="86" text-anchor="middle" class="sm">C5</text>
+      <circle class="dot-p" cx="470.0" cy="138" r="11"/>
+      <text x="470.0" y="170" text-anchor="middle" class="sm">C3'</text>
+      <circle class="dot-p" cx="580.0" cy="138" r="11"/>
+      <text x="580.0" y="170" text-anchor="middle" class="sm">C4'</text>
+      <rect class="pl-b" x="335.0" y="14" width="50" height="22" rx="11"/>
+      <text class="pill-t" x="360.0" y="29" text-anchor="middle">main</text>
+      <line class="ln2" x1="360.0" y1="36" x2="360.0" y2="43"/>
+      <rect class="pl-p" x="543.0" y="98" width="74" height="22" rx="11"/>
+      <text class="pill-t" x="580.0" y="113" text-anchor="middle">feature</text>
+      <line class="ln2" x1="580.0" y1="120" x2="580.0" y2="127"/>
+    </svg>
+    <figcaption>After: the feature commits are replayed on top of C5 (as new commits C3' and C4')</figcaption>
+  </figure>
+  <p>The history is now a straight line. The feature commits have the same changes but <b>new hashes</b>, because their parent changed.</p>
+
+  <h3>17.2 Merge or rebase</h3>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th></th><th>Merge</th><th>Rebase</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>History</td><td>Keeps the true branching shape</td><td>Gives a straight line</td></tr>
+        <tr><td>Extra commits</td><td>Adds a merge commit</td><td>Adds none</td></tr>
+        <tr><td>Rewrites commits</td><td>No</td><td>Yes (new hashes)</td></tr>
+        <tr><td>Safe on shared branches</td><td>Yes</td><td>No</td></tr>
+        <tr><td>Typical use</td><td>Joining finished work</td><td>Updating your own branch before a pull request</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>17.3 Rebase conflicts</h3>
+  <p>Conflicts can appear while commits are replayed. Resolve them as in Chapter 16, then continue.</p>
+<pre class="term"><code><span class="p">$</span> git add app.py
+<span class="p">$</span> git rebase --continue
+<span class="p">$</span> git rebase --abort
+<span class="p">$</span> git rebase --skip</code></pre>
+  <ul>
+    <li><code>--continue</code> carries on after you fixed the files.</li>
+    <li><code>--abort</code> returns to how things were before the rebase.</li>
+    <li><code>--skip</code> drops the commit that is causing trouble.</li>
+  </ul>
+
+  <h3>17.4 The golden rule of rebase</h3>
+  <div class="callout caution">
+    <div class="t"><svg class="i"><use href="#i-stop"/></svg>Caution</div>
+    <p>Never rebase commits that other people already have. Rebase creates new commits with new hashes. If teammates built on the old ones, their history and yours no longer match, and fixing it is painful.</p>
+  </div>
+  <p>Rebase your own local or personal-branch commits freely. Do not rebase <code>main</code> or any shared branch.</p>
+
+  <h3>17.5 Pull with rebase</h3>
+  <p>A normal <code>git pull</code> can add merge commits. This keeps your local history linear instead:</p>
+<pre class="term"><code><span class="p">$</span> git pull --rebase
+<span class="p">$</span> git config --global pull.rebase true</code></pre>
+
+  <h3>17.6 Common mistakes</h3>
+  <ul>
+    <li><b>Rebasing a shared branch.</b> Follow the golden rule.</li>
+    <li><b>Force-pushing after a rebase without care.</b> Use <code>git push --force-with-lease</code>, which refuses to overwrite work you have not seen.</li>
+    <li><b>Rebasing in a panic during conflicts.</b> Abort and look at the state first.</li>
+  </ul>
+  <div class="panel recap">
+    <div class="panel-h"><svg class="i"><use href="#i-checkc"/></svg>Quick recap</div>
+    <div class="panel-b">
+      <ul>
+        <li>Rebase replays your commits on top of another branch.</li>
+        <li>It creates new commits and a straight history.</li>
+        <li>Never rebase commits that are already shared.</li>
+        <li>Use <code>--continue</code>, <code>--abort</code> or <code>--skip</code> during conflicts.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="panel quiz">
+    <div class="panel-h"><svg class="i"><use href="#i-info"/></svg>Check yourself</div>
+    <div class="panel-b">
+      <div class="q" data-a="1">
+        <p class="qt">1. Why must you not rebase commits others already have?</p>
+        <div class="opts">
+          <button type="button" class="opt">It deletes the repository</button>
+          <button type="button" class="opt">It creates new commits with new hashes, which breaks teammates' history</button>
+          <button type="button" class="opt">It is slower than merging</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="panel ex">
+    <div class="panel-h"><svg class="i"><use href="#i-task"/></svg>Practice exercise</div>
+    <div class="panel-b">
+      <ul class="tasks">
+        <li><input type="checkbox" data-k="ch17-1" aria-labelledby="tch17-1"><span id="tch17-1">Create a branch, then add a commit on <code>main</code>. Rebase the branch onto <code>main</code>.</span></li>
+        <li><input type="checkbox" data-k="ch17-2" aria-labelledby="tch17-2"><span id="tch17-2">Compare <code>git log --oneline --graph</code> before and after.</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="nextrow"><a class="btn pri" href="#ch18">Next: Cherry-pick</a></div>
+</article>

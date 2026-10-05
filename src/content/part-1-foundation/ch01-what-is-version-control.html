@@ -1,0 +1,163 @@
+<article class="chapter" id="ch1" data-title="What is version control?" data-part="1" data-no="1">
+  <div class="ch-meta"><span class="chip git">Part 1</span><span class="chip">Chapter 1</span><span>6 min read</span></div>
+  <h2>What is version control?</h2>
+  <p class="lead">Version control records every change made to a set of files, so you can go back to any earlier state, see who changed what, and work with other people without overwriting their work.</p>
+
+  <h3>1.1 The problem it solves</h3>
+  <p>Everyone has seen a folder like this:</p>
+<pre class="code"><code>report.docx
+report_final.docx
+report_final_v2.docx
+report_final_v2_REALLY_FINAL.docx
+report_final_v2_REALLY_FINAL_ravi_edits.docx</code></pre>
+
+  <p>Nobody knows which file is the latest, what changed between them, or who changed it. Now imagine 500 source files and 10 developers. Three things go wrong:</p>
+  <ul>
+    <li><b>Lost work.</b> Someone overwrites a file and the earlier version is gone for good.</li>
+    <li><b>No history.</b> A bug appears and nobody can tell which change caused it.</li>
+    <li><b>Collision.</b> Two people edit the same file and one person's changes silently disappear.</li>
+  </ul>
+  <p>A version control system (VCS) fixes all three. It keeps every version, labels each change with its author, date and reason, and helps merge work from many people.</p>
+
+  <h3>1.2 Analogy: a time machine for your project</h3>
+  <p>Think of a video game with save points. Before a hard level you save. If you fail, you reload and try again. Each <b>commit</b> in Git is a save point with a name and a note, and you can return to any save point whenever you like.</p>
+  <figure class="fig">
+    <svg viewBox="0 0 720 190" role="img" aria-label="Four commits in a row with HEAD on the latest, and an arrow showing you can go back to any earlier commit">
+      <defs>
+        <marker id="m1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path class="arh" d="M0 0L10 5L0 10z"/>
+        </marker>
+      </defs>
+      <line class="ln" x1="60" y1="85" x2="660" y2="85"/>
+      <circle class="dot-g" cx="100" cy="85" r="13"/>
+      <circle class="dot-g" cx="260" cy="85" r="13"/>
+      <circle class="dot-g" cx="420" cy="85" r="13"/>
+      <circle class="dot-g" cx="580" cy="85" r="13"/>
+      <text class="mono m" x="100" y="58" text-anchor="middle">commit 1</text>
+      <text class="mono m" x="260" y="58" text-anchor="middle">commit 2</text>
+      <text class="mono m" x="420" y="58" text-anchor="middle">commit 3</text>
+      <text class="mono m" x="580" y="58" text-anchor="middle">commit 4</text>
+      <text x="100" y="122" text-anchor="middle">Add login page</text>
+      <text x="260" y="122" text-anchor="middle">Fix typo</text>
+      <text x="420" y="122" text-anchor="middle">Add tests</text>
+      <text x="580" y="122" text-anchor="middle">Update docs</text>
+      <rect class="pill" x="545" y="10" width="70" height="22" rx="11"/>
+      <text class="pill-t" x="580" y="25" text-anchor="middle">HEAD</text>
+      <line class="ln2" x1="580" y1="32" x2="580" y2="70"/>
+      <path class="ln2" d="M580 142C500 176 180 176 100 142" marker-end="url(#m1)"/>
+      <text class="m" x="340" y="186" text-anchor="middle">go back to any save point</text>
+    </svg>
+    <figcaption>Each commit is a save point. HEAD marks the one you are standing on.</figcaption>
+  </figure>
+  <p>It is also like Google Docs version history, with more control: you decide when a save point is made, you write a note for it, and it works for any type of file.</p>
+
+  <h3>1.3 Three generations of version control</h3>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Generation</th><th>How it works</th><th>Examples</th><th>Main weakness</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Local</td><td>The version database lives on one computer</td><td>RCS</td><td>No collaboration; a disk failure loses everything</td></tr>
+        <tr><td>Centralized</td><td>One server holds the history; developers check files out of it</td><td>CVS, Subversion</td><td>If the server is down nobody can save history; it is a single point of failure</td></tr>
+        <tr><td>Distributed</td><td>Every developer has a full copy of the whole history</td><td>Git, Mercurial</td><td>A few more concepts to learn at the start</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <figure class="fig">
+    <svg viewBox="0 0 720 280" role="img" aria-label="Centralized: three developers connect to one server. Distributed: three copies each hold the full history and connect to each other.">
+      <text class="ttl" x="170" y="24" text-anchor="middle">Centralized</text>
+      <rect class="bx" x="105" y="46" width="130" height="46" rx="8"/>
+      <text x="170" y="74" text-anchor="middle">Central server</text>
+      <rect class="bx" x="20" y="180" width="96" height="44" rx="8"/>
+      <text x="68" y="207" text-anchor="middle">Dev A</text>
+      <rect class="bx" x="122" y="180" width="96" height="44" rx="8"/>
+      <text x="170" y="207" text-anchor="middle">Dev B</text>
+      <rect class="bx" x="224" y="180" width="96" height="44" rx="8"/>
+      <text x="272" y="207" text-anchor="middle">Dev C</text>
+      <line class="ln" x1="150" y1="92" x2="68" y2="180"/>
+      <line class="ln" x1="170" y1="92" x2="170" y2="180"/>
+      <line class="ln" x1="190" y1="92" x2="272" y2="180"/>
+      <text class="m" x="170" y="256" text-anchor="middle">One copy of the history</text>
+      <line class="ln" x1="360" y1="20" x2="360" y2="260" style="stroke-dasharray:4 6"/>
+      <text class="ttl" x="540" y="24" text-anchor="middle">Distributed (Git)</text>
+      <rect class="bx" x="470" y="46" width="140" height="50" rx="8"/>
+      <text x="540" y="68" text-anchor="middle">Remote (GitHub)</text>
+      <text class="m" x="540" y="86" text-anchor="middle" style="font-size:11px">full history</text>
+      <rect class="bx" x="390" y="176" width="130" height="56" rx="8"/>
+      <text x="455" y="199" text-anchor="middle">Dev A</text>
+      <text class="m" x="455" y="217" text-anchor="middle" style="font-size:11px">full history</text>
+      <rect class="bx" x="560" y="176" width="130" height="56" rx="8"/>
+      <text x="625" y="199" text-anchor="middle">Dev B</text>
+      <text class="m" x="625" y="217" text-anchor="middle" style="font-size:11px">full history</text>
+      <line class="ln" x1="510" y1="96" x2="470" y2="176"/>
+      <line class="ln" x1="570" y1="96" x2="610" y2="176"/>
+      <line class="ln" x1="520" y1="204" x2="560" y2="204"/>
+      <text class="m" x="540" y="256" text-anchor="middle">Every copy has the full history</text>
+    </svg>
+    <figcaption>If the central server dies, the project is at risk. In Git, any developer's copy can restore it.</figcaption>
+  </figure>
+  <p>When you clone a Git repository you get the complete history, not just the latest files. That is why most Git commands work without internet.</p>
+
+  <h3>1.4 Key terms you will see everywhere</h3>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Term</th><th>Plain meaning</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Repository (repo)</td><td>A project folder together with its full recorded history</td></tr>
+        <tr><td>Commit</td><td>One saved snapshot of your project, with a message and an author</td></tr>
+        <tr><td>Branch</td><td>A separate line of work that does not disturb the main line</td></tr>
+        <tr><td>Merge</td><td>Combining the work of two branches into one</td></tr>
+        <tr><td>Remote</td><td>A copy of the repository on another machine or server, such as GitHub</td></tr>
+        <tr><td>Clone</td><td>Downloading a full copy of a remote repository</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout note">
+    <div class="t"><svg class="i"><use href="#i-info"/></svg>Note</div>
+    <p>Do not memorise these now. Each term gets its own chapter with examples.</p>
+  </div>
+
+  <h3>1.5 Why teams cannot work without it</h3>
+  <ul>
+    <li><b>Collaboration:</b> ten people can work on one codebase at the same time.</li>
+    <li><b>Traceability:</b> every line can be traced to a person, a date and a reason.</li>
+    <li><b>Safety:</b> a mistake is never permanent, because you can return to an earlier commit.</li>
+    <li><b>Experimentation:</b> try a risky idea on a branch and throw it away if it fails.</li>
+    <li><b>Release management:</b> mark exactly which version went to production.</li>
+  </ul>
+
+  <h3>1.6 Common mistakes</h3>
+  <div class="callout warning">
+    <div class="t"><svg class="i"><use href="#i-warn"/></svg>Warning</div>
+    <p><b>Copying folders as backups.</b> A folder copy has no notes, no author and no way to merge. Use commits instead.</p>
+  </div>
+  <ul>
+    <li><b>Thinking version control is only for code.</b> It works for documents, configuration and notebooks too. Very large binary files need extra tools (Git LFS, in Part 5).</li>
+    <li><b>Waiting too long to start.</b> Track the project from day one, not after a problem appears.</li>
+  </ul>
+  <div class="panel recap">
+    <div class="panel-h"><svg class="i"><use href="#i-checkc"/></svg>Quick recap</div>
+    <div class="panel-b">
+      <ul>
+        <li>Version control records every change to your files.</li>
+        <li>Local, centralized and distributed are the three generations.</li>
+        <li>Git is distributed: every clone holds the full history.</li>
+        <li>A commit is a save point; a repository is the project plus its history.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="panel ex">
+    <div class="panel-h"><svg class="i"><use href="#i-task"/></svg>Practice exercise</div>
+    <div class="panel-b">
+      <ul class="tasks">
+        <li><input type="checkbox" data-k="ch1-1" aria-labelledby="t11"><span id="t11">Think of a project from the past year and write down three moments when you wished you could go back.</span></li>
+        <li><input type="checkbox" data-k="ch1-2" aria-labelledby="t12"><span id="t12">For each moment, note what information (who, when, why) would have helped most.</span></li>
+        <li><input type="checkbox" data-k="ch1-3" aria-labelledby="t13"><span id="t13">Keep the list. Git records exactly that information, as Part 2 shows.</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="nextrow"><a class="btn pri" href="#ch2">Next: A short history of Git</a></div>
+</article>

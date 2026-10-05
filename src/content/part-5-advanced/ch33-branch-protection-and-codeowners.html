@@ -1,0 +1,117 @@
+<article class="chapter" id="ch33" data-title="Branch protection and CODEOWNERS" data-part="5" data-no="33">
+  <div class="ch-meta"><span class="chip git">Part 5</span><span class="chip">Chapter 33</span><span>3 min read</span></div>
+  <h2>Branch protection and CODEOWNERS</h2>
+  <p class="lead">Protection rules make sure nothing reaches the main branch without review and passing checks, even by accident.</p>
+
+  <h3>33.1 The problem</h3>
+  <p>Rules in a document are easy to forget. <b>Branch protection</b> turns them into settings that GitHub enforces for everyone, including administrators if you choose.</p>
+
+  <h3>33.2 Common rules</h3>
+  <p>Open <b>Settings</b>, then <b>Branches</b> (or <b>Rules</b>, then <b>Rulesets</b>), and add a rule for <code>main</code>.</p>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Rule</th><th>What it enforces</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Require a pull request</td><td>No direct pushes to <code>main</code></td></tr>
+        <tr><td>Require approvals</td><td>At least one or two people must approve</td></tr>
+        <tr><td>Dismiss stale approvals</td><td>New commits cancel old approvals</td></tr>
+        <tr><td>Require status checks</td><td>Chosen workflows must pass first</td></tr>
+        <tr><td>Require conversation resolution</td><td>All review threads must be resolved</td></tr>
+        <tr><td>Require linear history</td><td>Only squash or rebase merges are allowed</td></tr>
+        <tr><td>Block force pushes</td><td>History cannot be rewritten</td></tr>
+        <tr><td>Block deletions</td><td>The branch cannot be deleted</td></tr>
+        <tr><td>Require signed commits</td><td>Commits must carry a verified signature</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <figure class="fig">
+    <svg role="img" aria-label="What a protected main branch demands" viewBox="0 0 720 166" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="mk10" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path class="arh" d="M0 0L10 5L0 10z"/>
+        </marker>
+      </defs>
+      <rect class="bx bxs stk-o" x="20.0" y="64" width="166.7" height="78" rx="10"/>
+      <text class="ttl" x="103.3" y="94" text-anchor="middle">Your branch</text>
+      <text class="m sm" x="103.3" y="114" text-anchor="middle">Work happens here</text>
+      <rect class="bx bxs" x="276.7" y="64" width="166.7" height="78" rx="10"/>
+      <text class="ttl" x="360.0" y="94" text-anchor="middle">Checks and review</text>
+      <text class="m sm" x="360.0" y="114" text-anchor="middle">Tests pass, approvals</text>
+      <text class="m sm" x="360.0" y="129" text-anchor="middle">given</text>
+      <rect class="bx bxs stk-g" x="533.3" y="64" width="166.7" height="78" rx="10"/>
+      <text class="ttl" x="616.7" y="94" text-anchor="middle">Protected main</text>
+      <text class="m sm" x="616.7" y="114" text-anchor="middle">Merge allowed</text>
+      <path class="ln2" d="M117.3 64 C117.3 18.7 346.0 18.7 346.0 64" marker-end="url(#mk10)"/>
+      <text class="mono" x="231.7" y="24.0" text-anchor="middle">open pull request</text>
+      <path class="ln2" d="M374.0 64 C374.0 18.7 602.7 18.7 602.7 64" marker-end="url(#mk10)"/>
+      <text class="mono" x="488.3" y="24.0" text-anchor="middle">merge</text>
+    </svg>
+    <figcaption>What a protected main branch demands</figcaption>
+  </figure>
+
+  <h3>33.3 Rulesets</h3>
+  <p><b>Rulesets</b> are the newer, more flexible way to do this. They can target several branches or tags with patterns, can apply across an organisation, and can run in an <b>evaluate</b> mode first, which reports what would have been blocked without enforcing anything. Use them when you have more than a couple of rules.</p>
+
+  <h3>33.4 CODEOWNERS</h3>
+  <p>A file named <code>CODEOWNERS</code> assigns people or teams to parts of the codebase. When a pull request touches those files, GitHub asks the owners to review.</p>
+<pre class="code"><code># Everything
+*                  @your-username
+
+# Documentation
+/docs/             @docs-team
+
+# Workflows need an admin's eye
+/.github/workflows/ @your-username</code></pre>
+  <p>Place the file in <code>.github/</code>, the root or <code>docs/</code>. With the rule <b>Require review from Code Owners</b>, no one can merge changes to those files without an owner's approval.</p>
+
+  <h3>33.5 A sensible starting setup</h3>
+  <ul>
+    <li>Require a pull request with one approval.</li>
+    <li>Require the CI check to pass.</li>
+    <li>Block force pushes and deletions.</li>
+    <li>Add a <code>CODEOWNERS</code> file for sensitive paths.</li>
+  </ul>
+
+  <h3>33.6 Common mistakes</h3>
+  <ul>
+    <li><b>Requiring checks that never run.</b> The pull request will wait forever. Make sure the check name matches your workflow job.</li>
+    <li><b>Too strict for a small team.</b> Five required reviewers slows everyone. Match the rules to your team size.</li>
+    <li><b>Letting admins bypass rules routinely.</b> The exception becomes the habit.</li>
+  </ul>
+  <div class="panel recap">
+    <div class="panel-h"><svg class="i"><use href="#i-checkc"/></svg>Quick recap</div>
+    <div class="panel-b">
+      <ul>
+        <li>Protection rules enforce reviews and checks on important branches.</li>
+        <li>Require pull requests, approvals, status checks and no force pushes.</li>
+        <li>Rulesets are the modern, flexible alternative.</li>
+        <li><code>CODEOWNERS</code> routes reviews to the right people.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="panel quiz">
+    <div class="panel-h"><svg class="i"><use href="#i-info"/></svg>Check yourself</div>
+    <div class="panel-b">
+      <div class="q" data-a="1">
+        <p class="qt">1. What does requiring status checks do?</p>
+        <div class="opts">
+          <button type="button" class="opt">Locks the repository</button>
+          <button type="button" class="opt">Blocks merging until chosen workflows pass</button>
+          <button type="button" class="opt">Deletes failing commits</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="panel ex">
+    <div class="panel-h"><svg class="i"><use href="#i-task"/></svg>Practice exercise</div>
+    <div class="panel-b">
+      <ul class="tasks">
+        <li><input type="checkbox" data-k="ch33-1" aria-labelledby="tch33-1"><span id="tch33-1">Protect <code>main</code> in a practice repository so a pull request and a passing check are required.</span></li>
+        <li><input type="checkbox" data-k="ch33-2" aria-labelledby="tch33-2"><span id="tch33-2">Try to push directly to <code>main</code> and read the rejection message.</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="nextrow"><a class="btn pri" href="#ch34">Next: Git hooks</a></div>
+</article>

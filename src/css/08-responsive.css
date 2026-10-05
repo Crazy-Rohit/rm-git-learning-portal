@@ -1,0 +1,19 @@
+/* Mobile drawer layout and reduced-motion preferences. */
+/* mobile */
+@media (max-width:959px){
+  .shell{grid-template-columns:minmax(0,1fr)}
+  .menu-btn{display:inline-flex}
+  .side{position:fixed;top:calc(var(--hh) + env(safe-area-inset-top,0px));left:0;bottom:0;width:min(86vw,320px);max-height:none;z-index:35;transform:translateX(-104%);transition:transform .2s;box-shadow:0 8px 24px rgba(1,4,9,.4)}
+  body.nav-open .side{transform:none}
+  body.nav-open .scrim{display:block;position:fixed;inset:0;z-index:30;background:rgba(1,4,9,.5)}
+  .content{padding:24px 16px 80px}
+  .cover-grid{grid-template-columns:minmax(0,1fr)}
+  .cover h1{font-size:2rem}
+  .fb-row{grid-template-columns:20px minmax(0,1fr) 64px}
+  .fb-row .ms{display:none}
+  .part{grid-template-columns:1fr}.part .big{font-size:48px;grid-row:auto}
+  .md h3 .anchor{display:none}
+  #printBtn span{display:none}
+  .top .brand span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.side,.xp .trk i,.copy{transition:none}}

@@ -1,0 +1,102 @@
+<article class="chapter" id="ch34" data-title="Git hooks" data-part="5" data-no="34">
+  <div class="ch-meta"><span class="chip git">Part 5</span><span class="chip">Chapter 34</span><span>3 min read</span></div>
+  <h2>Git hooks</h2>
+  <p class="lead">Hooks are small scripts that Git runs automatically at key moments, so mistakes are stopped before they reach the team.</p>
+
+  <h3>34.1 What a hook is</h3>
+  <p>A <b>hook</b> is a script that Git starts when something happens, such as just before a commit. If the script exits with an error, Git cancels the action. Hooks live in <code>.git/hooks/</code>.</p>
+<pre class="term"><code><span class="p">$</span> ls .git/hooks
+<span class="o">applypatch-msg.sample  pre-commit.sample  pre-push.sample  commit-msg.sample</span></code></pre>
+  <p>Git ships samples ending in <code>.sample</code>. Remove the suffix to activate one.</p>
+
+  <h3>34.2 Useful hooks</h3>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Hook</th><th>Runs</th><th>Typical use</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>pre-commit</code></td><td>Before a commit is made</td><td>Lint code, block secrets, run fast tests</td></tr>
+        <tr><td><code>commit-msg</code></td><td>After you write a message</td><td>Check message format</td></tr>
+        <tr><td><code>pre-push</code></td><td>Before a push</td><td>Run the full test suite</td></tr>
+        <tr><td><code>post-merge</code></td><td>After a merge</td><td>Reinstall dependencies</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>34.3 A simple pre-commit hook</h3>
+  <p>This script refuses any commit that includes a file called <code>.env</code>.</p>
+<pre class="code"><code>#!/bin/sh
+if git diff --cached --name-only | grep -q '^\.env$'; then
+  echo "Blocked: .env must not be committed."
+  exit 1
+fi</code></pre>
+  <p>Save it as <code>.git/hooks/pre-commit</code> and make it executable.</p>
+<pre class="term"><code><span class="p">$</span> chmod +x .git/hooks/pre-commit
+<span class="p">$</span> git add .env
+<span class="p">$</span> git commit -m "Add settings"
+<span class="o">Blocked: .env must not be committed.</span></code></pre>
+
+  <h3>34.4 Hooks are not shared</h3>
+  <p>Everything inside <code>.git</code> stays on your machine, so teammates do not receive your hooks. Two common ways to share them:</p>
+  <ul>
+    <li>Keep hooks in a folder in the repository and point Git at it: <code>git config core.hooksPath .githooks</code>.</li>
+    <li>Use a hook manager such as the <b>pre-commit</b> framework (Python), <b>Husky</b> (JavaScript) or <b>lefthook</b>.</li>
+  </ul>
+<pre class="code"><code># .pre-commit-config.yaml
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-added-large-files</code></pre>
+<pre class="term"><code><span class="p">$</span> pip install pre-commit
+<span class="p">$</span> pre-commit install</code></pre>
+  <p>From now on those checks run on every commit.</p>
+
+  <h3>34.5 Skipping a hook</h3>
+<pre class="term"><code><span class="p">$</span> git commit --no-verify -m "Emergency fix"</code></pre>
+  <p>Use this rarely. Anyone can bypass local hooks, so important rules should also exist in CI (Chapter 31) and branch protection (Chapter 33).</p>
+
+  <h3>34.6 Common mistakes</h3>
+  <ul>
+    <li><b>Forgetting <code>chmod +x</code>.</b> A hook that is not executable is silently ignored.</li>
+    <li><b>Slow hooks.</b> If a commit takes thirty seconds, people will skip them. Keep <code>pre-commit</code> fast and put long tests in <code>pre-push</code> or CI.</li>
+    <li><b>Relying only on local hooks.</b> They are a convenience, not security.</li>
+  </ul>
+  <div class="panel recap">
+    <div class="panel-h"><svg class="i"><use href="#i-checkc"/></svg>Quick recap</div>
+    <div class="panel-b">
+      <ul>
+        <li>Hooks are scripts Git runs at set moments; a non-zero exit cancels the action.</li>
+        <li><code>pre-commit</code>, <code>commit-msg</code> and <code>pre-push</code> are the most useful.</li>
+        <li>Hooks in <code>.git/hooks</code> are not shared; use <code>core.hooksPath</code> or a hook manager.</li>
+        <li>Back local hooks with CI checks.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="panel quiz">
+    <div class="panel-h"><svg class="i"><use href="#i-info"/></svg>Check yourself</div>
+    <div class="panel-b">
+      <div class="q" data-a="0">
+        <p class="qt">1. A pre-commit hook exits with an error code. What happens?</p>
+        <div class="opts">
+          <button type="button" class="opt">The commit is cancelled</button>
+          <button type="button" class="opt">The commit continues</button>
+          <button type="button" class="opt">The branch is deleted</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="panel ex">
+    <div class="panel-h"><svg class="i"><use href="#i-task"/></svg>Practice exercise</div>
+    <div class="panel-b">
+      <ul class="tasks">
+        <li><input type="checkbox" data-k="ch34-1" aria-labelledby="tch34-1"><span id="tch34-1">Write the <code>.env</code> blocking hook and test it.</span></li>
+        <li><input type="checkbox" data-k="ch34-2" aria-labelledby="tch34-2"><span id="tch34-2">Install the pre-commit framework and run it on all files with <code>pre-commit run --all-files</code>.</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="nextrow"><a class="btn pri" href="#ch35">Next: Reflog and recovery</a></div>
+</article>

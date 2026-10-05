@@ -1,0 +1,129 @@
+<article class="chapter" id="ch30" data-title="Contributing to open source" data-part="4" data-no="30">
+  <div class="ch-meta"><span class="chip git">Part 4</span><span class="chip">Chapter 30</span><span>3 min read</span></div>
+  <h2>Contributing to open source</h2>
+  <p class="lead">Open source runs on small contributions from strangers, and the workflow you have learned is exactly how they are made.</p>
+
+  <h3>30.1 Why contribute</h3>
+  <p>Contributing to open source teaches you to read real code, work with reviewers and communicate in public. Your commits and merged pull requests also become a visible record of your skills on your GitHub profile.</p>
+
+  <h3>30.2 Finding a first project</h3>
+  <ul>
+    <li>Search GitHub issues with the label <code>good first issue</code> or <code>help wanted</code>.</li>
+    <li>Start with tools you already use, and look at their documentation for typos or gaps.</li>
+    <li>Check that the project is alive: recent commits, answered issues, and a <code>CONTRIBUTING.md</code>.</li>
+  </ul>
+
+  <h3>30.3 The complete workflow</h3>
+  <figure class="fig">
+    <svg role="img" aria-label="From first look to merged pull request" viewBox="0 0 720 464" xmlns="http://www.w3.org/2000/svg">
+      <line class="ln" x1="34" y1="36" x2="34" y2="428"/>
+      <circle class="dot-b" cx="34" cy="36" r="15"/>
+      <text class="pill-t" x="34" y="40" text-anchor="middle">1</text>
+      <text class="ttl" x="68" y="33">Read the rules</text>
+      <text class="m" x="68" y="51">README, CONTRIBUTING and code of conduct</text>
+      <circle class="dot-b" cx="34" cy="92" r="15"/>
+      <text class="pill-t" x="34" y="96" text-anchor="middle">2</text>
+      <text class="ttl" x="68" y="89">Pick or open an issue</text>
+      <text class="m" x="68" y="107">Say you would like to work on it and wait for a reply</text>
+      <circle class="dot-b" cx="34" cy="148" r="15"/>
+      <text class="pill-t" x="34" y="152" text-anchor="middle">3</text>
+      <text class="ttl" x="68" y="145">Fork and clone</text>
+      <text class="m" x="68" y="163">Your fork on GitHub, a clone on your computer</text>
+      <circle class="dot-b" cx="34" cy="204" r="15"/>
+      <text class="pill-t" x="34" y="208" text-anchor="middle">4</text>
+      <text class="ttl" x="68" y="201">Create a branch</text>
+      <text class="m" x="68" y="219">One branch per change, named clearly</text>
+      <circle class="dot-b" cx="34" cy="260" r="15"/>
+      <text class="pill-t" x="34" y="264" text-anchor="middle">5</text>
+      <text class="ttl" x="68" y="257">Make the change and test</text>
+      <text class="m" x="68" y="275">Follow the project's style and run its tests</text>
+      <circle class="dot-b" cx="34" cy="316" r="15"/>
+      <text class="pill-t" x="34" y="320" text-anchor="middle">6</text>
+      <text class="ttl" x="68" y="313">Commit and push</text>
+      <text class="m" x="68" y="331">Clear messages, push to your fork</text>
+      <circle class="dot-b" cx="34" cy="372" r="15"/>
+      <text class="pill-t" x="34" y="376" text-anchor="middle">7</text>
+      <text class="ttl" x="68" y="369">Open the pull request</text>
+      <text class="m" x="68" y="387">Describe the change and link the issue</text>
+      <circle class="dot-b" cx="34" cy="428" r="15"/>
+      <text class="pill-t" x="34" y="432" text-anchor="middle">8</text>
+      <text class="ttl" x="68" y="425">Respond to review</text>
+      <text class="m" x="68" y="443">Push fixes until it is approved and merged</text>
+    </svg>
+    <figcaption>From first look to merged pull request</figcaption>
+  </figure>
+<pre class="term"><code><span class="p">$</span> git clone git@github.com:your-username/project.git
+<span class="p">$</span> cd project
+<span class="p">$</span> git remote add upstream https://github.com/owner/project.git
+<span class="p">$</span> git switch -c fix-docs-typo
+<span class="p">$</span> git add docs/install.md
+<span class="p">$</span> git commit -m "Fix typo in installation guide"
+<span class="p">$</span> git push -u origin fix-docs-typo</code></pre>
+
+  <h3>30.4 Small contributions count</h3>
+  <p>You do not need to write a new feature. These are all welcome and valuable:</p>
+  <ul>
+    <li>Correcting documentation, typos and broken links.</li>
+    <li>Adding a missing example.</li>
+    <li>Reproducing a bug and adding details to the issue.</li>
+    <li>Improving tests.</li>
+    <li>Translating text.</li>
+  </ul>
+
+  <h3>30.5 Good etiquette</h3>
+  <ul>
+    <li>Read the existing issues and pull requests first, so you do not duplicate work.</li>
+    <li>Ask before starting a large change.</li>
+    <li>Keep pull requests small and on topic.</li>
+    <li>Be patient. Maintainers are often volunteers.</li>
+    <li>Say thank you, and accept feedback gracefully.</li>
+  </ul>
+
+  <h3>30.6 When your pull request is not accepted</h3>
+  <p>It happens, and it is not personal. The project may have a different direction. Ask what would make the change acceptable, learn from it, and try another issue.</p>
+
+  <h3>30.7 Becoming a maintainer</h3>
+  <p>Contributors who help regularly are sometimes invited to review and merge. As a maintainer, you will triage issues, review pull requests and keep documentation current, which makes your GitHub activity richer and more visible.</p>
+
+  <h3>30.8 Common mistakes</h3>
+  <ul>
+    <li><b>Opening a pull request without reading the contribution guide.</b> It may be closed quickly.</li>
+    <li><b>One giant pull request.</b> Split it up.</li>
+    <li><b>Working on <code>main</code> in your fork.</b> Always use a branch.</li>
+  </ul>
+  <div class="panel recap">
+    <div class="panel-h"><svg class="i"><use href="#i-checkc"/></svg>Quick recap</div>
+    <div class="panel-b">
+      <ul>
+        <li>Look for <code>good first issue</code> labels and active projects.</li>
+        <li>Fork, clone, branch, change, push and open a pull request.</li>
+        <li>Documentation and test improvements are real contributions.</li>
+        <li>Be patient and respectful with maintainers.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="panel quiz">
+    <div class="panel-h"><svg class="i"><use href="#i-info"/></svg>Check yourself</div>
+    <div class="panel-b">
+      <div class="q" data-a="1">
+        <p class="qt">1. Where should you make your changes in a fork?</p>
+        <div class="opts">
+          <button type="button" class="opt">Directly on main</button>
+          <button type="button" class="opt">On a new branch</button>
+          <button type="button" class="opt">Inside the .git folder</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="panel ex">
+    <div class="panel-h"><svg class="i"><use href="#i-task"/></svg>Practice exercise</div>
+    <div class="panel-b">
+      <ul class="tasks">
+        <li><input type="checkbox" data-k="ch30-1" aria-labelledby="tch30-1"><span id="tch30-1">Find an open-source project with a <code>good first issue</code> label that interests you.</span></li>
+        <li><input type="checkbox" data-k="ch30-2" aria-labelledby="tch30-2"><span id="tch30-2">Read its <code>CONTRIBUTING.md</code> and write down the steps it asks for.</span></li>
+        <li><input type="checkbox" data-k="ch30-3" aria-labelledby="tch30-3"><span id="tch30-3">Send a small documentation fix as a pull request.</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="nextrow"><a class="btn pri" href="#ch31">Next: GitHub Actions</a></div>
+</article>

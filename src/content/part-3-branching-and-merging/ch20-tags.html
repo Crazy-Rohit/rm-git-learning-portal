@@ -1,0 +1,126 @@
+<article class="chapter" id="ch20" data-title="Tags" data-part="3" data-no="20">
+  <div class="ch-meta"><span class="chip git">Part 3</span><span class="chip">Chapter 20</span><span>3 min read</span></div>
+  <h2>Tags</h2>
+  <p class="lead">A tag is a permanent name for one commit, usually used to mark a release such as version 1.0.</p>
+
+  <h3>20.1 Branches move, tags stay</h3>
+  <p>A branch name follows new commits. A <b>tag</b> always points to the same commit, which makes it ideal for marking releases like <code>v1.0.0</code>.</p>
+
+  <h3>20.2 Two kinds of tags</h3>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Type</th><th>What it is</th><th>When to use</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Lightweight</td><td>A simple name pointing at a commit</td><td>Quick personal bookmarks</td></tr>
+        <tr><td>Annotated</td><td>A full object with tagger, date and message</td><td>Releases you share</td></tr>
+      </tbody>
+    </table>
+  </div>
+<pre class="term"><code><span class="p">$</span> git tag v1.0.0-test
+<span class="p">$</span> git tag -a v1.0.0 -m "First stable release"</code></pre>
+  <p>Prefer annotated tags for anything public.</p>
+
+  <h3>20.3 Working with tags</h3>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Command</th><th>What it does</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>git tag</code></td><td>List tags</td></tr>
+        <tr><td><code>git tag -a v1.1.0 &lt;hash&gt; -m "msg"</code></td><td>Tag an older commit</td></tr>
+        <tr><td><code>git show v1.0.0</code></td><td>See the tag and its commit</td></tr>
+        <tr><td><code>git switch --detach v1.0.0</code></td><td>Look at the project at that version</td></tr>
+        <tr><td><code>git tag -d v1.0.0-test</code></td><td>Delete a local tag</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <figure class="fig">
+    <svg role="img" aria-label="Tags mark fixed points while main moves on" viewBox="0 0 720 114" xmlns="http://www.w3.org/2000/svg">
+      <path class="eg eg-b" d="M195.0 54 L305.0 54"/>
+      <path class="eg eg-b" d="M305.0 54 L415.0 54"/>
+      <path class="eg eg-b" d="M415.0 54 L525.0 54"/>
+      <circle class="dot-b" cx="195.0" cy="54" r="11"/>
+      <text x="195.0" y="86" text-anchor="middle" class="sm">C1</text>
+      <circle class="dot-b" cx="305.0" cy="54" r="11"/>
+      <text x="305.0" y="86" text-anchor="middle" class="sm">C2</text>
+      <circle class="dot-b" cx="415.0" cy="54" r="11"/>
+      <text x="415.0" y="86" text-anchor="middle" class="sm">C3</text>
+      <circle class="dot-b" cx="525.0" cy="54" r="11"/>
+      <text x="525.0" y="86" text-anchor="middle" class="sm">C4</text>
+      <rect class="pl-o" x="272.0" y="14" width="66" height="22" rx="11"/>
+      <text class="pill-t" x="305.0" y="29" text-anchor="middle">v1.0.0</text>
+      <line class="ln2" x1="305.0" y1="36" x2="305.0" y2="43"/>
+      <rect class="pl-b" x="500.0" y="14" width="50" height="22" rx="11"/>
+      <text class="pill-t" x="525.0" y="29" text-anchor="middle">main</text>
+      <line class="ln2" x1="525.0" y1="36" x2="525.0" y2="43"/>
+    </svg>
+    <figcaption>Tags mark fixed points while main moves on</figcaption>
+  </figure>
+
+  <h3>20.4 Sharing tags</h3>
+  <p><code>git push</code> does not send tags by default. You send them on purpose.</p>
+<pre class="term"><code><span class="p">$</span> git push origin v1.0.0
+<span class="p">$</span> git push origin --tags
+<span class="p">$</span> git push origin --delete v1.0.0</code></pre>
+
+  <h3>20.5 Version numbers</h3>
+  <p>Most projects follow <b>semantic versioning</b>: <code>MAJOR.MINOR.PATCH</code>.</p>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Part</th><th>Increase when</th><th>Example</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>MAJOR</td><td>You make a breaking change</td><td>1.4.2 to 2.0.0</td></tr>
+        <tr><td>MINOR</td><td>You add a feature that stays compatible</td><td>1.4.2 to 1.5.0</td></tr>
+        <tr><td>PATCH</td><td>You fix a bug</td><td>1.4.2 to 1.4.3</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>On GitHub, a tag can become a <b>Release</b>, a page with notes and downloadable files for that version.</p>
+
+  <h3>20.6 Common mistakes</h3>
+  <ul>
+    <li><b>Forgetting to push tags.</b> Teammates cannot see them.</li>
+    <li><b>Moving a published tag.</b> Others may already depend on it. Create a new tag instead.</li>
+    <li><b>Using lightweight tags for releases.</b> They carry no message or date.</li>
+  </ul>
+  <div class="panel recap">
+    <div class="panel-h"><svg class="i"><use href="#i-checkc"/></svg>Quick recap</div>
+    <div class="panel-b">
+      <ul>
+        <li>A tag names one commit permanently.</li>
+        <li>Use annotated tags (<code>-a</code>) for releases.</li>
+        <li>Push tags explicitly with <code>git push origin &lt;tag&gt;</code> or <code>--tags</code>.</li>
+        <li>Semantic versioning uses MAJOR.MINOR.PATCH.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="panel quiz">
+    <div class="panel-h"><svg class="i"><use href="#i-info"/></svg>Check yourself</div>
+    <div class="panel-b">
+      <div class="q" data-a="1">
+        <p class="qt">1. Which version number comes after 1.4.2 when you add a compatible new feature?</p>
+        <div class="opts">
+          <button type="button" class="opt">2.0.0</button>
+          <button type="button" class="opt">1.5.0</button>
+          <button type="button" class="opt">1.4.3</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="panel ex">
+    <div class="panel-h"><svg class="i"><use href="#i-task"/></svg>Practice exercise</div>
+    <div class="panel-b">
+      <ul class="tasks">
+        <li><input type="checkbox" data-k="ch20-1" aria-labelledby="tch20-1"><span id="tch20-1">Create an annotated tag <code>v0.1.0</code> on your latest commit.</span></li>
+        <li><input type="checkbox" data-k="ch20-2" aria-labelledby="tch20-2"><span id="tch20-2">Run <code>git show v0.1.0</code> and read the output.</span></li>
+        <li><input type="checkbox" data-k="ch20-3" aria-labelledby="tch20-3"><span id="tch20-3">Make another commit, then confirm the tag still points to the older commit.</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="nextrow"><a class="btn pri" href="#ch21">Next: Remotes and cloning</a></div>
+</article>

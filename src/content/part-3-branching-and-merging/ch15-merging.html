@@ -1,0 +1,197 @@
+<article class="chapter" id="ch15" data-title="Merging" data-part="3" data-no="15">
+  <div class="ch-meta"><span class="chip git">Part 3</span><span class="chip">Chapter 15</span><span>5 min read</span></div>
+  <h2>Merging</h2>
+  <p class="lead">Merging brings the work of one branch into another, and Git chooses between two methods depending on how the history looks.</p>
+
+  <h3>15.1 The basic command</h3>
+  <p>Move to the branch that should receive the work, then merge the other one in.</p>
+<pre class="term"><code><span class="p">$</span> git switch main
+<span class="p">$</span> git merge feature-login</code></pre>
+  <p>The rule to remember: you merge <b>into</b> the branch you are standing on.</p>
+
+  <h3>15.2 Fast-forward merge</h3>
+  <p>If <code>main</code> has not moved since you branched, Git simply slides the <code>main</code> pointer forward. No new commit is needed.</p>
+  <figure class="fig">
+    <svg role="img" aria-label="Before: feature-login is ahead of main" viewBox="0 0 720 198" xmlns="http://www.w3.org/2000/svg">
+      <path class="eg eg-b" d="M195.0 54 L305.0 54"/>
+      <path class="eg eg-p" d="M305.0 54 C360.0 54 360.0 138 415.0 138"/>
+      <path class="eg eg-p" d="M415.0 138 L525.0 138"/>
+      <circle class="dot-b" cx="195.0" cy="54" r="11"/>
+      <text x="195.0" y="86" text-anchor="middle" class="sm">C1</text>
+      <circle class="dot-b" cx="305.0" cy="54" r="11"/>
+      <text x="305.0" y="86" text-anchor="middle" class="sm">C2</text>
+      <circle class="dot-p" cx="415.0" cy="138" r="11"/>
+      <text x="415.0" y="170" text-anchor="middle" class="sm">C3</text>
+      <circle class="dot-p" cx="525.0" cy="138" r="11"/>
+      <text x="525.0" y="170" text-anchor="middle" class="sm">C4</text>
+      <rect class="pl-b" x="280.0" y="14" width="50" height="22" rx="11"/>
+      <text class="pill-t" x="305.0" y="29" text-anchor="middle">main</text>
+      <line class="ln2" x1="305.0" y1="36" x2="305.0" y2="43"/>
+      <rect class="pl-p" x="464.0" y="98" width="122" height="22" rx="11"/>
+      <text class="pill-t" x="525.0" y="113" text-anchor="middle">feature-login</text>
+      <line class="ln2" x1="525.0" y1="120" x2="525.0" y2="127"/>
+    </svg>
+    <figcaption>Before: feature-login is ahead of main</figcaption>
+  </figure>
+  <figure class="fig">
+    <svg role="img" aria-label="After a fast-forward merge: main simply moved to C4" viewBox="0 0 720 140" xmlns="http://www.w3.org/2000/svg">
+      <path class="eg eg-b" d="M195.0 80 L305.0 80"/>
+      <path class="eg eg-b" d="M305.0 80 L415.0 80"/>
+      <path class="eg eg-b" d="M415.0 80 L525.0 80"/>
+      <circle class="dot-b" cx="195.0" cy="80" r="11"/>
+      <text x="195.0" y="112" text-anchor="middle" class="sm">C1</text>
+      <circle class="dot-b" cx="305.0" cy="80" r="11"/>
+      <text x="305.0" y="112" text-anchor="middle" class="sm">C2</text>
+      <circle class="dot-b" cx="415.0" cy="80" r="11"/>
+      <text x="415.0" y="112" text-anchor="middle" class="sm">C3</text>
+      <circle class="dot-b" cx="525.0" cy="80" r="11"/>
+      <text x="525.0" y="112" text-anchor="middle" class="sm">C4</text>
+      <rect class="pl-b" x="500.0" y="40" width="50" height="22" rx="11"/>
+      <text class="pill-t" x="525.0" y="55" text-anchor="middle">main</text>
+      <line class="ln2" x1="525.0" y1="62" x2="525.0" y2="69"/>
+      <rect class="pl-b" x="500.0" y="14" width="50" height="22" rx="11"/>
+      <text class="pill-t" x="525.0" y="29" text-anchor="middle">HEAD</text>
+      <line class="ln2" x1="525.0" y1="36" x2="525.0" y2="69"/>
+    </svg>
+    <figcaption>After a fast-forward merge: main simply moved to C4</figcaption>
+  </figure>
+<pre class="term"><code><span class="p">$</span> git merge feature-login
+<span class="o">Updating 3f2a9c1..b81e6d2</span>
+<span class="o">Fast-forward</span>
+<span class="o"> login.py | 12 ++++++++++++</span>
+<span class="o"> 1 file changed, 12 insertions(+)</span></code></pre>
+
+  <h3>15.3 Three-way merge</h3>
+  <p>If both branches have new commits, a simple slide is impossible. Git compares three snapshots: the common ancestor and the two branch tips. It then creates a <b>merge commit</b> with two parents.</p>
+  <figure class="fig">
+    <svg role="img" aria-label="Before: main and the feature have both moved on" viewBox="0 0 720 198" xmlns="http://www.w3.org/2000/svg">
+      <path class="eg eg-b" d="M195.0 54 L305.0 54"/>
+      <path class="eg eg-b" d="M305.0 54 L525.0 54"/>
+      <path class="eg eg-p" d="M305.0 54 C360.0 54 360.0 138 415.0 138"/>
+      <path class="eg eg-p" d="M415.0 138 L525.0 138"/>
+      <circle class="dot-b" cx="195.0" cy="54" r="11"/>
+      <text x="195.0" y="86" text-anchor="middle" class="sm">C1</text>
+      <circle class="dot-b" cx="305.0" cy="54" r="11"/>
+      <text x="305.0" y="86" text-anchor="middle" class="sm">C2</text>
+      <circle class="dot-b" cx="525.0" cy="54" r="11"/>
+      <text x="525.0" y="86" text-anchor="middle" class="sm">C5</text>
+      <circle class="dot-p" cx="415.0" cy="138" r="11"/>
+      <text x="415.0" y="170" text-anchor="middle" class="sm">C3</text>
+      <circle class="dot-p" cx="525.0" cy="138" r="11"/>
+      <text x="525.0" y="170" text-anchor="middle" class="sm">C4</text>
+      <rect class="pl-b" x="500.0" y="14" width="50" height="22" rx="11"/>
+      <text class="pill-t" x="525.0" y="29" text-anchor="middle">main</text>
+      <line class="ln2" x1="525.0" y1="36" x2="525.0" y2="43"/>
+      <rect class="pl-p" x="488.0" y="98" width="74" height="22" rx="11"/>
+      <text class="pill-t" x="525.0" y="113" text-anchor="middle">feature</text>
+      <line class="ln2" x1="525.0" y1="120" x2="525.0" y2="127"/>
+    </svg>
+    <figcaption>Before: main and the feature have both moved on</figcaption>
+  </figure>
+  <figure class="fig">
+    <svg role="img" aria-label="After: the merge commit M joins both lines" viewBox="0 0 720 224" xmlns="http://www.w3.org/2000/svg">
+      <path class="eg eg-b" d="M140.0 80 L250.0 80"/>
+      <path class="eg eg-b" d="M250.0 80 L470.0 80"/>
+      <path class="eg eg-p" d="M250.0 80 C305.0 80 305.0 164 360.0 164"/>
+      <path class="eg eg-p" d="M360.0 164 L470.0 164"/>
+      <path class="eg eg-b" d="M470.0 80 L580.0 80"/>
+      <path class="eg eg-p" d="M470.0 164 C525.0 164 525.0 80 580.0 80"/>
+      <circle class="dot-b" cx="140.0" cy="80" r="11"/>
+      <text x="140.0" y="112" text-anchor="middle" class="sm">C1</text>
+      <circle class="dot-b" cx="250.0" cy="80" r="11"/>
+      <text x="250.0" y="112" text-anchor="middle" class="sm">C2</text>
+      <circle class="dot-b" cx="470.0" cy="80" r="11"/>
+      <text x="470.0" y="112" text-anchor="middle" class="sm">C5</text>
+      <circle class="dot-p" cx="360.0" cy="164" r="11"/>
+      <text x="360.0" y="196" text-anchor="middle" class="sm">C3</text>
+      <circle class="dot-p" cx="470.0" cy="164" r="11"/>
+      <text x="470.0" y="196" text-anchor="middle" class="sm">C4</text>
+      <circle class="dot-b" cx="580.0" cy="80" r="11"/>
+      <text x="580.0" y="112" text-anchor="middle" class="sm">M</text>
+      <rect class="pl-b" x="555.0" y="40" width="50" height="22" rx="11"/>
+      <text class="pill-t" x="580.0" y="55" text-anchor="middle">main</text>
+      <line class="ln2" x1="580.0" y1="62" x2="580.0" y2="69"/>
+      <rect class="pl-b" x="555.0" y="14" width="50" height="22" rx="11"/>
+      <text class="pill-t" x="580.0" y="29" text-anchor="middle">HEAD</text>
+      <line class="ln2" x1="580.0" y1="36" x2="580.0" y2="69"/>
+    </svg>
+    <figcaption>After: the merge commit M joins both lines</figcaption>
+  </figure>
+<pre class="term"><code><span class="p">$</span> git merge feature-login
+<span class="o">Merge made by the 'ort' strategy.</span>
+<span class="o"> login.py | 12 ++++++++++++</span>
+<span class="o"> 1 file changed, 12 insertions(+)</span></code></pre>
+  <p>Git opens your editor with a default message such as "Merge branch 'feature-login'". Save and close to finish.</p>
+
+  <h3>15.4 Controlling the style of merge</h3>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Option</th><th>Effect</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>--no-ff</code></td><td>Always create a merge commit, even when a fast-forward is possible</td></tr>
+        <tr><td><code>--ff-only</code></td><td>Refuse to merge unless a fast-forward is possible</td></tr>
+        <tr><td><code>--squash</code></td><td>Combine all branch changes into one staged change, then you commit it yourself</td></tr>
+        <tr><td><code>--abort</code></td><td>Cancel a merge that is in progress</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Teams choose between them. <code>--no-ff</code> keeps a visible record of each feature. <code>--squash</code> keeps <code>main</code> tidy with one commit per feature. GitHub offers the same three choices on pull requests (Chapter 25).</p>
+
+  <h3>15.5 After merging: clean up</h3>
+<pre class="term"><code><span class="p">$</span> git branch -d feature-login
+<span class="o">Deleted branch feature-login (was b81e6d2).</span></code></pre>
+  <p>The commits are safe, because they are now part of <code>main</code>. Only the label is removed.</p>
+
+  <h3>15.6 Common mistakes</h3>
+  <ul>
+    <li><b>Merging in the wrong direction.</b> Check which branch you are on with <code>git status</code>.</li>
+    <li><b>Merging with uncommitted changes.</b> Commit or stash first.</li>
+    <li><b>Never deleting old branches.</b> They clutter the list. Delete them once merged.</li>
+  </ul>
+  <div class="panel recap">
+    <div class="panel-h"><svg class="i"><use href="#i-checkc"/></svg>Quick recap</div>
+    <div class="panel-b">
+      <ul>
+        <li>You merge a branch into the one you are on: <code>git merge &lt;branch&gt;</code>.</li>
+        <li>Fast-forward just moves the pointer; a three-way merge makes a merge commit.</li>
+        <li><code>--no-ff</code>, <code>--ff-only</code> and <code>--squash</code> change how the history looks.</li>
+        <li>Delete merged branches with <code>git branch -d</code>.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="panel quiz">
+    <div class="panel-h"><svg class="i"><use href="#i-info"/></svg>Check yourself</div>
+    <div class="panel-b">
+      <div class="q" data-a="1">
+        <p class="qt">1. When can Git do a fast-forward merge?</p>
+        <div class="opts">
+          <button type="button" class="opt">When there are conflicts</button>
+          <button type="button" class="opt">When the target branch has no new commits since the branch was created</button>
+          <button type="button" class="opt">Only on GitHub</button>
+        </div>
+        <p class="qe" hidden>Then Git just moves the pointer forward.</p>
+      </div>
+      <div class="q" data-a="1">
+        <p class="qt">2. A merge commit has how many parents?</p>
+        <div class="opts">
+          <button type="button" class="opt">One</button>
+          <button type="button" class="opt">Two</button>
+          <button type="button" class="opt">Zero</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="panel ex">
+    <div class="panel-h"><svg class="i"><use href="#i-task"/></svg>Practice exercise</div>
+    <div class="panel-b">
+      <ul class="tasks">
+        <li><input type="checkbox" data-k="ch15-1" aria-labelledby="tch15-1"><span id="tch15-1">Create a branch, add a commit, and fast-forward merge it into <code>main</code>.</span></li>
+        <li><input type="checkbox" data-k="ch15-2" aria-labelledby="tch15-2"><span id="tch15-2">Make a commit on <code>main</code> and another on a branch, then merge to create a merge commit.</span></li>
+        <li><input type="checkbox" data-k="ch15-3" aria-labelledby="tch15-3"><span id="tch15-3">Draw the history with <code>git log --graph --oneline</code>.</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="nextrow"><a class="btn pri" href="#ch16">Next: Merge conflicts</a></div>
+</article>

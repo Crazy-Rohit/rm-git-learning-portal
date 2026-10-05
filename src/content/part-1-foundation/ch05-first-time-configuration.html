@@ -1,0 +1,103 @@
+<article class="chapter" id="ch5" data-title="First-time configuration" data-part="1" data-no="5">
+  <div class="ch-meta"><span class="chip git">Part 1</span><span class="chip">Chapter 5</span><span>6 min read</span></div>
+  <h2>First-time configuration</h2>
+  <p class="lead">Before your first commit you must tell Git who you are, because every commit records its author's name and email.</p>
+
+  <h3>5.1 The three configuration levels</h3>
+  <p>Git reads settings from three places. A more specific level overrides a more general one.</p>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Level</th><th>Flag</th><th>Applies to</th><th>Typical use</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>System</td><td><code>--system</code></td><td>Every user on the computer</td><td>Rarely changed</td></tr>
+        <tr><td>Global</td><td><code>--global</code></td><td>All repositories of your user account</td><td>Your name, email and editor</td></tr>
+        <tr><td>Local</td><td><code>--local</code> (default)</td><td>One repository only</td><td>A different email for one project</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>5.2 Build your setup commands</h3>
+  <p>Fill in your details and the commands below update as you type. Nothing is sent anywhere; this runs in your browser. Copy the result into your terminal.</p>
+  <div class="builder">
+    <div class="panel-h"><svg class="i"><use href="#i-list"/></svg>Setup command builder</div>
+    <div class="panel-b">
+      <div class="fields">
+        <div><label for="cfgName">Your name</label><input id="cfgName" type="text" placeholder="Your Name" autocomplete="off"></div>
+        <div><label for="cfgEmail">GitHub email</label><input id="cfgEmail" type="email" placeholder="you@example.com" autocomplete="off"></div>
+        <div><label for="cfgEditor">Editor</label><select id="cfgEditor"><option value="vscode">Visual Studio Code</option><option value="nano">Nano</option><option value="vim">Vim</option></select></div>
+        <div><label for="cfgOs">Operating system</label><select id="cfgOs"><option value="windows">Windows</option><option value="unix">macOS or Linux</option></select></div>
+      </div>
+      
+<pre class="term"><code id="cfgOut"></code></pre>
+
+    </div>
+  </div>
+  <div class="callout important">
+    <div class="t"><svg class="i"><use href="#i-imp"/></svg>Important</div>
+    <p>Use the same email address that you registered on GitHub. If the emails differ, GitHub does not link your commits to your profile and they do not appear in your contribution graph.</p>
+  </div>
+  <ul>
+    <li><b>Default branch.</b> Older Git versions named the first branch <code>master</code>. GitHub and most teams now use <code>main</code>; the command above makes every new repository start on it.</li>
+    <li><b>Line endings.</b> Windows ends lines with two hidden characters, macOS and Linux use one. The <code>core.autocrlf</code> setting stops this from creating noisy differences in mixed teams.</li>
+  </ul>
+
+  <h3>5.3 Check your settings</h3>
+<pre class="term"><code><span class="p">$</span> git config --list
+<span class="o">user.name=Your Name
+user.email=you@example.com
+init.defaultbranch=main
+core.editor=code --wait</span>
+
+<span class="c"># read a single value</span>
+<span class="p">$</span> git config user.name
+<span class="o">Your Name</span></code></pre>
+
+  <p>Settings live in a plain text file called <code>.gitconfig</code> in your home folder. You can open it in an editor and change values by hand.</p>
+
+  <h3>5.4 Time-saving aliases</h3>
+  <p>An alias is a short name for a longer command. Add these later, once you are comfortable.</p>
+<pre class="term"><code><span class="p">$</span> git config --global alias.st status
+<span class="p">$</span> git config --global alias.co checkout
+<span class="p">$</span> git config --global alias.br branch
+<span class="p">$</span> git config --global alias.lg "log --oneline --graph --all"</code></pre>
+
+  <p>After this, <code>git st</code> does the same as <code>git status</code>.</p>
+
+  <h3>5.5 Common mistakes</h3>
+  <ul>
+    <li><b>Skipping the identity step.</b> Git may refuse to commit, or guess a wrong name and email from your computer.</li>
+    <li><b>Forgetting quotes</b> around a name with a space, such as <code>"Your Name"</code>.</li>
+  </ul>
+  <div class="callout warning">
+    <div class="t"><svg class="i"><use href="#i-warn"/></svg>Warning</div>
+    <p>Commit emails are public in a public repository. If you do not want your real address exposed, use the private no-reply address from your GitHub email settings.</p>
+  </div>
+  <div class="panel recap">
+    <div class="panel-h"><svg class="i"><use href="#i-checkc"/></svg>Quick recap</div>
+    <div class="panel-b">
+      <ul>
+        <li><code>user.name</code> and <code>user.email</code> are mandatory; set them once with <code>--global</code>.</li>
+        <li>Set <code>init.defaultBranch main</code> so new repositories start on <code>main</code>.</li>
+        <li>Configure an editor and line endings for your operating system.</li>
+        <li><code>git config --list</code> shows everything Git currently knows about you.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="panel ex">
+    <div class="panel-h"><svg class="i"><use href="#i-task"/></svg>Practice exercise</div>
+    <div class="panel-b">
+      <ul class="tasks">
+        <li><input type="checkbox" data-k="ch5-1" aria-labelledby="t51"><span id="t51">Set your name and email, matching your GitHub account.</span></li>
+        <li><input type="checkbox" data-k="ch5-2" aria-labelledby="t52"><span id="t52">Set the default branch to <code>main</code> and choose your editor.</span></li>
+        <li><input type="checkbox" data-k="ch5-3" aria-labelledby="t53"><span id="t53">Run <code>git config --list</code> and check every value.</span></li>
+        <li><input type="checkbox" data-k="ch5-4" aria-labelledby="t54"><span id="t54">Create the <code>git lg</code> alias. You will use it in Part 2 to view history.</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="callout note">
+    <div class="t"><svg class="i"><use href="#i-info"/></svg>Part 1 complete</div>
+    <p>Next up is Part 2: Git Basics, where you create your first repository and make your first commits.</p>
+  </div>
+</article>

@@ -1,0 +1,120 @@
+<article class="chapter" id="ch32" data-title="Actions in practice" data-part="5" data-no="32">
+  <div class="ch-meta"><span class="chip git">Part 5</span><span class="chip">Chapter 32</span><span>3 min read</span></div>
+  <h2>Actions in practice</h2>
+  <p class="lead">Matrices, secrets, caching and schedules turn a simple workflow into a dependable pipeline.</p>
+
+  <h3>32.1 Test on several versions: matrix</h3>
+  <p>A <b>matrix</b> runs the same job many times with different values.</p>
+<pre class="code"><code>jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: pytest</code></pre>
+  <p>Three parallel jobs appear, one per version.</p>
+
+  <h3>32.2 Secrets</h3>
+  <p>Never write passwords or API keys in a workflow file. Store them under <b>Settings</b>, then <b>Secrets and variables</b>, then <b>Actions</b>, and read them in the workflow.</p>
+<pre class="code"><code>steps:
+  - run: ./deploy.sh
+    env:
+      API_TOKEN: ${{ secrets.API_TOKEN }}</code></pre>
+  <p>GitHub hides secret values in the logs. Secrets are not passed to workflows triggered from forks, which protects you from malicious pull requests.</p>
+
+  <h3>32.3 Caching dependencies</h3>
+  <p>Many setup actions can cache downloads and make runs faster.</p>
+<pre class="code"><code>- uses: actions/setup-python@v5
+  with:
+    python-version: "3.12"
+    cache: pip</code></pre>
+
+  <h3>32.4 Other triggers</h3>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Trigger</th><th>Starts the workflow when...</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>push</code></td><td>Commits are pushed</td></tr>
+        <tr><td><code>pull_request</code></td><td>A pull request is opened or updated</td></tr>
+        <tr><td><code>schedule</code></td><td>A cron time arrives</td></tr>
+        <tr><td><code>workflow_dispatch</code></td><td>Someone clicks Run workflow</td></tr>
+        <tr><td><code>release</code></td><td>A release is published</td></tr>
+      </tbody>
+    </table>
+  </div>
+<pre class="code"><code>on:
+  schedule:
+    - cron: "0 3 * * 1"
+  workflow_dispatch:</code></pre>
+  <p>That runs every Monday at 03:00 UTC, and also gives you a manual <b>Run workflow</b> button.</p>
+
+  <h3>32.5 Artifacts: keep the output</h3>
+<pre class="code"><code>- uses: actions/upload-artifact@v4
+  with:
+    name: test-report
+    path: reports/</code></pre>
+  <p>Artifacts are files saved with a run, such as test reports or built packages, which you can download from the run page.</p>
+
+  <h3>32.6 Deploying to GitHub Pages</h3>
+<pre class="code"><code>permissions:
+  contents: read
+  pages: write
+  id-token: write</code></pre>
+  <p>The permissions block gives the workflow's built-in token only what it needs. Combined with the official Pages actions, it publishes your site after each push to <code>main</code>.</p>
+
+  <h3>32.7 Writing safe workflows</h3>
+  <ul>
+    <li>Give the token the <b>least</b> permissions with a <code>permissions:</code> block.</li>
+    <li>Treat pull requests from forks as untrusted. Do not run their code with access to secrets.</li>
+    <li>Trust actions from verified creators, and pin important third-party actions to a full commit hash.</li>
+  </ul>
+
+  <h3>32.8 Common mistakes</h3>
+  <ul>
+    <li><b>Printing secrets in logs.</b> Even masked values can leak when transformed.</li>
+    <li><b>Using <code>pull_request_target</code> carelessly.</b> It can expose secrets to untrusted code.</li>
+    <li><b>Very slow workflows.</b> Cache, run jobs in parallel and test only what changed.</li>
+  </ul>
+  <div class="panel recap">
+    <div class="panel-h"><svg class="i"><use href="#i-checkc"/></svg>Quick recap</div>
+    <div class="panel-b">
+      <ul>
+        <li>A <code>matrix</code> repeats a job across versions or systems.</li>
+        <li>Store credentials as secrets, never in the YAML.</li>
+        <li>Triggers include push, pull request, schedule and manual runs.</li>
+        <li>Limit permissions and treat fork pull requests as untrusted.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="panel quiz">
+    <div class="panel-h"><svg class="i"><use href="#i-info"/></svg>Check yourself</div>
+    <div class="panel-b">
+      <div class="q" data-a="1">
+        <p class="qt">1. Where should an API key used by a workflow be stored?</p>
+        <div class="opts">
+          <button type="button" class="opt">In the YAML file</button>
+          <button type="button" class="opt">In repository secrets</button>
+          <button type="button" class="opt">In the README</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="panel ex">
+    <div class="panel-h"><svg class="i"><use href="#i-task"/></svg>Practice exercise</div>
+    <div class="panel-b">
+      <ul class="tasks">
+        <li><input type="checkbox" data-k="ch32-1" aria-labelledby="tch32-1"><span id="tch32-1">Turn your CI workflow into a matrix across two language versions.</span></li>
+        <li><input type="checkbox" data-k="ch32-2" aria-labelledby="tch32-2"><span id="tch32-2">Add <code>workflow_dispatch</code> and run the workflow manually.</span></li>
+        <li><input type="checkbox" data-k="ch32-3" aria-labelledby="tch32-3"><span id="tch32-3">Add a secret and print only whether it exists, never its value.</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="nextrow"><a class="btn pri" href="#ch33">Next: Branch protection and CODEOWNERS</a></div>
+</article>

@@ -1,0 +1,91 @@
+<article class="chapter" id="ch2" data-title="A short history of Git" data-part="1" data-no="2">
+  <div class="ch-meta"><span class="chip git">Part 1</span><span class="chip">Chapter 2</span><span>5 min read</span></div>
+  <h2>A short history of Git</h2>
+  <p class="lead">Git was created in April 2005 by Linus Torvalds, the creator of Linux, because the Linux kernel project suddenly lost the version control tool it depended on.</p>
+
+  <h3>2.1 Before Git: the BitKeeper story</h3>
+  <p>The Linux kernel is one of the largest collaborative software projects in the world. Until 2002 its changes were passed around as patches and archives, which did not scale. From 2002 the kernel team used a proprietary distributed tool called <b>BitKeeper</b>, offered to the project free of charge.</p>
+  <p>In April 2005 the relationship broke down. The company behind BitKeeper withdrew the free licence after a dispute about reverse-engineering its protocol. The kernel developers now had thousands of contributors and no tool.</p>
+
+  <h3>2.2 A tool built in days</h3>
+  <p>Torvalds found no existing tool that met his goals, so he wrote a new one. His requirements:</p>
+  <ul>
+    <li><b>Speed:</b> applying a patch should take seconds, even for a huge project.</li>
+    <li><b>Simple design:</b> a small, understandable core.</li>
+    <li><b>Parallel work:</b> thousands of branches that merge easily.</li>
+    <li><b>Fully distributed:</b> no single central server required.</li>
+    <li><b>Integrity:</b> impossible to change history without anyone noticing.</li>
+  </ul>
+  <p>A first version worked within days, and the kernel began using Git for its own development within about two weeks. The name "git" is British slang for an unpleasant person; Torvalds has joked that he names his projects after himself. Junio Hamano has maintained Git since July 2005, and Git 1.0 was released in December 2005.</p>
+
+  <h3>2.3 Timeline of milestones</h3>
+  <figure class="fig">
+    <svg viewBox="0 0 720 410" role="img" aria-label="Timeline from 1982 to 2020 of version control and Git milestones">
+      <line class="ln" x1="46" y1="20" x2="46" y2="392"/>
+      <circle class="dot-m" cx="46" cy="30" r="8"/>
+      <text class="mono m" x="76" y="34">1982</text>
+      <text x="156" y="34">RCS: early local version control</text>
+      <circle class="dot-m" cx="46" cy="72" r="8"/>
+      <text class="mono m" x="76" y="76">1990</text>
+      <text x="156" y="76">CVS: first widely used centralized tool (approximate)</text>
+      <circle class="dot-m" cx="46" cy="114" r="8"/>
+      <text class="mono m" x="76" y="118">2000</text>
+      <text x="156" y="118">Subversion and BitKeeper appear</text>
+      <circle class="dot-o" cx="46" cy="156" r="11"/>
+      <text class="mono" x="76" y="160" style="fill:var(--git);font-weight:600">Apr 2005</text>
+      <text x="156" y="160" style="font-weight:600">Linus Torvalds creates Git</text>
+      <circle class="dot-o" cx="46" cy="198" r="8"/>
+      <text class="mono m" x="76" y="202">Dec 2005</text>
+      <text x="156" y="202">Git 1.0 is released; Junio Hamano maintains it</text>
+      <circle class="dot-p" cx="46" cy="240" r="8"/>
+      <text class="mono m" x="76" y="244">2008</text>
+      <text x="156" y="244">GitHub is founded</text>
+      <circle class="dot-p" cx="46" cy="282" r="8"/>
+      <text class="mono m" x="76" y="286">2011</text>
+      <text x="156" y="286">GitLab is started</text>
+      <circle class="dot-p" cx="46" cy="324" r="8"/>
+      <text class="mono m" x="76" y="328">2018</text>
+      <text x="156" y="328">Microsoft acquires GitHub</text>
+      <circle class="dot-g" cx="46" cy="366" r="8"/>
+      <text class="mono m" x="76" y="370">2020</text>
+      <text x="156" y="370">New GitHub repositories default to the branch name main</text>
+    </svg>
+    <figcaption>Grey: earlier tools. Orange: Git. Purple: hosting platforms. Green: the move from master to main. Early years are approximate.</figcaption>
+  </figure>
+
+  <h3>2.4 Why Git won</h3>
+  <ul>
+    <li>It is fast, because most operations happen on your own machine.</li>
+    <li>Branching is cheap, so teams create branches freely.</li>
+    <li>It stores snapshots and checks content with hashes, so history is trustworthy.</li>
+    <li>It is free and open source.</li>
+    <li>Websites like GitHub made sharing and reviewing code easy for everyone.</li>
+  </ul>
+
+  <h3>2.5 Common mistakes</h3>
+  <ul>
+    <li><b>Confusing Git with GitHub.</b> They are different things; Chapter 3 explains how.</li>
+    <li><b>Assuming Git is only for Linux.</b> It runs on Windows, macOS and Linux.</li>
+  </ul>
+  <div class="panel recap">
+    <div class="panel-h"><svg class="i"><use href="#i-checkc"/></svg>Quick recap</div>
+    <div class="panel-b">
+      <ul>
+        <li>Git was created in 2005 by Linus Torvalds after BitKeeper's free licence ended.</li>
+        <li>Its goals: speed, simple design, parallel work, distribution and integrity.</li>
+        <li>Junio Hamano has maintained Git since 2005.</li>
+        <li>GitHub arrived in 2008 and made Git popular far beyond the Linux community.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="panel ex">
+    <div class="panel-h"><svg class="i"><use href="#i-task"/></svg>Practice exercise</div>
+    <div class="panel-b">
+      <ul class="tasks">
+        <li><input type="checkbox" data-k="ch2-1" aria-labelledby="t21"><span id="t21">Open a terminal and run <code>git --version</code>.</span></li>
+        <li><input type="checkbox" data-k="ch2-2" aria-labelledby="t22"><span id="t22">Write down what you see. "command not found" is fine; you install Git in Chapter 4.</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="nextrow"><a class="btn pri" href="#ch3">Next: Git vs GitHub vs GitLab</a></div>
+</article>

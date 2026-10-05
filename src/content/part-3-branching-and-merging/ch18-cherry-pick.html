@@ -1,0 +1,107 @@
+<article class="chapter" id="ch18" data-title="Cherry-pick" data-part="3" data-no="18">
+  <div class="ch-meta"><span class="chip git">Part 3</span><span class="chip">Chapter 18</span><span>3 min read</span></div>
+  <h2>Cherry-pick</h2>
+  <p class="lead">Cherry-pick copies a single commit from one branch onto another without merging everything else.</p>
+
+  <h3>18.1 When you need it</h3>
+  <p>Imagine a bug fix was committed on a feature branch, and the same fix is needed urgently on <code>main</code>, but the rest of the feature is not ready. Cherry-pick takes just that one commit.</p>
+  <figure class="fig">
+    <svg role="img" aria-label="Cherry-picking commit F2 onto main creates a copy, F2'" viewBox="0 0 720 198" xmlns="http://www.w3.org/2000/svg">
+      <path class="eg eg-b" d="M195.0 54 L305.0 54"/>
+      <path class="eg eg-b" d="M305.0 54 L525.0 54"/>
+      <path class="eg eg-p" d="M305.0 54 C360.0 54 360.0 138 415.0 138"/>
+      <path class="eg eg-p" d="M415.0 138 L525.0 138"/>
+      <circle class="dot-b" cx="195.0" cy="54" r="11"/>
+      <text x="195.0" y="86" text-anchor="middle" class="sm">C1</text>
+      <circle class="dot-b" cx="305.0" cy="54" r="11"/>
+      <text x="305.0" y="86" text-anchor="middle" class="sm">C2</text>
+      <circle class="dot-b" cx="525.0" cy="54" r="11"/>
+      <text x="525.0" y="86" text-anchor="middle" class="sm">F2'</text>
+      <circle class="dot-p" cx="415.0" cy="138" r="11"/>
+      <text x="415.0" y="170" text-anchor="middle" class="sm">F1</text>
+      <circle class="dot-p" cx="525.0" cy="138" r="11"/>
+      <text x="525.0" y="170" text-anchor="middle" class="sm">F2</text>
+      <rect class="pl-b" x="500.0" y="14" width="50" height="22" rx="11"/>
+      <text class="pill-t" x="525.0" y="29" text-anchor="middle">main</text>
+      <line class="ln2" x1="525.0" y1="36" x2="525.0" y2="43"/>
+      <rect class="pl-p" x="488.0" y="98" width="74" height="22" rx="11"/>
+      <text class="pill-t" x="525.0" y="113" text-anchor="middle">feature</text>
+      <line class="ln2" x1="525.0" y1="120" x2="525.0" y2="127"/>
+    </svg>
+    <figcaption>Cherry-picking commit F2 onto main creates a copy, F2'</figcaption>
+  </figure>
+
+  <h3>18.2 The command</h3>
+<pre class="term"><code><span class="p">$</span> git switch main
+<span class="p">$</span> git cherry-pick 8e4c1b7
+<span class="o">[main a3b9d21] Fix null pointer crash</span>
+<span class="o"> 1 file changed, 2 insertions(+)</span></code></pre>
+  <p>The copy has a <b>new hash</b>, because it has a new parent.</p>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Command</th><th>Result</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>git cherry-pick &lt;hash&gt;</code></td><td>Copy one commit</td></tr>
+        <tr><td><code>git cherry-pick A B C</code></td><td>Copy several commits</td></tr>
+        <tr><td><code>git cherry-pick A..B</code></td><td>Copy the range after A up to B</td></tr>
+        <tr><td><code>git cherry-pick -x &lt;hash&gt;</code></td><td>Add a note saying where it came from</td></tr>
+        <tr><td><code>git cherry-pick -n &lt;hash&gt;</code></td><td>Apply the change but do not commit</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>18.3 Conflicts</h3>
+  <p>If the change does not apply cleanly, Git stops. Resolve the files, then run:</p>
+<pre class="term"><code><span class="p">$</span> git add file.py
+<span class="p">$</span> git cherry-pick --continue
+<span class="p">$</span> git cherry-pick --abort</code></pre>
+
+  <h3>18.4 When to use it, and when not to</h3>
+  <ul>
+    <li>Good for hotfixes that must reach a release branch quickly.</li>
+    <li>Good for rescuing one useful commit from an abandoned branch.</li>
+    <li>Poor as a routine way to move work. Duplicate commits make history confusing, and you may see the same change twice when the branches are merged later.</li>
+  </ul>
+
+  <h3>18.5 Common mistakes</h3>
+  <ul>
+    <li><b>Cherry-picking too much.</b> If you need many commits, merge or rebase instead.</li>
+    <li><b>Forgetting the original still exists.</b> The source branch keeps its own copy.</li>
+  </ul>
+  <div class="panel recap">
+    <div class="panel-h"><svg class="i"><use href="#i-checkc"/></svg>Quick recap</div>
+    <div class="panel-b">
+      <ul>
+        <li>Cherry-pick copies selected commits to the current branch.</li>
+        <li>The copies get new hashes.</li>
+        <li>Use <code>-x</code> to record the source commit.</li>
+        <li>Resolve conflicts, then <code>--continue</code>.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="panel quiz">
+    <div class="panel-h"><svg class="i"><use href="#i-info"/></svg>Check yourself</div>
+    <div class="panel-b">
+      <div class="q" data-a="1">
+        <p class="qt">1. What does cherry-pick create?</p>
+        <div class="opts">
+          <button type="button" class="opt">A new branch</button>
+          <button type="button" class="opt">A copy of a commit with a new hash on the current branch</button>
+          <button type="button" class="opt">A tag</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="panel ex">
+    <div class="panel-h"><svg class="i"><use href="#i-task"/></svg>Practice exercise</div>
+    <div class="panel-b">
+      <ul class="tasks">
+        <li><input type="checkbox" data-k="ch18-1" aria-labelledby="tch18-1"><span id="tch18-1">On a branch, make two commits. Cherry-pick only the second one onto <code>main</code>.</span></li>
+        <li><input type="checkbox" data-k="ch18-2" aria-labelledby="tch18-2"><span id="tch18-2">Check that the hashes differ with <code>git log --oneline --all</code>.</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="nextrow"><a class="btn pri" href="#ch19">Next: Stash</a></div>
+</article>

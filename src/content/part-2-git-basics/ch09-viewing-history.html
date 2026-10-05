@@ -1,0 +1,169 @@
+<article class="chapter" id="ch9" data-title="Viewing history" data-part="2" data-no="9">
+  <div class="ch-meta"><span class="chip git">Part 2</span><span class="chip">Chapter 9</span><span>3 min read</span></div>
+  <h2>Viewing history</h2>
+  <p class="lead">Git remembers everything, and a handful of commands let you read that memory in many different ways.</p>
+
+  <h3>9.1 git log: the history list</h3>
+<pre class="term"><code><span class="p">$</span> git log
+<span class="o">commit 9a1c4e7d2b8f0c3a5e6d7f8a9b0c1d2e3f4a5b6c (HEAD -&gt; main)</span>
+<span class="o">Author: Your Name &lt;you@example.com&gt;</span>
+<span class="o">Date:   Mon Oct 5 10:12:03 2026 +0530</span>
+
+<span class="o">    Fix typo in README</span>
+
+<span class="o">commit 3f2a9c1e5b7d4a8c9d21f6e5a4b3c2d1e0f9a8b7</span>
+<span class="o">Author: Your Name &lt;you@example.com&gt;</span>
+<span class="o">Date:   Mon Oct 5 09:40:11 2026 +0530</span>
+
+<span class="o">    Add README</span></code></pre>
+  <p>Newest commits come first. Press <code>q</code> to leave the scrolling view.</p>
+
+  <h3>9.2 Making log readable</h3>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Command</th><th>Result</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>git log --oneline</code></td><td>One line per commit</td></tr>
+        <tr><td><code>git log --graph --oneline --all</code></td><td>Draw branches as an ASCII graph</td></tr>
+        <tr><td><code>git log -3</code></td><td>Only the last three commits</td></tr>
+        <tr><td><code>git log --author="Priya"</code></td><td>Commits by one author</td></tr>
+        <tr><td><code>git log --since="2 weeks ago"</code></td><td>Commits from a time range</td></tr>
+        <tr><td><code>git log --stat</code></td><td>Show which files changed in each commit</td></tr>
+        <tr><td><code>git log -- path/file.txt</code></td><td>History of one file</td></tr>
+        <tr><td><code>git log --grep="login"</code></td><td>Search commit messages</td></tr>
+      </tbody>
+    </table>
+  </div>
+<pre class="term"><code><span class="p">$</span> git log --oneline
+<span class="o">9a1c4e7 Fix typo in README</span>
+<span class="o">3f2a9c1 Add README</span></code></pre>
+  <div class="callout tip">
+    <div class="t"><svg class="i"><use href="#i-tip"/></svg>Tip</div>
+    <p>The <code>git lg</code> alias from Chapter 5 gives you this compact graph view in three letters.</p>
+  </div>
+
+  <h3>9.3 git show: look inside one commit</h3>
+<pre class="term"><code><span class="p">$</span> git show 3f2a9c1
+<span class="o">commit 3f2a9c1e5b7d4a8c9d21f6e5a4b3c2d1e0f9a8b7</span>
+<span class="o">Author: Your Name &lt;you@example.com&gt;</span>
+
+<span class="o">    Add README</span>
+
+<span class="o">diff --git a/README.md b/README.md</span>
+<span class="o">new file mode 100644</span>
+<span class="o">+# Hello Git</span></code></pre>
+  <p>You only need the first 7 or so characters of the hash, as long as they are unique.</p>
+
+  <h3>9.4 git diff: compare changes</h3>
+  <p>Diff shows what changed. Which two things it compares depends on the options.</p>
+  <figure class="fig">
+    <svg role="img" aria-label="What each git diff form compares" viewBox="0 0 720 212" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="mk3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path class="arh" d="M0 0L10 5L0 10z"/>
+        </marker>
+      </defs>
+      <rect class="bx bxs stk-o" x="20.0" y="110" width="166.7" height="78" rx="10"/>
+      <text class="ttl" x="103.3" y="140" text-anchor="middle">Working directory</text>
+      <text class="m sm" x="103.3" y="160" text-anchor="middle">Your edits</text>
+      <rect class="bx bxs" x="276.7" y="110" width="166.7" height="78" rx="10"/>
+      <text class="ttl" x="360.0" y="140" text-anchor="middle">Staging area</text>
+      <text class="m sm" x="360.0" y="160" text-anchor="middle">Staged changes</text>
+      <rect class="bx bxs stk-g" x="533.3" y="110" width="166.7" height="78" rx="10"/>
+      <text class="ttl" x="616.7" y="140" text-anchor="middle">Last commit</text>
+      <text class="m sm" x="616.7" y="160" text-anchor="middle">HEAD</text>
+      <path class="ln2" d="M117.3 110 C117.3 64.7 346.0 64.7 346.0 110" marker-end="url(#mk3)"/>
+      <text class="mono" x="231.7" y="70.0" text-anchor="middle">git diff</text>
+      <path class="ln2" d="M374.0 110 C374.0 64.7 602.7 64.7 602.7 110" marker-end="url(#mk3)"/>
+      <text class="mono" x="488.3" y="70.0" text-anchor="middle">git diff --staged</text>
+      <path class="ln2" d="M117.3 110 C117.3 3.3 602.7 3.3 602.7 110" marker-end="url(#mk3)"/>
+      <text class="mono" x="360.0" y="24.0" text-anchor="middle">git diff HEAD</text>
+    </svg>
+    <figcaption>What each git diff form compares</figcaption>
+  </figure>
+<pre class="code"><code>diff --git a/README.md b/README.md
+<span class="dl-h">@@ -1 +1,2 @@</span>
+ # Hello Git
+<span class="dl-a">+More text</span></code></pre>
+  <p>Lines beginning with <code>+</code> were added, lines beginning with <code>-</code> were removed, and <code>@@</code> marks the position in the file.</p>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Command</th><th>Compares</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>git diff</code></td><td>Working directory against staging area</td></tr>
+        <tr><td><code>git diff --staged</code></td><td>Staging area against the last commit</td></tr>
+        <tr><td><code>git diff HEAD</code></td><td>Working directory against the last commit</td></tr>
+        <tr><td><code>git diff 3f2a9c1 9a1c4e7</code></td><td>Two specific commits</td></tr>
+        <tr><td><code>git diff main feature</code></td><td>Two branches</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>9.5 git blame: who changed this line</h3>
+<pre class="term"><code><span class="p">$</span> git blame README.md
+<span class="o">3f2a9c1e (Your Name 2026-10-05 1) # Hello Git</span>
+<span class="o">9a1c4e7d (Priya Shah 2026-10-05 2) More text</span></code></pre>
+  <p>Blame shows, for every line, the commit and author that last changed it. Use it to ask "why is this here?", not to assign fault.</p>
+
+  <h3>9.6 Other handy commands</h3>
+  <ul>
+    <li><code>git shortlog -sn</code> counts commits per author.</li>
+    <li><code>git show HEAD~2</code> shows the commit two steps before the latest.</li>
+    <li><code>git log -p</code> shows the full patch for each commit.</li>
+  </ul>
+
+  <h3>9.7 Common mistakes</h3>
+  <ul>
+    <li><b>Being stuck in the pager.</b> Press <code>q</code> to exit a long log.</li>
+    <li><b>Expecting <code>git diff</code> to show staged changes.</b> Add <code>--staged</code> for those.</li>
+    <li><b>Pasting a full 40-character hash.</b> The short form works.</li>
+  </ul>
+  <div class="panel recap">
+    <div class="panel-h"><svg class="i"><use href="#i-checkc"/></svg>Quick recap</div>
+    <div class="panel-b">
+      <ul>
+        <li><code>git log</code> lists history; <code>--oneline</code> and <code>--graph</code> make it readable.</li>
+        <li><code>git show</code> displays one commit in full.</li>
+        <li><code>git diff</code> compares areas, commits or branches.</li>
+        <li><code>git blame</code> shows who last changed each line.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="panel quiz">
+    <div class="panel-h"><svg class="i"><use href="#i-info"/></svg>Check yourself</div>
+    <div class="panel-b">
+      <div class="q" data-a="1">
+        <p class="qt">1. Which command shows changes you have already staged?</p>
+        <div class="opts">
+          <button type="button" class="opt">git diff</button>
+          <button type="button" class="opt">git diff --staged</button>
+          <button type="button" class="opt">git log --staged</button>
+        </div>
+        <p class="qe" hidden>Plain git diff compares the working directory to the staging area.</p>
+      </div>
+      <div class="q" data-a="1">
+        <p class="qt">2. How do you leave the log view?</p>
+        <div class="opts">
+          <button type="button" class="opt">Ctrl+Z</button>
+          <button type="button" class="opt">Press q</button>
+          <button type="button" class="opt">Type exit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="panel ex">
+    <div class="panel-h"><svg class="i"><use href="#i-task"/></svg>Practice exercise</div>
+    <div class="panel-b">
+      <ul class="tasks">
+        <li><input type="checkbox" data-k="ch9-1" aria-labelledby="tch9-1"><span id="tch9-1">Make three small commits, then run <code>git log --oneline</code>.</span></li>
+        <li><input type="checkbox" data-k="ch9-2" aria-labelledby="tch9-2"><span id="tch9-2">Edit a file and compare <code>git diff</code> with <code>git diff --staged</code> before and after <code>git add</code>.</span></li>
+        <li><input type="checkbox" data-k="ch9-3" aria-labelledby="tch9-3"><span id="tch9-3">Run <code>git blame</code> on a file and find the commit for one line.</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="nextrow"><a class="btn pri" href="#ch10">Next: Ignoring files</a></div>
+</article>

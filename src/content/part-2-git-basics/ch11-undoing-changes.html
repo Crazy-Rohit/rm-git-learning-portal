@@ -1,0 +1,177 @@
+<article class="chapter" id="ch11" data-title="Undoing changes" data-part="2" data-no="11">
+  <div class="ch-meta"><span class="chip git">Part 2</span><span class="chip">Chapter 11</span><span>4 min read</span></div>
+  <h2>Undoing changes</h2>
+  <p class="lead">Git offers a safe way back at every stage, and choosing the right undo command depends on where your mistake lives.</p>
+
+  <h3>11.1 First, where is the mistake</h3>
+  <p>Git has several undo commands because a mistake can live in three different places. Find the place first, then pick the command.</p>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Where the mistake is</th><th>What it looks like</th><th>Command</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Working directory</td><td>You edited a file and want the old version back</td><td><code>git restore &lt;file&gt;</code></td></tr>
+        <tr><td>Staging area</td><td>You staged a file by mistake</td><td><code>git restore --staged &lt;file&gt;</code></td></tr>
+        <tr><td>Last commit (not shared)</td><td>Wrong message or a forgotten file</td><td><code>git commit --amend</code></td></tr>
+        <tr><td>Last commits (not shared)</td><td>You want to redo recent commits</td><td><code>git reset</code></td></tr>
+        <tr><td>Shared commit</td><td>Someone else already has the commit</td><td><code>git revert &lt;commit&gt;</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>11.2 Discard changes in the working directory</h3>
+<pre class="term"><code><span class="p">$</span> git restore README.md</code></pre>
+  <p>The file returns to its last committed (or staged) state.</p>
+  <div class="callout caution">
+    <div class="t"><svg class="i"><use href="#i-stop"/></svg>Caution</div>
+    <p>This cannot be undone. Your unsaved edits are gone, because Git never recorded them.</p>
+  </div>
+
+  <h3>11.3 Unstage a file</h3>
+<pre class="term"><code><span class="p">$</span> git add secret.txt
+<span class="p">$</span> git restore --staged secret.txt</code></pre>
+  <p>The file leaves the staging area, but your edits stay in the working directory.</p>
+
+  <h3>11.4 git reset: move the branch back</h3>
+  <p><code>git reset</code> moves the current branch to an earlier commit. The three modes decide how much of your work is also reset.</p>
+  <figure class="fig">
+    <svg role="img" aria-label="After git reset HEAD~1, main and HEAD point to C2. C3 still exists until Git cleans it up." viewBox="0 0 720 140" xmlns="http://www.w3.org/2000/svg">
+      <path class="eg eg-b" d="M250.0 80 L360.0 80"/>
+      <path class="eg eg-b" d="M360.0 80 L470.0 80"/>
+      <circle class="dot-b" cx="250.0" cy="80" r="11"/>
+      <text x="250.0" y="112" text-anchor="middle" class="sm">C1</text>
+      <circle class="dot-b" cx="360.0" cy="80" r="11"/>
+      <text x="360.0" y="112" text-anchor="middle" class="sm">C2</text>
+      <circle class="dot-b" cx="470.0" cy="80" r="11"/>
+      <text x="470.0" y="112" text-anchor="middle" class="sm">C3 (unreferenced)</text>
+      <rect class="pl-b" x="335.0" y="40" width="50" height="22" rx="11"/>
+      <text class="pill-t" x="360.0" y="55" text-anchor="middle">HEAD</text>
+      <line class="ln2" x1="360.0" y1="62" x2="360.0" y2="69"/>
+      <rect class="pl-b" x="335.0" y="14" width="50" height="22" rx="11"/>
+      <text class="pill-t" x="360.0" y="29" text-anchor="middle">main</text>
+      <line class="ln2" x1="360.0" y1="36" x2="360.0" y2="69"/>
+    </svg>
+    <figcaption>After git reset HEAD~1, main and HEAD point to C2. C3 still exists until Git cleans it up.</figcaption>
+  </figure>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Mode</th><th>Branch moves</th><th>Staging area</th><th>Working directory</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>--soft</code></td><td>Yes</td><td>Kept</td><td>Kept</td></tr>
+        <tr><td><code>--mixed</code> (default)</td><td>Yes</td><td>Cleared</td><td>Kept</td></tr>
+        <tr><td><code>--hard</code></td><td>Yes</td><td>Cleared</td><td>Cleared</td></tr>
+      </tbody>
+    </table>
+  </div>
+<pre class="term"><code><span class="p">$</span> git reset --soft HEAD~1
+<span class="p">$</span> git reset HEAD~1
+<span class="p">$</span> git reset --hard HEAD~1</code></pre>
+  <ul>
+    <li>Use <code>--soft</code> to redo a commit: your changes stay staged, ready to commit again.</li>
+    <li>Use <code>--mixed</code> to unstage and rethink.</li>
+    <li>Use <code>--hard</code> only when you truly want to throw the work away.</li>
+  </ul>
+  <div class="callout caution">
+    <div class="t"><svg class="i"><use href="#i-stop"/></svg>Caution</div>
+    <p><code>git reset --hard</code> destroys uncommitted work. Check <code>git status</code> first.</p>
+  </div>
+
+  <h3>11.5 git revert: undo safely in shared history</h3>
+  <p>Reset rewrites history, which is dangerous once others have your commits. <b>Revert</b> adds a new commit that cancels an old one, so history is never rewritten.</p>
+  <figure class="fig">
+    <svg role="img" aria-label="git revert creates a new commit that cancels C2" viewBox="0 0 720 114" xmlns="http://www.w3.org/2000/svg">
+      <path class="eg eg-b" d="M195.0 54 L305.0 54"/>
+      <path class="eg eg-b" d="M305.0 54 L415.0 54"/>
+      <path class="eg eg-b" d="M415.0 54 L525.0 54"/>
+      <circle class="dot-b" cx="195.0" cy="54" r="11"/>
+      <text x="195.0" y="86" text-anchor="middle" class="sm">C1</text>
+      <circle class="dot-b" cx="305.0" cy="54" r="11"/>
+      <text x="305.0" y="86" text-anchor="middle" class="sm">C2</text>
+      <circle class="dot-b" cx="415.0" cy="54" r="11"/>
+      <text x="415.0" y="86" text-anchor="middle" class="sm">C3</text>
+      <circle class="dot-b" cx="525.0" cy="54" r="11"/>
+      <text x="525.0" y="86" text-anchor="middle" class="sm">Revert C2</text>
+      <rect class="pl-b" x="500.0" y="14" width="50" height="22" rx="11"/>
+      <text class="pill-t" x="525.0" y="29" text-anchor="middle">HEAD</text>
+      <line class="ln2" x1="525.0" y1="36" x2="525.0" y2="43"/>
+    </svg>
+    <figcaption>git revert creates a new commit that cancels C2</figcaption>
+  </figure>
+<pre class="term"><code><span class="p">$</span> git revert 3f2a9c1
+<span class="o">[main 7b1d2e4] Revert "Add login"</span>
+<span class="o"> 1 file changed, 5 deletions(-)</span></code></pre>
+  <p>Use revert for anything that has been pushed to a shared branch.</p>
+
+  <h3>11.6 git clean: remove untracked files</h3>
+<pre class="term"><code><span class="p">$</span> git clean -n
+<span class="o">Would remove debug.log</span>
+<span class="p">$</span> git clean -f
+<span class="o">Removing debug.log</span></code></pre>
+  <p>Always run <code>-n</code> (dry run) first. Add <code>-d</code> to include untracked folders.</p>
+
+  <h3>11.7 Decision guide</h3>
+  <ul>
+    <li>Not committed yet: <code>restore</code>.</li>
+    <li>Committed but not pushed: <code>reset</code> or <code>--amend</code>.</li>
+    <li>Pushed and shared: <code>revert</code>.</li>
+  </ul>
+  <div class="callout tip">
+    <div class="t"><svg class="i"><use href="#i-tip"/></svg>Tip</div>
+    <p>If you reset too far, the commits are not gone yet. Chapter 35 shows how <code>git reflog</code> finds them again.</p>
+  </div>
+
+  <h3>11.8 Common mistakes</h3>
+  <ul>
+    <li><b>Using <code>reset --hard</code> casually.</b> Prefer <code>--soft</code> or <code>--mixed</code>.</li>
+    <li><b>Resetting a shared branch and force-pushing.</b> This breaks everyone else's history. Use <code>revert</code>.</li>
+    <li><b>Confusing <code>restore</code> with <code>revert</code>.</b> Restore changes files; revert creates a commit.</li>
+  </ul>
+  <div class="panel recap">
+    <div class="panel-h"><svg class="i"><use href="#i-checkc"/></svg>Quick recap</div>
+    <div class="panel-b">
+      <ul>
+        <li><code>git restore</code> discards working changes; <code>git restore --staged</code> unstages.</li>
+        <li><code>git reset</code> moves the branch; <code>--soft</code>, <code>--mixed</code> and <code>--hard</code> decide how much is reset.</li>
+        <li><code>git revert</code> safely cancels a commit by adding a new one.</li>
+        <li>Use revert for shared history, reset only for local history.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="panel quiz">
+    <div class="panel-h"><svg class="i"><use href="#i-info"/></svg>Check yourself</div>
+    <div class="panel-b">
+      <div class="q" data-a="1">
+        <p class="qt">1. A commit has already been pushed to the shared main branch and is wrong. What is safest?</p>
+        <div class="opts">
+          <button type="button" class="opt">git reset --hard</button>
+          <button type="button" class="opt">git revert</button>
+          <button type="button" class="opt">git clean</button>
+        </div>
+        <p class="qe" hidden>Revert adds a new commit and does not rewrite shared history.</p>
+      </div>
+      <div class="q" data-a="0">
+        <p class="qt">2. Which command unstages a file but keeps your edits?</p>
+        <div class="opts">
+          <button type="button" class="opt">git restore --staged file</button>
+          <button type="button" class="opt">git reset --hard</button>
+          <button type="button" class="opt">git clean -f</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="panel ex">
+    <div class="panel-h"><svg class="i"><use href="#i-task"/></svg>Practice exercise</div>
+    <div class="panel-b">
+      <ul class="tasks">
+        <li><input type="checkbox" data-k="ch11-1" aria-labelledby="tch11-1"><span id="tch11-1">Edit a file, then discard the edit with <code>git restore</code>.</span></li>
+        <li><input type="checkbox" data-k="ch11-2" aria-labelledby="tch11-2"><span id="tch11-2">Stage a file, then unstage it with <code>git restore --staged</code>.</span></li>
+        <li><input type="checkbox" data-k="ch11-3" aria-labelledby="tch11-3"><span id="tch11-3">Make two commits, run <code>git reset --soft HEAD~1</code>, and see the changes staged again.</span></li>
+        <li><input type="checkbox" data-k="ch11-4" aria-labelledby="tch11-4"><span id="tch11-4">Make a commit and undo it with <code>git revert</code>. Look at <code>git log --oneline</code>.</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="nextrow"><a class="btn pri" href="#ch12">Next: Renaming and deleting files</a></div>
+</article>

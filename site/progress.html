@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Progress · Git Learning Portal</title>
+  <link rel="icon" href="/favicon.png">
+  <link rel="stylesheet" href="/src/styles.css">
+</head>
+<body>
+  <header class="wrap top">
+    <a class="brand" href="./"><img src="/rm-logo.png" alt="RM">Git Learning Portal</a>
+    <nav>
+      <a href="./">Home</a>
+      <a href="handbook/">Handbook</a>
+      <a href="stage-1.html">Stage 1</a>
+      <a href="progress.html" aria-current="page">Progress</a>
+    </nav>
+  </header>
+  <main class="wrap">
+    <section class="hero">
+      <img src="/rm-logo.png" alt="">
+      <div>
+        <p class="by">Public progress</p>
+        <h1>See which stages are passed.</h1>
+        <p class="lede">Type a GitHub username. The page reads that account's public record. The username is only for display. The record is stored by the account's permanent numeric id.</p>
+        <form id="lookup">
+          <label>GitHub username
+            <input id="login" name="login" autocomplete="username" required spellcheck="false">
+          </label>
+          <button class="btn pri" type="submit">Show progress</button>
+        </form>
+        <p class="note" id="status" role="status"></p>
+      </div>
+    </section>
+    <ol class="stages" id="stages"></ol>
+  </main>
+  <footer class="wrap">
+    <p>A completion certificate from Rohit Manna. It is not a GitHub certification.</p>
+  </footer>
+  <script type="module" src="/src/progress.ts"></script>
+</body>
+</html>

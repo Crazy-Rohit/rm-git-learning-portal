@@ -1,0 +1,190 @@
+<article class="chapter" id="ch43" data-title="Interview questions" data-part="6" data-no="43">
+  <div class="ch-meta"><span class="chip git">Part 6</span><span class="chip">Chapter 43</span><span>5 min read</span></div>
+  <h2>Interview questions</h2>
+  <p class="lead">These questions come up again and again in developer interviews, with short answers you can explain in your own words.</p>
+  <p>Tap a question to see a model answer. Try answering aloud first.</p>
+
+  <h3>43.1 Basics</h3>
+  <details class="qa">
+    <summary>What is the difference between Git and GitHub?</summary>
+    <div class="qa-b">
+      <p>Git is a free, distributed version control tool that runs on your computer. GitHub is an online service that hosts Git repositories and adds collaboration features such as pull requests, issues and Actions.</p>
+    </div>
+  </details>
+  <details class="qa">
+    <summary>What is a commit?</summary>
+    <div class="qa-b">
+      <p>A commit is a snapshot of the staged project files with an author, date, message and a link to its parent commit. It is identified by a hash.</p>
+    </div>
+  </details>
+  <details class="qa">
+    <summary>Explain the three areas in Git.</summary>
+    <div class="qa-b">
+      <p>The working directory holds the files you edit, the staging area holds the changes chosen for the next commit, and the repository stores the committed history in the .git folder.</p>
+    </div>
+  </details>
+  <details class="qa">
+    <summary>What is the difference between git fetch and git pull?</summary>
+    <div class="qa-b">
+      <p>Fetch downloads new commits and updates remote-tracking branches without changing your files. Pull runs fetch and then merges (or rebases) the result into your current branch.</p>
+    </div>
+  </details>
+  <details class="qa">
+    <summary>What does git clone do compared with git fork?</summary>
+    <div class="qa-b">
+      <p>Clone copies a repository, with its history, to your computer. A fork is a copy of a repository in your own GitHub account, used to propose changes to projects you do not own.</p>
+    </div>
+  </details>
+  <details class="qa">
+    <summary>What is HEAD?</summary>
+    <div class="qa-b">
+      <p>HEAD is a pointer to your current position, usually the branch you are on, which in turn points to its latest commit.</p>
+    </div>
+  </details>
+
+  <h3>43.2 Branching and merging</h3>
+  <details class="qa">
+    <summary>What is a branch, and why are branches cheap in Git?</summary>
+    <div class="qa-b">
+      <p>A branch is a movable pointer to a commit. Creating one only writes a tiny file with a hash, so it is instant and uses almost no space.</p>
+    </div>
+  </details>
+  <details class="qa">
+    <summary>What is the difference between merge and rebase?</summary>
+    <div class="qa-b">
+      <p>Merge joins two histories with a merge commit and keeps the real branching shape. Rebase replays your commits on top of another branch, creating new commits and a linear history.</p>
+    </div>
+  </details>
+  <details class="qa">
+    <summary>When should you not rebase?</summary>
+    <div class="qa-b">
+      <p>Never rebase commits that are already shared with others, because it rewrites history and breaks their copies.</p>
+    </div>
+  </details>
+  <details class="qa">
+    <summary>What is a fast-forward merge?</summary>
+    <div class="qa-b">
+      <p>When the target branch has no new commits, Git just moves its pointer forward to the other branch's tip, without creating a merge commit.</p>
+    </div>
+  </details>
+  <details class="qa">
+    <summary>How do you resolve a merge conflict?</summary>
+    <div class="qa-b">
+      <p>Open the conflicted files, choose or combine the correct content, remove the conflict markers, git add the files, then commit or run the continue command.</p>
+    </div>
+  </details>
+  <details class="qa">
+    <summary>What does git cherry-pick do?</summary>
+    <div class="qa-b">
+      <p>It copies one or more specific commits onto the current branch, creating new commits with new hashes.</p>
+    </div>
+  </details>
+  <details class="qa">
+    <summary>What is git stash used for?</summary>
+    <div class="qa-b">
+      <p>It temporarily shelves uncommitted changes so you can switch tasks with a clean working directory, and you bring them back later with git stash pop.</p>
+    </div>
+  </details>
+
+  <h3>43.3 Undoing and recovery</h3>
+  <details class="qa">
+    <summary>What is the difference between git reset and git revert?</summary>
+    <div class="qa-b">
+      <p>Reset moves the branch pointer back and rewrites history, so it is for local commits. Revert adds a new commit that cancels an earlier one, so it is safe for shared history.</p>
+    </div>
+  </details>
+  <details class="qa">
+    <summary>Explain reset --soft, --mixed and --hard.</summary>
+    <div class="qa-b">
+      <p>All three move the branch. Soft keeps changes staged, mixed (the default) unstages them but keeps the files, and hard also discards the file changes.</p>
+    </div>
+  </details>
+  <details class="qa">
+    <summary>How would you recover a commit you lost after a hard reset?</summary>
+    <div class="qa-b">
+      <p>Run git reflog to find the commit hash, then create a branch at that hash or reset to it.</p>
+    </div>
+  </details>
+  <details class="qa">
+    <summary>How do you undo the last commit but keep the work?</summary>
+    <div class="qa-b">
+      <p>git reset --soft HEAD~1 if it is not pushed. If it is pushed, use git revert instead.</p>
+    </div>
+  </details>
+  <details class="qa">
+    <summary>You committed a password. What do you do?</summary>
+    <div class="qa-b">
+      <p>Revoke and replace the password immediately. Then remove it from history with a tool such as git filter-repo, force-push, and ask collaborators to re-clone.</p>
+    </div>
+  </details>
+
+  <h3>43.4 GitHub and teamwork</h3>
+  <details class="qa">
+    <summary>What is a pull request, and why use one?</summary>
+    <div class="qa-b">
+      <p>A pull request proposes merging one branch into another and hosts review, discussion and automated checks before the code reaches the main branch.</p>
+    </div>
+  </details>
+  <details class="qa">
+    <summary>What are the merge options on a pull request?</summary>
+    <div class="qa-b">
+      <p>Merge commit keeps all commits plus a merge commit, squash and merge combines the branch into one commit, and rebase and merge replays the commits without a merge commit.</p>
+    </div>
+  </details>
+  <details class="qa">
+    <summary>What is GitHub Actions?</summary>
+    <div class="qa-b">
+      <p>A built-in automation service that runs workflows, defined in YAML files, in response to events such as pushes and pull requests, commonly for continuous integration and deployment.</p>
+    </div>
+  </details>
+  <details class="qa">
+    <summary>What is branch protection?</summary>
+    <div class="qa-b">
+      <p>Repository rules that stop risky actions on important branches, such as pushing directly, force-pushing or merging without approvals and passing checks.</p>
+    </div>
+  </details>
+  <details class="qa">
+    <summary>Describe a good Git workflow for a team.</summary>
+    <div class="qa-b">
+      <p>Branch from main for each change, commit small and clearly, open a pull request, get a review and passing checks, merge, delete the branch. Protect main and keep branches short-lived.</p>
+    </div>
+  </details>
+  <details class="qa">
+    <summary>How do SSH keys work with GitHub?</summary>
+    <div class="qa-b">
+      <p>You keep a private key on your computer and give GitHub the public key. GitHub verifies that you hold the private key without it ever being sent.</p>
+    </div>
+  </details>
+  <details class="qa">
+    <summary>What is .gitignore?</summary>
+    <div class="qa-b">
+      <p>A file listing patterns of files Git should not track, such as secrets, dependencies and build output.</p>
+    </div>
+  </details>
+  <details class="qa">
+    <summary>What are tags used for?</summary>
+    <div class="qa-b">
+      <p>Tags permanently name a commit, usually to mark a release such as v1.0.0.</p>
+    </div>
+  </details>
+  <div class="panel recap">
+    <div class="panel-h"><svg class="i"><use href="#i-checkc"/></svg>Quick recap</div>
+    <div class="panel-b">
+      <ul>
+        <li>Be ready to explain the three areas, merge versus rebase and reset versus revert.</li>
+        <li>Describe a team workflow from branch to pull request to merge.</li>
+        <li>Know how to recover lost work with the reflog.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="panel ex">
+    <div class="panel-h"><svg class="i"><use href="#i-task"/></svg>Practice exercise</div>
+    <div class="panel-b">
+      <ul class="tasks">
+        <li><input type="checkbox" data-k="ch43-1" aria-labelledby="tch43-1"><span id="tch43-1">Answer five questions aloud without looking, then check the model answers.</span></li>
+        <li><input type="checkbox" data-k="ch43-2" aria-labelledby="tch43-2"><span id="tch43-2">Ask a friend to quiz you on the undo commands.</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="nextrow"><a class="btn pri" href="#ch44">Next: Glossary</a></div>
+</article>

@@ -1,0 +1,90 @@
+<article class="chapter" id="ch3" data-title="Git vs GitHub vs GitLab" data-part="1" data-no="3">
+  <div class="ch-meta"><span class="chip git">Part 1</span><span class="chip">Chapter 3</span><span>4 min read</span></div>
+  <h2>Git vs GitHub vs GitLab vs Bitbucket</h2>
+  <p class="lead">Git is the tool that tracks your changes on your computer. GitHub, GitLab and Bitbucket are websites that host Git repositories online so teams can share and review them.</p>
+
+  <h3>3.1 Analogy: the engine and the garage</h3>
+  <p>Git is a car engine: it does the real work and runs on your own machine. GitHub is a big garage and showroom. It stores your car (the repository), lets other people see it, lets mechanics suggest improvements, and offers extra services such as testing. You can run the engine without the garage, but the garage is useless without the engine. Likewise, email is a technology and Gmail is a service built on it.</p>
+  <figure class="fig">
+    <svg viewBox="0 0 720 150" role="img" aria-label="Your computer with Git pushes to a hosting service such as GitHub, and pulls or clones back">
+      <defs>
+        <marker id="m4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path class="arh" d="M0 0L10 5L0 10z"/>
+        </marker>
+      </defs>
+      <rect class="bx" x="30" y="30" width="230" height="90" rx="10"/>
+      <text class="ttl" x="145" y="68" text-anchor="middle">Your computer</text>
+      <text class="m" x="145" y="92" text-anchor="middle">Git, local repository</text>
+      <rect class="bx" x="460" y="30" width="230" height="90" rx="10"/>
+      <text class="ttl" x="575" y="68" text-anchor="middle">Hosting service</text>
+      <text class="m" x="575" y="92" text-anchor="middle">GitHub, GitLab, Bitbucket</text>
+      <line class="ln2" x1="270" y1="58" x2="450" y2="58" marker-end="url(#m4)"/>
+      <text class="mono" x="360" y="48" text-anchor="middle">push</text>
+      <line class="ln2" x1="450" y1="96" x2="270" y2="96" marker-end="url(#m4)"/>
+      <text class="mono" x="360" y="116" text-anchor="middle">pull, clone</text>
+    </svg>
+    <figcaption>Git works on the left with no internet. The hosting service on the right is where you share.</figcaption>
+  </figure>
+
+  <h3>3.2 What Git does and what GitHub adds</h3>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Question</th><th>Git</th><th>GitHub</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>What is it?</td><td>A free, open-source command-line tool</td><td>A website and cloud service owned by Microsoft</td></tr>
+        <tr><td>Where does it run?</td><td>On your own computer</td><td>On the internet</td></tr>
+        <tr><td>Needs internet?</td><td>Not for most commands</td><td>Yes</td></tr>
+        <tr><td>Main job</td><td>Track changes, branch, merge</td><td>Host repositories, enable collaboration and review</td></tr>
+        <tr><td>Extras</td><td>None beyond version control</td><td>Pull requests, issues, project boards, Actions, Pages, security alerts</td></tr>
+        <tr><td>Use one without the other?</td><td>Yes, Git works alone</td><td>No, it is built on Git</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>3.3 The main hosting platforms</h3>
+  <p>All three use Git underneath, so the commands you learn work on each of them. This handbook uses GitHub for online examples because it is the most widely used and has a generous free plan.</p>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Platform</th><th>Known for</th><th>Typical users</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>GitHub</td><td>Largest community, open source, GitHub Actions, Pages</td><td>Individuals, open-source projects, companies of all sizes</td></tr>
+        <tr><td>GitLab</td><td>Built-in CI/CD and DevOps tools; can be self-hosted</td><td>Teams that want one integrated DevOps platform</td></tr>
+        <tr><td>Bitbucket</td><td>Tight integration with Jira and other Atlassian tools</td><td>Teams already using Atlassian products</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>3.4 Common mistakes</h3>
+  <ul>
+    <li><b>Saying "I pushed to Git".</b> You push to a remote such as GitHub. Git is the tool, GitHub is the place.</li>
+    <li><b>Treating GitHub as a guaranteed backup.</b> It is hosting. Keep important repositories cloned in more than one place.</li>
+  </ul>
+  <div class="callout caution">
+    <div class="t"><svg class="i"><use href="#i-stop"/></svg>Caution</div>
+    <p>Check the visibility setting every time you create a repository. A private project made public by accident is hard to take back.</p>
+  </div>
+  <div class="panel recap">
+    <div class="panel-h"><svg class="i"><use href="#i-checkc"/></svg>Quick recap</div>
+    <div class="panel-b">
+      <ul>
+        <li>Git is a local version control tool; GitHub is an online service built around it.</li>
+        <li>GitLab and Bitbucket are alternatives and also use Git.</li>
+        <li>Git commands are the same on every platform.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="panel ex">
+    <div class="panel-h"><svg class="i"><use href="#i-task"/></svg>Practice exercise</div>
+    <div class="panel-b">
+      <ul class="tasks">
+        <li><input type="checkbox" data-k="ch3-1" aria-labelledby="t31"><span id="t31">Create a free account at github.com with a professional username. It appears in your profile address and every contribution.</span></li>
+        <li><input type="checkbox" data-k="ch3-2" aria-labelledby="t32"><span id="t32">Add a profile photo and a one-line bio.</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="nextrow"><a class="btn pri" href="#ch4">Next: Installing Git</a></div>
+</article>

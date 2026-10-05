@@ -1,0 +1,99 @@
+<article class="chapter" id="ch41" data-title="Common mistakes and fixes" data-part="6" data-no="41">
+  <div class="ch-meta"><span class="chip git">Part 6</span><span class="chip">Chapter 41</span><span>3 min read</span></div>
+  <h2>Common mistakes and fixes</h2>
+  <p class="lead">Everyone makes the same Git mistakes, and almost all of them have a short, safe fix.</p>
+
+  <h3>41.1 I committed on the wrong branch</h3>
+  <p>You meant to work on a feature branch but committed on <code>main</code>, and have not pushed yet.</p>
+<pre class="term"><code><span class="p">$</span> git branch feature-x
+<span class="p">$</span> git reset --hard origin/main
+<span class="p">$</span> git switch feature-x</code></pre>
+  <p>The first line keeps your commits on a new branch, the second moves <code>main</code> back to match the remote, and the third takes you to your work.</p>
+
+  <h3>41.2 I want to undo my last commit but keep the changes</h3>
+<pre class="term"><code><span class="p">$</span> git reset --soft HEAD~1</code></pre>
+
+  <h3>41.3 I forgot a file in the last commit</h3>
+<pre class="term"><code><span class="p">$</span> git add forgotten.txt
+<span class="p">$</span> git commit --amend --no-edit</code></pre>
+
+  <h3>41.4 I need to undo a merge</h3>
+<pre class="term"><code><span class="p">$</span> git merge --abort
+<span class="p">$</span> git reset --hard ORIG_HEAD
+<span class="p">$</span> git revert -m 1 &lt;merge-hash&gt;</code></pre>
+  <p>Use the first when the merge is still in progress, the second right after a merge you have not pushed, and the third for a merge that is already pushed.</p>
+
+  <h3>41.5 I committed a file that should be ignored</h3>
+<pre class="term"><code><span class="p">$</span> git rm --cached secrets.txt
+<span class="p">$</span> echo "secrets.txt" &gt;&gt; .gitignore
+<span class="p">$</span> git commit -am "Stop tracking secrets.txt"</code></pre>
+  <p>If it held a real secret, follow Chapter 38.</p>
+
+  <h3>41.6 Error messages and what they mean</h3>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Message</th><th>Meaning and fix</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>fatal: not a git repository</code></td><td>You are in the wrong folder. <code>cd</code> into the project</td></tr>
+        <tr><td><code>error: failed to push some refs</code></td><td>The remote has new work. Run <code>git pull</code>, then push</td></tr>
+        <tr><td><code>Permission denied (publickey)</code></td><td>GitHub does not accept your SSH key. Check <code>ssh -T git@github.com</code> and <code>ssh-add -l</code></td></tr>
+        <tr><td><code>Authentication failed</code></td><td>Use a personal access token or SSH; passwords are not accepted</td></tr>
+        <tr><td><code>refusing to merge unrelated histories</code></td><td>Two repositories started separately. Use <code>--allow-unrelated-histories</code> once, knowingly</td></tr>
+        <tr><td><code>src refspec main does not match any</code></td><td>There is no commit yet, or your branch has another name. Commit, then <code>git branch -M main</code></td></tr>
+        <tr><td><code>Your local changes would be overwritten</code></td><td>Commit or <code>git stash</code> before switching or pulling</td></tr>
+        <tr><td><code>CONFLICT (content)</code></td><td>Fix the markers, <code>git add</code>, then commit or <code>--continue</code> (Chapter 16)</td></tr>
+        <tr><td><code>detached HEAD</code></td><td>You are on a commit, not a branch. <code>git switch -c name</code> keeps your work</td></tr>
+        <tr><td><code>warning: LF will be replaced by CRLF</code></td><td>Line-ending difference. Set <code>core.autocrlf</code> (Chapter 5)</td></tr>
+        <tr><td><code>remote: error: File is 120 MB</code></td><td>GitHub blocks files over 100 MB. Use Git LFS (Chapter 37)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>41.7 I think I lost my work</h3>
+  <p>Do not panic and do not run more commands blindly. Run <code>git reflog</code>, find the commit, and create a branch at it (Chapter 35). Uncommitted edits are the only thing Git cannot return.</p>
+
+  <h3>41.8 Safety habits</h3>
+  <ul>
+    <li>Run <code>git status</code> before and after every important command.</li>
+    <li>Commit often so there is something to go back to.</li>
+    <li>Create a backup branch before a risky operation: <code>git branch backup</code>.</li>
+    <li>Use <code>--dry-run</code> or <code>-n</code> where a command offers it.</li>
+    <li>Prefer <code>--force-with-lease</code> to <code>--force</code>.</li>
+  </ul>
+  <div class="panel recap">
+    <div class="panel-h"><svg class="i"><use href="#i-checkc"/></svg>Quick recap</div>
+    <div class="panel-b">
+      <ul>
+        <li>Most mistakes can be fixed with <code>reset</code>, <code>revert</code>, <code>amend</code> or the reflog.</li>
+        <li>Read error messages: they usually name the fix.</li>
+        <li><code>git status</code> and a backup branch make risky work safe.</li>
+        <li>Uncommitted work cannot be recovered, so commit often.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="panel quiz">
+    <div class="panel-h"><svg class="i"><use href="#i-info"/></svg>Check yourself</div>
+    <div class="panel-b">
+      <div class="q" data-a="0">
+        <p class="qt">1. You committed to main by mistake and have not pushed. What keeps your work safe?</p>
+        <div class="opts">
+          <button type="button" class="opt">Create a branch at HEAD, then reset main</button>
+          <button type="button" class="opt">Delete the repository</button>
+          <button type="button" class="opt">Force-push</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="panel ex">
+    <div class="panel-h"><svg class="i"><use href="#i-task"/></svg>Practice exercise</div>
+    <div class="panel-b">
+      <ul class="tasks">
+        <li><input type="checkbox" data-k="ch41-1" aria-labelledby="tch41-1"><span id="tch41-1">Practise the wrong-branch fix in a throwaway repository.</span></li>
+        <li><input type="checkbox" data-k="ch41-2" aria-labelledby="tch41-2"><span id="tch41-2">Cause a rejected push and a merge conflict on purpose, and fix both.</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="nextrow"><a class="btn pri" href="#ch42">Next: Cheat sheet</a></div>
+</article>

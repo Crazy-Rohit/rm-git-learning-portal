@@ -1,0 +1,145 @@
+<article class="chapter" id="ch6" data-title="Your first repository" data-part="2" data-no="6">
+  <div class="ch-meta"><span class="chip git">Part 2</span><span class="chip">Chapter 6</span><span>4 min read</span></div>
+  <h2>Your first repository</h2>
+  <p class="lead">Creating a repository turns an ordinary folder into a project that Git can track.</p>
+
+  <h3>6.1 Creating a repository with git init</h3>
+  <p>A <b>repository</b> is a folder that Git is watching. Any folder can become one with a single command.</p>
+<pre class="term"><code><span class="p">$</span> mkdir hello-git
+<span class="p">$</span> cd hello-git
+<span class="p">$</span> git init
+<span class="o">Initialized empty Git repository in /home/you/hello-git/.git/</span></code></pre>
+  <p>That is all. Git created a hidden folder called <code>.git</code> inside your project. Everything Git knows about your project lives in that folder: the history, the settings and the branches. Your own files stay where they are.</p>
+  <div class="callout warning">
+    <div class="t"><svg class="i"><use href="#i-warn"/></svg>Warning</div>
+    <p>Never delete the <code>.git</code> folder by accident. If you delete it, the project becomes an ordinary folder again and its entire history is gone.</p>
+  </div>
+
+  <h3>6.2 What is inside the .git folder</h3>
+  <p>You do not need to edit these files, but it helps to know what they are.</p>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Item</th><th>What it holds</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>HEAD</code></td><td>A pointer to the branch or commit you are currently on</td></tr>
+        <tr><td><code>config</code></td><td>Settings for this repository only (the local level from Chapter 5)</td></tr>
+        <tr><td><code>objects/</code></td><td>Every file version and commit Git has saved, stored by hash</td></tr>
+        <tr><td><code>refs/</code></td><td>Pointers to branch tips and tags</td></tr>
+        <tr><td><code>index</code></td><td>The staging area (explained in the next chapter)</td></tr>
+      </tbody>
+    </table>
+  </div>
+<pre class="term"><code><span class="p">$</span> ls -a
+<span class="o">.  ..  .git</span>
+<span class="p">$</span> ls .git
+<span class="o">HEAD  config  description  hooks  info  objects  refs</span></code></pre>
+
+  <h3>6.3 Checking the state with git status</h3>
+  <p><code>git status</code> is the command you will type most often. It tells you which branch you are on and what has changed.</p>
+<pre class="term"><code><span class="p">$</span> git status
+<span class="o">On branch main</span>
+
+<span class="o">No commits yet</span>
+
+<span class="o">nothing to commit (create/copy files and use "git add" to track)</span></code></pre>
+  <p>Now create a file and ask again.</p>
+<pre class="term"><code><span class="p">$</span> echo "# Hello Git" &gt; README.md
+<span class="p">$</span> git status
+<span class="o">On branch main</span>
+
+<span class="o">No commits yet</span>
+
+<span class="o">Untracked files:</span>
+<span class="o">  (use "git add &lt;file&gt;..." to include in what will be committed)</span>
+<span class="o">	README.md</span>
+
+<span class="o">nothing added to commit but untracked files present (use "git add" to track)</span></code></pre>
+  <p><b>Untracked</b> means Git can see the file but is not recording it yet. You will fix that in the next chapter.</p>
+  <figure class="fig">
+    <svg role="img" aria-label="The life of a file in Git" viewBox="0 0 720 240" xmlns="http://www.w3.org/2000/svg">
+      <line class="ln" x1="34" y1="36" x2="34" y2="204"/>
+      <circle class="dot-b" cx="34" cy="36" r="15"/>
+      <text class="pill-t" x="34" y="40" text-anchor="middle">1</text>
+      <text class="ttl" x="68" y="33">Untracked</text>
+      <text class="m" x="68" y="51">Git sees the file but does not record it</text>
+      <circle class="dot-b" cx="34" cy="92" r="15"/>
+      <text class="pill-t" x="34" y="96" text-anchor="middle">2</text>
+      <text class="ttl" x="68" y="89">Staged</text>
+      <text class="m" x="68" y="107">You marked it for the next commit with git add</text>
+      <circle class="dot-b" cx="34" cy="148" r="15"/>
+      <text class="pill-t" x="34" y="152" text-anchor="middle">3</text>
+      <text class="ttl" x="68" y="145">Committed</text>
+      <text class="m" x="68" y="163">Saved permanently in the history</text>
+      <circle class="dot-b" cx="34" cy="204" r="15"/>
+      <text class="pill-t" x="34" y="208" text-anchor="middle">4</text>
+      <text class="ttl" x="68" y="201">Modified</text>
+      <text class="m" x="68" y="219">You changed it again after the last commit</text>
+    </svg>
+    <figcaption>The life of a file in Git</figcaption>
+  </figure>
+
+  <h3>6.4 Cloning an existing repository</h3>
+  <p>Often you start from a project that already exists online. <code>git clone</code> downloads the whole repository, history included.</p>
+<pre class="term"><code><span class="p">$</span> git clone https://github.com/git/git-scm.com.git
+<span class="o">Cloning into 'git-scm.com'...</span>
+<span class="p">$</span> cd git-scm.com</code></pre>
+  <p>Clone creates a new folder named after the repository. Cloning from GitHub is covered fully in Part 4.</p>
+
+  <h3>6.5 Common mistakes</h3>
+  <ul>
+    <li><b>Running <code>git init</code> inside another repository.</b> You then have a repository inside a repository, which confuses Git. Check with <code>git status</code> first; if it says "not a git repository" you are safe to initialise.</li>
+    <li><b>Initialising your home folder.</b> Always create a project folder first. Running <code>git init</code> in <code>~</code> makes Git try to track everything you own.</li>
+    <li><b>Running Git commands outside a repository.</b> The error <code>fatal: not a git repository</code> simply means you are in the wrong folder.</li>
+  </ul>
+  <div class="callout tip">
+    <div class="t"><svg class="i"><use href="#i-tip"/></svg>Tip</div>
+    <p>Your terminal prompt can show the current branch. Git Bash does this by default, and tools such as Oh My Zsh add it on macOS and Linux.</p>
+  </div>
+  <div class="panel recap">
+    <div class="panel-h"><svg class="i"><use href="#i-checkc"/></svg>Quick recap</div>
+    <div class="panel-b">
+      <ul>
+        <li><code>git init</code> turns a folder into a repository by creating a hidden <code>.git</code> folder.</li>
+        <li><code>.git</code> holds all history and settings; never delete it.</li>
+        <li><code>git status</code> shows your branch and which files are untracked, modified or staged.</li>
+        <li><code>git clone</code> copies an existing repository with its full history.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="panel quiz">
+    <div class="panel-h"><svg class="i"><use href="#i-info"/></svg>Check yourself</div>
+    <div class="panel-b">
+      <div class="q" data-a="1">
+        <p class="qt">1. Which command turns an ordinary folder into a Git repository?</p>
+        <div class="opts">
+          <button type="button" class="opt">git start</button>
+          <button type="button" class="opt">git init</button>
+          <button type="button" class="opt">git new</button>
+        </div>
+        <p class="qe" hidden>git init creates the hidden .git folder that stores the history.</p>
+      </div>
+      <div class="q" data-a="2">
+        <p class="qt">2. A file Git can see but is not recording is called...</p>
+        <div class="opts">
+          <button type="button" class="opt">Staged</button>
+          <button type="button" class="opt">Committed</button>
+          <button type="button" class="opt">Untracked</button>
+        </div>
+        <p class="qe" hidden>Untracked files must be added with git add before Git records them.</p>
+      </div>
+    </div>
+  </div>
+  <div class="panel ex">
+    <div class="panel-h"><svg class="i"><use href="#i-task"/></svg>Practice exercise</div>
+    <div class="panel-b">
+      <ul class="tasks">
+        <li><input type="checkbox" data-k="ch6-1" aria-labelledby="tch6-1"><span id="tch6-1">Create a folder named <code>hello-git</code> and run <code>git init</code> inside it.</span></li>
+        <li><input type="checkbox" data-k="ch6-2" aria-labelledby="tch6-2"><span id="tch6-2">Run <code>ls -a</code> (or <code>dir /a</code> on Windows) and find the <code>.git</code> folder.</span></li>
+        <li><input type="checkbox" data-k="ch6-3" aria-labelledby="tch6-3"><span id="tch6-3">Create <code>README.md</code>, then run <code>git status</code> and read the output.</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="nextrow"><a class="btn pri" href="#ch7">Next: The three areas of Git</a></div>
+</article>

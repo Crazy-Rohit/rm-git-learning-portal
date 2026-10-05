@@ -1,0 +1,135 @@
+<article class="chapter" id="ch36" data-title="Bisect and interactive rebase" data-part="5" data-no="36">
+  <div class="ch-meta"><span class="chip git">Part 5</span><span class="chip">Chapter 36</span><span>3 min read</span></div>
+  <h2>Bisect and interactive rebase</h2>
+  <p class="lead">Bisect finds the commit that introduced a bug, and interactive rebase lets you polish your commits before you share them.</p>
+
+  <h3>36.1 git bisect: find the bad commit</h3>
+  <p>Suppose a bug appeared somewhere in the last 200 commits. Checking each would take hours. <b>Bisect</b> performs a binary search, halving the range each time, so about eight checks are enough for 200 commits.</p>
+  <figure class="fig">
+    <svg role="img" aria-label="Bisecting for a bug" viewBox="0 0 720 352" xmlns="http://www.w3.org/2000/svg">
+      <line class="ln" x1="34" y1="36" x2="34" y2="316"/>
+      <circle class="dot-b" cx="34" cy="36" r="15"/>
+      <text class="pill-t" x="34" y="40" text-anchor="middle">1</text>
+      <text class="ttl" x="68" y="33">Start</text>
+      <text class="m" x="68" y="51">git bisect start</text>
+      <circle class="dot-b" cx="34" cy="92" r="15"/>
+      <text class="pill-t" x="34" y="96" text-anchor="middle">2</text>
+      <text class="ttl" x="68" y="89">Mark the broken state</text>
+      <text class="m" x="68" y="107">git bisect bad</text>
+      <circle class="dot-b" cx="34" cy="148" r="15"/>
+      <text class="pill-t" x="34" y="152" text-anchor="middle">3</text>
+      <text class="ttl" x="68" y="145">Mark a known good commit</text>
+      <text class="m" x="68" y="163">git bisect good &lt;hash&gt;</text>
+      <circle class="dot-b" cx="34" cy="204" r="15"/>
+      <text class="pill-t" x="34" y="208" text-anchor="middle">4</text>
+      <text class="ttl" x="68" y="201">Test what Git checks out</text>
+      <text class="m" x="68" y="219">Answer good or bad each time</text>
+      <circle class="dot-b" cx="34" cy="260" r="15"/>
+      <text class="pill-t" x="34" y="264" text-anchor="middle">5</text>
+      <text class="ttl" x="68" y="257">Read the verdict</text>
+      <text class="m" x="68" y="275">Git names the first bad commit</text>
+      <circle class="dot-b" cx="34" cy="316" r="15"/>
+      <text class="pill-t" x="34" y="320" text-anchor="middle">6</text>
+      <text class="ttl" x="68" y="313">Finish</text>
+      <text class="m" x="68" y="331">git bisect reset</text>
+    </svg>
+    <figcaption>Bisecting for a bug</figcaption>
+  </figure>
+<pre class="term"><code><span class="p">$</span> git bisect start
+<span class="p">$</span> git bisect bad
+<span class="p">$</span> git bisect good v1.2.0
+<span class="o">Bisecting: 97 revisions left to test after this (roughly 7 steps)</span>
+<span class="p">$</span> git bisect good
+<span class="p">$</span> git bisect bad
+<span class="o">b81e6d2 is the first bad commit</span>
+<span class="p">$</span> git bisect reset</code></pre>
+
+  <h3>36.2 Automating bisect</h3>
+  <p>If you have a test that fails on the bug, let Git run it.</p>
+<pre class="term"><code><span class="p">$</span> git bisect start HEAD v1.2.0
+<span class="p">$</span> git bisect run pytest tests/test_checkout.py</code></pre>
+  <p>Git repeats the test at each step and reports the first failing commit by itself.</p>
+
+  <h3>36.3 Interactive rebase: polish history</h3>
+  <p>Before opening a pull request you may want to merge small "fix typo" commits or reword unclear messages. <b>Interactive rebase</b> does that on your own, unshared commits.</p>
+<pre class="term"><code><span class="p">$</span> git rebase -i HEAD~4</code></pre>
+  <p>An editor opens with a list, oldest commit first.</p>
+<pre class="code"><code>pick 3f2a9c1 Add login form
+pick 8e4c1b7 Fix typo
+pick a3b9d21 Add validation
+pick 7b1d2e4 Fix validation bug</code></pre>
+  <p>Change the word at the start of each line to say what to do.</p>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Command</th><th>Effect</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>pick</code></td><td>Keep the commit as it is</td></tr>
+        <tr><td><code>reword</code></td><td>Keep it but change the message</td></tr>
+        <tr><td><code>edit</code></td><td>Stop so you can change the commit's content</td></tr>
+        <tr><td><code>squash</code></td><td>Merge into the previous commit and combine the messages</td></tr>
+        <tr><td><code>fixup</code></td><td>Merge into the previous commit and discard this message</td></tr>
+        <tr><td><code>drop</code></td><td>Delete the commit</td></tr>
+      </tbody>
+    </table>
+  </div>
+<pre class="code"><code>pick 3f2a9c1 Add login form
+fixup 8e4c1b7 Fix typo
+pick a3b9d21 Add validation
+fixup 7b1d2e4 Fix validation bug</code></pre>
+  <p>Save and close. Four commits become two clean ones. You can also reorder commits by moving their lines.</p>
+
+  <h3>36.4 Fixup commits</h3>
+<pre class="term"><code><span class="p">$</span> git commit --fixup 3f2a9c1
+<span class="p">$</span> git rebase -i --autosquash HEAD~5</code></pre>
+  <p><code>--fixup</code> records a correction aimed at an earlier commit, and <code>--autosquash</code> arranges the list for you.</p>
+
+  <h3>36.5 Safety</h3>
+  <div class="callout caution">
+    <div class="t"><svg class="i"><use href="#i-stop"/></svg>Caution</div>
+    <p>Interactive rebase rewrites history, so use it only on commits that nobody else has. If something goes wrong, run <code>git rebase --abort</code>, or recover through the reflog (Chapter 35).</p>
+  </div>
+
+  <h3>36.6 Common mistakes</h3>
+  <ul>
+    <li><b>Rebasing shared commits.</b> The golden rule from Chapter 17 applies.</li>
+    <li><b>Marking the first line as <code>squash</code>.</b> There is no earlier commit to merge into.</li>
+    <li><b>Not knowing a good commit for bisect.</b> Use a release tag or an older commit that you know worked.</li>
+  </ul>
+  <div class="panel recap">
+    <div class="panel-h"><svg class="i"><use href="#i-checkc"/></svg>Quick recap</div>
+    <div class="panel-b">
+      <ul>
+        <li><code>git bisect</code> binary-searches history to find the commit that introduced a bug.</li>
+        <li><code>git bisect run &lt;command&gt;</code> automates the search.</li>
+        <li><code>git rebase -i</code> lets you reword, squash, fixup, drop and reorder commits.</li>
+        <li>Only rewrite history that is still private.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="panel quiz">
+    <div class="panel-h"><svg class="i"><use href="#i-info"/></svg>Check yourself</div>
+    <div class="panel-b">
+      <div class="q" data-a="2">
+        <p class="qt">1. Roughly how many tests does bisect need to search 1,000 commits?</p>
+        <div class="opts">
+          <button type="button" class="opt">About 500</button>
+          <button type="button" class="opt">About 100</button>
+          <button type="button" class="opt">About 10</button>
+        </div>
+        <p class="qe" hidden>Each step halves the range, so the number is about log2(1000).</p>
+      </div>
+    </div>
+  </div>
+  <div class="panel ex">
+    <div class="panel-h"><svg class="i"><use href="#i-task"/></svg>Practice exercise</div>
+    <div class="panel-b">
+      <ul class="tasks">
+        <li><input type="checkbox" data-k="ch36-1" aria-labelledby="tch36-1"><span id="tch36-1">Make four small commits, then squash the middle two with <code>git rebase -i</code>.</span></li>
+        <li><input type="checkbox" data-k="ch36-2" aria-labelledby="tch36-2"><span id="tch36-2">Introduce a bug on purpose and find it with <code>git bisect</code>.</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="nextrow"><a class="btn pri" href="#ch37">Next: Submodules, monorepos and large files</a></div>
+</article>

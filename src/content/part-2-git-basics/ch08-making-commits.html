@@ -1,0 +1,169 @@
+<article class="chapter" id="ch8" data-title="Making commits" data-part="2" data-no="8">
+  <div class="ch-meta"><span class="chip git">Part 2</span><span class="chip">Chapter 8</span><span>4 min read</span></div>
+  <h2>Making commits</h2>
+  <p class="lead">A commit is a permanent snapshot of your staged changes together with a message explaining why you made them.</p>
+
+  <h3>8.1 Your first commit</h3>
+<pre class="term"><code><span class="p">$</span> git commit -m "Add README"
+<span class="o">[main (root-commit) 3f2a9c1] Add README</span>
+<span class="o"> 1 file changed, 1 insertion(+)</span>
+<span class="o"> create mode 100644 README.md</span></code></pre>
+  <p>Let us read this output. <code>main</code> is the branch, <code>3f2a9c1</code> is the start of the commit's unique ID (its <b>hash</b>), and the last lines say what changed.</p>
+
+  <h3>8.2 What a commit contains</h3>
+  <figure class="fig">
+    <svg role="img" aria-label="Anatomy of a commit" viewBox="0 0 720 166" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="mk2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path class="arh" d="M0 0L10 5L0 10z"/>
+        </marker>
+      </defs>
+      <rect class="bx bxs stk-g" x="20.0" y="64" width="125.0" height="78" rx="10"/>
+      <text class="ttl" x="82.5" y="94" text-anchor="middle">Snapshot</text>
+      <text class="m sm" x="82.5" y="114" text-anchor="middle">Your files exactly</text>
+      <text class="m sm" x="82.5" y="129" text-anchor="middle">as staged</text>
+      <rect class="bx bxs" x="205.0" y="64" width="125.0" height="78" rx="10"/>
+      <text class="ttl" x="267.5" y="94" text-anchor="middle">Author and date</text>
+      <text class="m sm" x="267.5" y="114" text-anchor="middle">Who and when</text>
+      <rect class="bx bxs stk-o" x="390.0" y="64" width="125.0" height="78" rx="10"/>
+      <text class="ttl" x="452.5" y="94" text-anchor="middle">Message</text>
+      <text class="m sm" x="452.5" y="114" text-anchor="middle">Why the change was</text>
+      <text class="m sm" x="452.5" y="129" text-anchor="middle">made</text>
+      <rect class="bx bxs" x="575.0" y="64" width="125.0" height="78" rx="10"/>
+      <text class="ttl" x="637.5" y="94" text-anchor="middle">Parent</text>
+      <text class="m sm" x="637.5" y="114" text-anchor="middle">The previous commit</text>
+      <path class="ln2" d="M96.5 64 C96.5 18.7 253.5 18.7 253.5 64" marker-end="url(#mk2)"/>
+      <text class="mono" x="175.0" y="24.0" text-anchor="middle">stored with</text>
+      <path class="ln2" d="M281.5 64 C281.5 18.7 438.5 18.7 438.5 64" marker-end="url(#mk2)"/>
+      <text class="mono" x="360.0" y="24.0" text-anchor="middle">explained by</text>
+      <path class="ln2" d="M466.5 64 C466.5 18.7 623.5 18.7 623.5 64" marker-end="url(#mk2)"/>
+      <text class="mono" x="545.0" y="24.0" text-anchor="middle">follows</text>
+    </svg>
+    <figcaption>Anatomy of a commit</figcaption>
+  </figure>
+  <p>Every commit points to its <b>parent</b>, the commit before it. These links form the history chain that you saw in Chapter 1.</p>
+  <figure class="fig">
+    <svg role="img" aria-label="A growing history. HEAD is where you are now." viewBox="0 0 720 140" xmlns="http://www.w3.org/2000/svg">
+      <path class="eg eg-b" d="M250.0 80 L360.0 80"/>
+      <path class="eg eg-b" d="M360.0 80 L470.0 80"/>
+      <circle class="dot-b" cx="250.0" cy="80" r="11"/>
+      <text x="250.0" y="112" text-anchor="middle" class="sm">Add README</text>
+      <circle class="dot-b" cx="360.0" cy="80" r="11"/>
+      <text x="360.0" y="112" text-anchor="middle" class="sm">Add login</text>
+      <circle class="dot-b" cx="470.0" cy="80" r="11"/>
+      <text x="470.0" y="112" text-anchor="middle" class="sm">Fix typo</text>
+      <rect class="pl-b" x="445.0" y="40" width="50" height="22" rx="11"/>
+      <text class="pill-t" x="470.0" y="55" text-anchor="middle">HEAD</text>
+      <line class="ln2" x1="470.0" y1="62" x2="470.0" y2="69"/>
+      <rect class="pl-b" x="445.0" y="14" width="50" height="22" rx="11"/>
+      <text class="pill-t" x="470.0" y="29" text-anchor="middle">main</text>
+      <line class="ln2" x1="470.0" y1="36" x2="470.0" y2="69"/>
+    </svg>
+    <figcaption>A growing history. HEAD is where you are now.</figcaption>
+  </figure>
+
+  <h3>8.3 Commit command variations</h3>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Command</th><th>What it does</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>git commit -m "message"</code></td><td>Commit with a one-line message</td></tr>
+        <tr><td><code>git commit</code></td><td>Open your editor to write a longer message</td></tr>
+        <tr><td><code>git commit -a -m "message"</code></td><td>Stage all changes to tracked files, then commit</td></tr>
+        <tr><td><code>git commit --amend</code></td><td>Replace the last commit with a new one</td></tr>
+        <tr><td><code>git commit --allow-empty -m "message"</code></td><td>Create a commit with no file changes</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout note">
+    <div class="t"><svg class="i"><use href="#i-info"/></svg>Note</div>
+    <p><code>-a</code> only picks up files Git already tracks. Brand new files still need <code>git add</code>.</p>
+  </div>
+
+  <h3>8.4 Writing good commit messages</h3>
+  <p>A good message explains <b>why</b>, not just what, and makes sense to a stranger a year from now.</p>
+<pre class="code"><code>Fix crash when the username is empty
+
+The login form passed an empty string to validate(), which
+raised an exception. Return a friendly error instead.</code></pre>
+  <ul>
+    <li>Write a short first line of about 50 characters, in the imperative mood: "Add", "Fix", "Remove".</li>
+    <li>Leave a blank line, then add details only if they help.</li>
+    <li>Describe one logical change per commit.</li>
+  </ul>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Weak message</th><th>Better message</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>update</code></td><td>Add password length check to signup</td></tr>
+        <tr><td><code>fixed stuff</code></td><td>Fix off-by-one error in pagination</td></tr>
+        <tr><td><code>final version</code></td><td>Prepare release 1.2.0</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>8.5 Fixing the last commit with --amend</h3>
+  <p>You committed, then noticed a typo or a forgotten file. Amend rewrites the last commit.</p>
+<pre class="term"><code><span class="p">$</span> git add forgotten.txt
+<span class="p">$</span> git commit --amend -m "Add README and licence"</code></pre>
+  <div class="callout caution">
+    <div class="t"><svg class="i"><use href="#i-stop"/></svg>Caution</div>
+    <p>Never amend a commit that you have already pushed to a shared branch. Amending creates a different commit, and teammates who already have the old one will run into conflicts.</p>
+  </div>
+
+  <h3>8.6 Common mistakes</h3>
+  <ul>
+    <li><b>Committing with no message or a vague one.</b> Future you will not remember what "stuff" meant.</li>
+    <li><b>Huge commits that mix unrelated changes.</b> Use <code>git add -p</code> to split them.</li>
+    <li><b>Committing secrets such as passwords or API keys.</b> Removing them later is painful. Part 5 covers prevention.</li>
+  </ul>
+  <div class="panel recap">
+    <div class="panel-h"><svg class="i"><use href="#i-checkc"/></svg>Quick recap</div>
+    <div class="panel-b">
+      <ul>
+        <li>A commit is a snapshot plus author, date, message and a link to its parent.</li>
+        <li><code>git commit -m "message"</code> saves what is staged.</li>
+        <li>Write short, imperative messages that explain why.</li>
+        <li><code>--amend</code> fixes the last commit, but only before you share it.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="panel quiz">
+    <div class="panel-h"><svg class="i"><use href="#i-info"/></svg>Check yourself</div>
+    <div class="panel-b">
+      <div class="q" data-a="1">
+        <p class="qt">1. Which part of your work does a commit save?</p>
+        <div class="opts">
+          <button type="button" class="opt">Everything in the working directory</button>
+          <button type="button" class="opt">What is in the staging area</button>
+          <button type="button" class="opt">Only files you deleted</button>
+        </div>
+        <p class="qe" hidden>A commit records the staged snapshot.</p>
+      </div>
+      <div class="q" data-a="2">
+        <p class="qt">2. Which message follows good practice?</p>
+        <div class="opts">
+          <button type="button" class="opt">stuff</button>
+          <button type="button" class="opt">Fixed things finally</button>
+          <button type="button" class="opt">Add password length check to signup</button>
+        </div>
+        <p class="qe" hidden>Short, imperative and specific.</p>
+      </div>
+    </div>
+  </div>
+  <div class="panel ex">
+    <div class="panel-h"><svg class="i"><use href="#i-task"/></svg>Practice exercise</div>
+    <div class="panel-b">
+      <ul class="tasks">
+        <li><input type="checkbox" data-k="ch8-1" aria-labelledby="tch8-1"><span id="tch8-1">Make your first commit with a clear message.</span></li>
+        <li><input type="checkbox" data-k="ch8-2" aria-labelledby="tch8-2"><span id="tch8-2">Change a file, stage it, commit it, then fix the message with <code>git commit --amend</code>.</span></li>
+        <li><input type="checkbox" data-k="ch8-3" aria-labelledby="tch8-3"><span id="tch8-3">Write one commit whose message explains why, not only what.</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="nextrow"><a class="btn pri" href="#ch9">Next: Viewing history</a></div>
+</article>

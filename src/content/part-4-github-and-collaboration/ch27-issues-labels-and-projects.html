@@ -1,0 +1,133 @@
+<article class="chapter" id="ch27" data-title="Issues, labels and projects" data-part="4" data-no="27">
+  <div class="ch-meta"><span class="chip git">Part 4</span><span class="chip">Chapter 27</span><span>3 min read</span></div>
+  <h2>Issues, labels and projects</h2>
+  <p class="lead">Issues record bugs and ideas, and projects arrange them into a board, so the whole team can see what is happening.</p>
+
+  <h3>27.1 What an issue is</h3>
+  <p>An <b>issue</b> is a discussion thread about a bug, a task or a feature request. It has a title, a description, comments, an assignee and labels. Issues are numbered, such as <code>#12</code>, and you can refer to them from commits and pull requests.</p>
+
+  <h3>27.2 Writing a good issue</h3>
+  <p>A good bug report lets someone reproduce the problem without asking questions.</p>
+<pre class="code"><code>Title: Login button does nothing on Safari
+
+Steps to reproduce
+1. Open the login page in Safari 17
+2. Enter a valid email and password
+3. Click "Log in"
+
+Expected: the dashboard opens
+Actual: nothing happens and no error appears
+
+Environment: macOS 14, Safari 17.2</code></pre>
+
+  <h3>27.3 Labels, assignees and milestones</h3>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Feature</th><th>Purpose</th><th>Example</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Labels</td><td>Categorise issues</td><td><code>bug</code>, <code>enhancement</code>, <code>documentation</code>, <code>good first issue</code></td></tr>
+        <tr><td>Assignees</td><td>Say who is working on it</td><td><code>@priya</code></td></tr>
+        <tr><td>Milestones</td><td>Group issues for a release or deadline</td><td><code>v1.2.0</code></td></tr>
+        <tr><td>Projects</td><td>Show issues on a board</td><td>To do, In progress, Done</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>GitHub provides default labels, and you can add your own. The <code>good first issue</code> label is a convention that helps newcomers find easy tasks.</p>
+
+  <h3>27.4 Linking issues and code</h3>
+  <p>Mention an issue anywhere with <code>#12</code>. Use closing keywords in a pull request description or a commit message:</p>
+<pre class="code"><code>Fix login on Safari
+
+Closes #12</code></pre>
+  <p>The keywords <code>close</code>, <code>fix</code> and <code>resolve</code>, in their various forms, close the issue when the change reaches the default branch.</p>
+
+  <h3>27.5 Mentions and references</h3>
+  <ul>
+    <li><code>@username</code> notifies a person.</li>
+    <li><code>#12</code> links to an issue or pull request.</li>
+    <li>A full commit hash links to that commit.</li>
+  </ul>
+
+  <h3>27.6 GitHub Projects</h3>
+  <p>A <b>project</b> is a board or table that collects issues and pull requests from one or more repositories. You can arrange them into columns such as Backlog, In progress, In review and Done, and add fields like priority or sprint.</p>
+  <figure class="fig">
+    <svg role="img" aria-label="A simple project board flow" viewBox="0 0 720 166" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="mk8" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path class="arh" d="M0 0L10 5L0 10z"/>
+        </marker>
+      </defs>
+      <rect class="bx bxs" x="20.0" y="64" width="125.0" height="78" rx="10"/>
+      <text class="ttl" x="82.5" y="94" text-anchor="middle">Backlog</text>
+      <text class="m sm" x="82.5" y="114" text-anchor="middle">Ideas and bugs to</text>
+      <text class="m sm" x="82.5" y="129" text-anchor="middle">triage</text>
+      <rect class="bx bxs stk-o" x="205.0" y="64" width="125.0" height="78" rx="10"/>
+      <text class="ttl" x="267.5" y="94" text-anchor="middle">In progress</text>
+      <text class="m sm" x="267.5" y="114" text-anchor="middle">Someone is working</text>
+      <text class="m sm" x="267.5" y="129" text-anchor="middle">on it</text>
+      <rect class="bx bxs" x="390.0" y="64" width="125.0" height="78" rx="10"/>
+      <text class="ttl" x="452.5" y="94" text-anchor="middle">In review</text>
+      <text class="m sm" x="452.5" y="114" text-anchor="middle">Open pull request</text>
+      <rect class="bx bxs stk-g" x="575.0" y="64" width="125.0" height="78" rx="10"/>
+      <text class="ttl" x="637.5" y="94" text-anchor="middle">Done</text>
+      <text class="m sm" x="637.5" y="114" text-anchor="middle">Merged and closed</text>
+      <path class="ln2" d="M96.5 64 C96.5 18.7 253.5 18.7 253.5 64" marker-end="url(#mk8)"/>
+      <text class="mono" x="175.0" y="24.0" text-anchor="middle">start</text>
+      <path class="ln2" d="M281.5 64 C281.5 18.7 438.5 18.7 438.5 64" marker-end="url(#mk8)"/>
+      <text class="mono" x="360.0" y="24.0" text-anchor="middle">open PR</text>
+      <path class="ln2" d="M466.5 64 C466.5 18.7 623.5 18.7 623.5 64" marker-end="url(#mk8)"/>
+      <text class="mono" x="545.0" y="24.0" text-anchor="middle">merge</text>
+    </svg>
+    <figcaption>A simple project board flow</figcaption>
+  </figure>
+
+  <h3>27.7 Issue templates</h3>
+  <p>Files inside <code>.github/ISSUE_TEMPLATE/</code> give reporters a form to fill in, which makes reports more complete.</p>
+
+  <h3>27.8 Discussions</h3>
+  <p>For open-ended questions and ideas that are not tasks, repositories can turn on <b>Discussions</b>, a forum-style space separate from issues.</p>
+
+  <h3>27.9 Common mistakes</h3>
+  <ul>
+    <li><b>Vague issues</b> like "it is broken". Add steps, expected and actual results.</li>
+    <li><b>Duplicates.</b> Search before you open a new issue.</li>
+    <li><b>Issues without owners.</b> Assign someone, or label them as available.</li>
+  </ul>
+  <div class="panel recap">
+    <div class="panel-h"><svg class="i"><use href="#i-checkc"/></svg>Quick recap</div>
+    <div class="panel-b">
+      <ul>
+        <li>Issues track bugs, tasks and ideas; they are numbered and searchable.</li>
+        <li>Labels, assignees and milestones organise them.</li>
+        <li><code>Closes #n</code> links a pull request to an issue and closes it on merge.</li>
+        <li>Projects show work as a board.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="panel quiz">
+    <div class="panel-h"><svg class="i"><use href="#i-info"/></svg>Check yourself</div>
+    <div class="panel-b">
+      <div class="q" data-a="0">
+        <p class="qt">1. How do you link a pull request so that it closes issue 12 when merged?</p>
+        <div class="opts">
+          <button type="button" class="opt">Write Closes #12 in the description</button>
+          <button type="button" class="opt">Rename the branch to 12</button>
+          <button type="button" class="opt">Tag the commit 12</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="panel ex">
+    <div class="panel-h"><svg class="i"><use href="#i-task"/></svg>Practice exercise</div>
+    <div class="panel-b">
+      <ul class="tasks">
+        <li><input type="checkbox" data-k="ch27-1" aria-labelledby="tch27-1"><span id="tch27-1">Open an issue in your practice repository using the bug-report layout above.</span></li>
+        <li><input type="checkbox" data-k="ch27-2" aria-labelledby="tch27-2"><span id="tch27-2">Add two labels, assign yourself, and create a three-column project board.</span></li>
+        <li><input type="checkbox" data-k="ch27-3" aria-labelledby="tch27-3"><span id="tch27-3">Reference the issue from a pull request with <code>Closes #&lt;number&gt;</code>.</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="nextrow"><a class="btn pri" href="#ch28">Next: GitHub Pages</a></div>
+</article>

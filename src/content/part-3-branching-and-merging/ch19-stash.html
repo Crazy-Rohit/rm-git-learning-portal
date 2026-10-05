@@ -1,0 +1,88 @@
+<article class="chapter" id="ch19" data-title="Stash" data-part="3" data-no="19">
+  <div class="ch-meta"><span class="chip git">Part 3</span><span class="chip">Chapter 19</span><span>3 min read</span></div>
+  <h2>Stash</h2>
+  <p class="lead">Stash puts your unfinished work on a shelf so you can change branches with a clean working directory.</p>
+
+  <h3>19.1 The problem</h3>
+  <p>You are halfway through a change when a colleague asks for an urgent fix on another branch. Your work is not ready to commit, and Git refuses to switch because it would overwrite your edits. <b>Stash</b> solves exactly this.</p>
+
+  <h3>19.2 Basic use</h3>
+<pre class="term"><code><span class="p">$</span> git stash
+<span class="o">Saved working directory and index state WIP on feature: 8e4c1b7 Add form</span>
+<span class="p">$</span> git switch main</code></pre>
+  <p>Your working directory is now clean. Do the urgent work, then come back.</p>
+<pre class="term"><code><span class="p">$</span> git switch feature
+<span class="p">$</span> git stash pop</code></pre>
+  <p><code>pop</code> re-applies the stashed changes and removes them from the stash.</p>
+
+  <h3>19.3 Commands you will use</h3>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Command</th><th>What it does</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>git stash push -m "message"</code></td><td>Stash with a helpful name</td></tr>
+        <tr><td><code>git stash list</code></td><td>Show all stashes</td></tr>
+        <tr><td><code>git stash pop</code></td><td>Re-apply the newest stash and delete it</td></tr>
+        <tr><td><code>git stash apply</code></td><td>Re-apply but keep it in the list</td></tr>
+        <tr><td><code>git stash drop</code></td><td>Delete the newest stash</td></tr>
+        <tr><td><code>git stash show -p</code></td><td>Show what the stash contains</td></tr>
+        <tr><td><code>git stash -u</code></td><td>Include untracked files</td></tr>
+        <tr><td><code>git stash branch name</code></td><td>Create a branch from a stash</td></tr>
+      </tbody>
+    </table>
+  </div>
+<pre class="term"><code><span class="p">$</span> git stash list
+<span class="o">stash@{0}: On feature: half-finished form</span>
+<span class="o">stash@{1}: WIP on main: a3b9d21 Fix typo</span>
+<span class="p">$</span> git stash apply stash@{1}</code></pre>
+
+  <h3>19.4 What stash does not include</h3>
+  <p>By default stash saves changes to tracked files only. New files that Git has never seen stay behind unless you add <code>-u</code>. Ignored files need <code>-a</code>.</p>
+
+  <h3>19.5 Conflicts when applying</h3>
+  <p>If the branch changed since you stashed, <code>pop</code> can conflict. Resolve it like any merge conflict. After a conflict, Git keeps the stash, so nothing is lost.</p>
+
+  <h3>19.6 Common mistakes</h3>
+  <ul>
+    <li><b>Stashing and forgetting.</b> Stashes are easy to lose track of. Give each a message and clear them regularly.</li>
+    <li><b>Expecting new files to be stashed.</b> Use <code>-u</code>.</li>
+    <li><b>Using stash as long-term storage.</b> For work you want to keep, make a branch and commit.</li>
+  </ul>
+  <div class="panel recap">
+    <div class="panel-h"><svg class="i"><use href="#i-checkc"/></svg>Quick recap</div>
+    <div class="panel-b">
+      <ul>
+        <li><code>git stash</code> shelves uncommitted work; <code>git stash pop</code> brings it back.</li>
+        <li>Use <code>-m</code> to label stashes and <code>-u</code> for untracked files.</li>
+        <li><code>apply</code> keeps the stash; <code>pop</code> removes it.</li>
+        <li>For long-lived work, commit on a branch instead.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="panel quiz">
+    <div class="panel-h"><svg class="i"><use href="#i-info"/></svg>Check yourself</div>
+    <div class="panel-b">
+      <div class="q" data-a="0">
+        <p class="qt">1. Which command re-applies a stash and removes it from the list?</p>
+        <div class="opts">
+          <button type="button" class="opt">git stash pop</button>
+          <button type="button" class="opt">git stash drop</button>
+          <button type="button" class="opt">git stash list</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="panel ex">
+    <div class="panel-h"><svg class="i"><use href="#i-task"/></svg>Practice exercise</div>
+    <div class="panel-b">
+      <ul class="tasks">
+        <li><input type="checkbox" data-k="ch19-1" aria-labelledby="tch19-1"><span id="tch19-1">Edit a file without committing, then stash it and check that <code>git status</code> is clean.</span></li>
+        <li><input type="checkbox" data-k="ch19-2" aria-labelledby="tch19-2"><span id="tch19-2">Switch branches, come back, and run <code>git stash pop</code>.</span></li>
+        <li><input type="checkbox" data-k="ch19-3" aria-labelledby="tch19-3"><span id="tch19-3">Create an untracked file and stash it with <code>-u</code>.</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="nextrow"><a class="btn pri" href="#ch20">Next: Tags</a></div>
+</article>

@@ -1,0 +1,115 @@
+<article class="chapter" id="ch28" data-title="GitHub Pages" data-part="4" data-no="28">
+  <div class="ch-meta"><span class="chip git">Part 4</span><span class="chip">Chapter 28</span><span>3 min read</span></div>
+  <h2>GitHub Pages</h2>
+  <p class="lead">GitHub Pages turns a repository into a free website, with no server to manage.</p>
+
+  <h3>28.1 What Pages gives you</h3>
+  <p>GitHub Pages hosts <b>static</b> sites made of HTML, CSS and JavaScript files. It is free, serves over HTTPS and updates every time you push. It is ideal for portfolios, project documentation and landing pages. It cannot run server-side code or a database, which is why this handbook's interactive parts all run in the browser.</p>
+
+  <h3>28.2 Two kinds of site</h3>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Type</th><th>Repository name</th><th>Address</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>User site</td><td><code>your-username.github.io</code></td><td><code>https://your-username.github.io/</code></td></tr>
+        <tr><td>Project site</td><td>any name, such as <code>hello-git</code></td><td><code>https://your-username.github.io/hello-git/</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>28.3 Publishing your first page</h3>
+  <figure class="fig">
+    <svg role="img" aria-label="Publish a page in five steps" viewBox="0 0 720 296" xmlns="http://www.w3.org/2000/svg">
+      <line class="ln" x1="34" y1="36" x2="34" y2="260"/>
+      <circle class="dot-b" cx="34" cy="36" r="15"/>
+      <text class="pill-t" x="34" y="40" text-anchor="middle">1</text>
+      <text class="ttl" x="68" y="33">Create a repository</text>
+      <text class="m" x="68" y="51">For example hello-git, public</text>
+      <circle class="dot-b" cx="34" cy="92" r="15"/>
+      <text class="pill-t" x="34" y="96" text-anchor="middle">2</text>
+      <text class="ttl" x="68" y="89">Add index.html</text>
+      <text class="m" x="68" y="107">This is the page the site opens first</text>
+      <circle class="dot-b" cx="34" cy="148" r="15"/>
+      <text class="pill-t" x="34" y="152" text-anchor="middle">3</text>
+      <text class="ttl" x="68" y="145">Push to GitHub</text>
+      <text class="m" x="68" y="163">git push origin main</text>
+      <circle class="dot-b" cx="34" cy="204" r="15"/>
+      <text class="pill-t" x="34" y="208" text-anchor="middle">4</text>
+      <text class="ttl" x="68" y="201">Turn on Pages</text>
+      <text class="m" x="68" y="219">Settings, then Pages, then choose a branch and folder</text>
+      <circle class="dot-b" cx="34" cy="260" r="15"/>
+      <text class="pill-t" x="34" y="264" text-anchor="middle">5</text>
+      <text class="ttl" x="68" y="257">Open the address</text>
+      <text class="m" x="68" y="275">The site appears after a minute or two</text>
+    </svg>
+    <figcaption>Publish a page in five steps</figcaption>
+  </figure>
+<pre class="code"><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;&lt;meta charset="utf-8"&gt;&lt;title&gt;My first page&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Hello from GitHub Pages&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<pre class="term"><code><span class="p">$</span> git add index.html
+<span class="p">$</span> git commit -m "Add home page"
+<span class="p">$</span> git push origin main</code></pre>
+  <p>In the repository, open <b>Settings</b>, choose <b>Pages</b>, and under <b>Build and deployment</b> pick <b>Deploy from a branch</b>. Select <code>main</code> and the <code>/ (root)</code> folder, then save. GitHub shows the address when the deployment finishes.</p>
+
+  <h3>28.4 Using GitHub Actions to deploy</h3>
+  <p>If your site needs a build step, for example a React app or a static site generator, choose <b>GitHub Actions</b> as the source and add a workflow that builds the site and publishes the output. Chapter 31 introduces workflows.</p>
+
+  <h3>28.5 Custom domains</h3>
+  <p>In <b>Settings</b>, then <b>Pages</b>, you can enter your own domain. Create the matching DNS record at your domain registrar, and GitHub provides the HTTPS certificate.</p>
+
+  <h3>28.6 Handy tips</h3>
+  <ul>
+    <li>Put images and styles in folders and link them with relative paths.</li>
+    <li>A file named <code>404.html</code> becomes your custom error page.</li>
+    <li>A <code>.nojekyll</code> file turns off the default Jekyll processing, which helps with plain HTML projects that have folders starting with an underscore.</li>
+  </ul>
+
+  <h3>28.7 Common mistakes</h3>
+  <ul>
+    <li><b>Missing <code>index.html</code>.</b> Pages shows a 404 without it.</li>
+    <li><b>Wrong path casing.</b> File names are case sensitive on GitHub: <code>Logo.png</code> is not <code>logo.png</code>.</li>
+    <li><b>Expecting instant updates.</b> A deployment can take a minute or two.</li>
+    <li><b>Putting secrets in a Pages repository.</b> Everything published is public.</li>
+  </ul>
+  <div class="panel recap">
+    <div class="panel-h"><svg class="i"><use href="#i-checkc"/></svg>Quick recap</div>
+    <div class="panel-b">
+      <ul>
+        <li>Pages hosts free static sites straight from a repository.</li>
+        <li>User sites live at <code>username.github.io</code>; project sites in a sub-path.</li>
+        <li>Enable it under Settings, then Pages.</li>
+        <li>Use Actions to build sites that need a build step.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="panel quiz">
+    <div class="panel-h"><svg class="i"><use href="#i-info"/></svg>Check yourself</div>
+    <div class="panel-b">
+      <div class="q" data-a="1">
+        <p class="qt">1. What kind of site can GitHub Pages host?</p>
+        <div class="opts">
+          <button type="button" class="opt">A site with a database</button>
+          <button type="button" class="opt">A static site</button>
+          <button type="button" class="opt">A game server</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="panel ex">
+    <div class="panel-h"><svg class="i"><use href="#i-task"/></svg>Practice exercise</div>
+    <div class="panel-b">
+      <ul class="tasks">
+        <li><input type="checkbox" data-k="ch28-1" aria-labelledby="tch28-1"><span id="tch28-1">Publish a one-page site from a new repository and open its address.</span></li>
+        <li><input type="checkbox" data-k="ch28-2" aria-labelledby="tch28-2"><span id="tch28-2">Edit the heading, push, and watch the page update.</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="nextrow"><a class="btn pri" href="#ch29">Next: Repository hygiene</a></div>
+</article>

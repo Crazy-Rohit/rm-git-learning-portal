@@ -1,0 +1,182 @@
+<article class="chapter" id="ch39" data-title="Branching strategies" data-part="6" data-no="39">
+  <div class="ch-meta"><span class="chip git">Part 6</span><span class="chip">Chapter 39</span><span>4 min read</span></div>
+  <h2>Branching strategies</h2>
+  <p class="lead">A branching strategy is the team's agreement on how branches are named, used and merged, and the right one depends on how often you release.</p>
+
+  <h3>39.1 Why you need one</h3>
+  <p>Git lets you branch in any way you like, which is exactly the problem. Without an agreement, every developer does something different, and merging becomes painful. A strategy gives everyone the same map.</p>
+
+  <h3>39.2 GitHub Flow</h3>
+  <p>The simplest model, used by many web teams. <b><code>main</code> is always ready to deploy.</b> All work happens on short-lived branches that are merged by pull request.</p>
+  <figure class="fig">
+    <svg role="img" aria-label="GitHub Flow: short branches that merge back into main quickly" viewBox="0 0 720 282" xmlns="http://www.w3.org/2000/svg">
+      <path class="eg eg-b" d="M85.0 54 L195.0 54"/>
+      <path class="eg eg-p" d="M195.0 54 C250.0 54 250.0 138 305.0 138"/>
+      <path class="eg eg-b" d="M195.0 54 L415.0 54"/>
+      <path class="eg eg-p" d="M305.0 138 C360.0 138 360.0 54 415.0 54"/>
+      <path class="eg eg-g" d="M415.0 54 C470.0 54 470.0 222 525.0 222"/>
+      <path class="eg eg-b" d="M415.0 54 L635.0 54"/>
+      <path class="eg eg-g" d="M525.0 222 C580.0 222 580.0 54 635.0 54"/>
+      <circle class="dot-b" cx="85.0" cy="54" r="11"/>
+      <text x="85.0" y="86" text-anchor="middle" class="sm">C1</text>
+      <circle class="dot-b" cx="195.0" cy="54" r="11"/>
+      <text x="195.0" y="86" text-anchor="middle" class="sm">C2</text>
+      <circle class="dot-p" cx="305.0" cy="138" r="11"/>
+      <text x="305.0" y="170" text-anchor="middle" class="sm">F1</text>
+      <circle class="dot-b" cx="415.0" cy="54" r="11"/>
+      <text x="415.0" y="86" text-anchor="middle" class="sm">M1</text>
+      <circle class="dot-g" cx="525.0" cy="222" r="11"/>
+      <text x="525.0" y="254" text-anchor="middle" class="sm">F2</text>
+      <circle class="dot-b" cx="635.0" cy="54" r="11"/>
+      <text x="635.0" y="86" text-anchor="middle" class="sm">M2</text>
+      <rect class="pl-b" x="610.0" y="14" width="50" height="22" rx="11"/>
+      <text class="pill-t" x="635.0" y="29" text-anchor="middle">main</text>
+      <line class="ln2" x1="635.0" y1="36" x2="635.0" y2="43"/>
+    </svg>
+    <figcaption>GitHub Flow: short branches that merge back into main quickly</figcaption>
+  </figure>
+  <figure class="fig">
+    <svg role="img" aria-label="GitHub Flow in five steps" viewBox="0 0 720 296" xmlns="http://www.w3.org/2000/svg">
+      <line class="ln" x1="34" y1="36" x2="34" y2="260"/>
+      <circle class="dot-b" cx="34" cy="36" r="15"/>
+      <text class="pill-t" x="34" y="40" text-anchor="middle">1</text>
+      <text class="ttl" x="68" y="33">Branch from main</text>
+      <text class="m" x="68" y="51">Name it for the work, such as fix-login</text>
+      <circle class="dot-b" cx="34" cy="92" r="15"/>
+      <text class="pill-t" x="34" y="96" text-anchor="middle">2</text>
+      <text class="ttl" x="68" y="89">Commit and push</text>
+      <text class="m" x="68" y="107">Small, clear commits</text>
+      <circle class="dot-b" cx="34" cy="148" r="15"/>
+      <text class="pill-t" x="34" y="152" text-anchor="middle">3</text>
+      <text class="ttl" x="68" y="145">Open a pull request</text>
+      <text class="m" x="68" y="163">Discuss and review</text>
+      <circle class="dot-b" cx="34" cy="204" r="15"/>
+      <text class="pill-t" x="34" y="208" text-anchor="middle">4</text>
+      <text class="ttl" x="68" y="201">Pass the checks</text>
+      <text class="m" x="68" y="219">Tests and review must succeed</text>
+      <circle class="dot-b" cx="34" cy="260" r="15"/>
+      <text class="pill-t" x="34" y="264" text-anchor="middle">5</text>
+      <text class="ttl" x="68" y="257">Merge and deploy</text>
+      <text class="m" x="68" y="275">main is released, the branch is deleted</text>
+    </svg>
+    <figcaption>GitHub Flow in five steps</figcaption>
+  </figure>
+
+  <h3>39.3 Git Flow</h3>
+  <p>A heavier model for software with versions and scheduled releases, such as mobile apps and libraries. It has permanent branches (<code>main</code> and <code>develop</code>) and temporary ones (<code>feature</code>, <code>release</code>, <code>hotfix</code>).</p>
+  <figure class="fig">
+    <svg role="img" aria-label="Git Flow: features merge into develop, and releases flow into main" viewBox="0 0 720 282" xmlns="http://www.w3.org/2000/svg">
+      <path class="eg eg-p" d="M85.0 54 C140.0 54 140.0 138 195.0 138"/>
+      <path class="eg eg-g" d="M195.0 138 C250.0 138 250.0 222 305.0 222"/>
+      <path class="eg eg-g" d="M305.0 222 L415.0 222"/>
+      <path class="eg eg-p" d="M195.0 138 L525.0 138"/>
+      <path class="eg eg-g" d="M415.0 222 C470.0 222 470.0 138 525.0 138"/>
+      <path class="eg eg-b" d="M85.0 54 L635.0 54"/>
+      <path class="eg eg-p" d="M525.0 138 C580.0 138 580.0 54 635.0 54"/>
+      <circle class="dot-b" cx="85.0" cy="54" r="11"/>
+      <text x="85.0" y="86" text-anchor="middle" class="sm">v1.0</text>
+      <circle class="dot-p" cx="195.0" cy="138" r="11"/>
+      <text x="195.0" y="170" text-anchor="middle" class="sm">D1</text>
+      <circle class="dot-g" cx="305.0" cy="222" r="11"/>
+      <text x="305.0" y="254" text-anchor="middle" class="sm">F1</text>
+      <circle class="dot-g" cx="415.0" cy="222" r="11"/>
+      <text x="415.0" y="254" text-anchor="middle" class="sm">F2</text>
+      <circle class="dot-p" cx="525.0" cy="138" r="11"/>
+      <text x="525.0" y="170" text-anchor="middle" class="sm">D2</text>
+      <circle class="dot-b" cx="635.0" cy="54" r="11"/>
+      <text x="635.0" y="86" text-anchor="middle" class="sm">v1.1</text>
+      <rect class="pl-o" x="60.0" y="14" width="50" height="22" rx="11"/>
+      <text class="pill-t" x="85.0" y="29" text-anchor="middle">v1.0</text>
+      <line class="ln2" x1="85.0" y1="36" x2="85.0" y2="43"/>
+      <rect class="pl-o" x="610.0" y="14" width="50" height="22" rx="11"/>
+      <text class="pill-t" x="635.0" y="29" text-anchor="middle">v1.1</text>
+      <line class="ln2" x1="635.0" y1="36" x2="635.0" y2="43"/>
+      <rect class="pl-p" x="488.0" y="98" width="74" height="22" rx="11"/>
+      <text class="pill-t" x="525.0" y="113" text-anchor="middle">develop</text>
+      <line class="ln2" x1="525.0" y1="120" x2="525.0" y2="127"/>
+    </svg>
+    <figcaption>Git Flow: features merge into develop, and releases flow into main</figcaption>
+  </figure>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Branch</th><th>Purpose</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>main</code></td><td>Released code only, tagged with versions</td></tr>
+        <tr><td><code>develop</code></td><td>Integration of finished features</td></tr>
+        <tr><td><code>feature/*</code></td><td>One feature each, branched from and merged back into <code>develop</code></td></tr>
+        <tr><td><code>release/*</code></td><td>Final fixes before a release</td></tr>
+        <tr><td><code>hotfix/*</code></td><td>Urgent fixes branched from <code>main</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>39.4 Trunk-based development</h3>
+  <p>Everyone works on one shared branch, the <b>trunk</b> (<code>main</code>). Changes are tiny and merged at least daily, directly or through very short-lived branches. Unfinished features are hidden behind <b>feature flags</b>, switches that turn code on or off without a new deployment. It is the style used by many large teams that deploy continuously, and it relies on strong automated tests.</p>
+
+  <h3>39.5 Comparing them</h3>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th></th><th>GitHub Flow</th><th>Git Flow</th><th>Trunk-based</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Long-lived branches</td><td><code>main</code></td><td><code>main</code>, <code>develop</code></td><td><code>main</code></td></tr>
+        <tr><td>Branch lifetime</td><td>Days</td><td>Days to weeks</td><td>Hours to a day</td></tr>
+        <tr><td>Release style</td><td>Continuous</td><td>Scheduled versions</td><td>Continuous</td></tr>
+        <tr><td>Complexity</td><td>Low</td><td>High</td><td>Low, but needs discipline</td></tr>
+        <tr><td>Needs strong CI</td><td>Yes</td><td>Helpful</td><td>Essential</td></tr>
+        <tr><td>Best for</td><td>Web apps and small teams</td><td>Packaged software with versions</td><td>Mature teams that deploy often</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>39.6 How to choose</h3>
+  <ul>
+    <li>Deploy several times a week? Start with <b>GitHub Flow</b>.</li>
+    <li>Ship numbered versions and support older ones? Consider <b>Git Flow</b>, or a simplified release-branch version of it.</li>
+    <li>Have excellent tests and an experienced team? Try <b>trunk-based development</b>.</li>
+  </ul>
+
+  <h3>39.7 Common mistakes</h3>
+  <ul>
+    <li><b>Choosing Git Flow because it looks professional.</b> It adds overhead that small teams do not need.</li>
+    <li><b>Long-lived feature branches.</b> The longer a branch lives, the worse the conflicts.</li>
+    <li><b>Having a strategy nobody wrote down.</b> Put it in <code>CONTRIBUTING.md</code>.</li>
+  </ul>
+  <div class="panel recap">
+    <div class="panel-h"><svg class="i"><use href="#i-checkc"/></svg>Quick recap</div>
+    <div class="panel-b">
+      <ul>
+        <li>A branching strategy is a shared agreement on how work flows.</li>
+        <li>GitHub Flow: short branches and always-deployable <code>main</code>.</li>
+        <li>Git Flow: <code>develop</code>, <code>release</code> and <code>hotfix</code> branches for versioned software.</li>
+        <li>Trunk-based: tiny, frequent merges and feature flags.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="panel quiz">
+    <div class="panel-h"><svg class="i"><use href="#i-info"/></svg>Check yourself</div>
+    <div class="panel-b">
+      <div class="q" data-a="0">
+        <p class="qt">1. Which strategy fits a web app that deploys several times a day?</p>
+        <div class="opts">
+          <button type="button" class="opt">GitHub Flow or trunk-based</button>
+          <button type="button" class="opt">Git Flow with long release branches</button>
+          <button type="button" class="opt">No branches at all</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="panel ex">
+    <div class="panel-h"><svg class="i"><use href="#i-task"/></svg>Practice exercise</div>
+    <div class="panel-b">
+      <ul class="tasks">
+        <li><input type="checkbox" data-k="ch39-1" aria-labelledby="tch39-1"><span id="tch39-1">Write a short branching policy for your team and add it to <code>CONTRIBUTING.md</code>.</span></li>
+        <li><input type="checkbox" data-k="ch39-2" aria-labelledby="tch39-2"><span id="tch39-2">Practise one full GitHub Flow cycle: branch, commit, pull request, merge, delete.</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="nextrow"><a class="btn pri" href="#ch40">Next: Team best practices</a></div>
+</article>

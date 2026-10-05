@@ -1,0 +1,71 @@
+<article class="chapter" id="ch12" data-title="Renaming and deleting files" data-part="2" data-no="12">
+  <div class="ch-meta"><span class="chip git">Part 2</span><span class="chip">Chapter 12</span><span>3 min read</span></div>
+  <h2>Renaming and deleting files</h2>
+  <p class="lead">Git tracks file moves and deletions too, and the right commands keep the history clean.</p>
+
+  <h3>12.1 Deleting a tracked file</h3>
+<pre class="term"><code><span class="p">$</span> git rm old-notes.txt
+<span class="o">rm 'old-notes.txt'</span>
+<span class="p">$</span> git status
+<span class="o">Changes to be committed:</span>
+<span class="o">	deleted:    old-notes.txt</span>
+<span class="p">$</span> git commit -m "Remove old notes"</code></pre>
+  <p><code>git rm</code> deletes the file from disk and stages the deletion in one step. If you delete a file in your file explorer instead, Git notices it as an unstaged deletion. Stage it with <code>git add -A</code> or <code>git rm &lt;file&gt;</code>.</p>
+
+  <h3>12.2 Stop tracking but keep the file</h3>
+<pre class="term"><code><span class="p">$</span> git rm --cached config.local</code></pre>
+  <p>This removes the file from Git's tracking but leaves it on disk. Pair it with <code>.gitignore</code> (Chapter 10).</p>
+
+  <h3>12.3 Renaming and moving</h3>
+<pre class="term"><code><span class="p">$</span> git mv draft.txt final.txt
+<span class="p">$</span> git status
+<span class="o">Changes to be committed:</span>
+<span class="o">	renamed:    draft.txt -&gt; final.txt</span></code></pre>
+  <p><code>git mv</code> is the same as renaming the file yourself and then running <code>git add</code> on both names. Git does not store renames explicitly. It detects them by comparing contents, so a rename plus tiny edits is still recognised.</p>
+
+  <h3>12.4 Restoring a deleted file</h3>
+  <p>Deleted something by mistake? It is still in history.</p>
+<pre class="term"><code><span class="p">$</span> git restore old-notes.txt
+<span class="p">$</span> git restore --source=HEAD~2 old-notes.txt</code></pre>
+  <p>The second form brings the file back from two commits ago.</p>
+
+  <h3>12.5 Common mistakes</h3>
+  <ul>
+    <li><b>Deleting with the file explorer and forgetting to stage.</b> The deletion is not committed until you stage it.</li>
+    <li><b>Renaming and changing a file in one commit.</b> If too much changes, Git may not recognise the rename. Rename first, commit, then edit.</li>
+  </ul>
+  <div class="panel recap">
+    <div class="panel-h"><svg class="i"><use href="#i-checkc"/></svg>Quick recap</div>
+    <div class="panel-b">
+      <ul>
+        <li><code>git rm</code> deletes and stages the deletion.</li>
+        <li><code>git rm --cached</code> stops tracking but keeps the file.</li>
+        <li><code>git mv</code> renames or moves a file and stages the change.</li>
+        <li>Deleted files can be brought back from history with <code>git restore</code>.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="panel quiz">
+    <div class="panel-h"><svg class="i"><use href="#i-info"/></svg>Check yourself</div>
+    <div class="panel-b">
+      <div class="q" data-a="1">
+        <p class="qt">1. Which command stops tracking a file but keeps it on disk?</p>
+        <div class="opts">
+          <button type="button" class="opt">git rm file</button>
+          <button type="button" class="opt">git rm --cached file</button>
+          <button type="button" class="opt">git mv file</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="panel ex">
+    <div class="panel-h"><svg class="i"><use href="#i-task"/></svg>Practice exercise</div>
+    <div class="panel-b">
+      <ul class="tasks">
+        <li><input type="checkbox" data-k="ch12-1" aria-labelledby="tch12-1"><span id="tch12-1">Rename a file with <code>git mv</code> and commit the change.</span></li>
+        <li><input type="checkbox" data-k="ch12-2" aria-labelledby="tch12-2"><span id="tch12-2">Delete a file with <code>git rm</code>, commit, then bring it back with <code>git restore --source</code>.</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="nextrow"><a class="btn pri" href="#ch13">Next: How Git stores data</a></div>
+</article>

@@ -1,0 +1,104 @@
+<article class="chapter" id="ch26" data-title="Code review" data-part="4" data-no="26">
+  <div class="ch-meta"><span class="chip git">Part 4</span><span class="chip">Chapter 26</span><span>3 min read</span></div>
+  <h2>Code review</h2>
+  <p class="lead">Review is where teammates catch bugs, share knowledge and keep quality high, and a kind, clear style makes it work.</p>
+
+  <h3>26.1 Why review code</h3>
+  <p>Another pair of eyes finds problems the author no longer sees. Review also spreads knowledge across the team, so no part of the project is understood by only one person.</p>
+
+  <h3>26.2 How a review works on GitHub</h3>
+  <p>Open <b>Files changed</b>. Hover over a line, select the <b>+</b> button and leave a comment. When you finish, choose <b>Review changes</b> and pick one of three options.</p>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Choice</th><th>Meaning</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Comment</td><td>General feedback without approving or blocking</td></tr>
+        <tr><td>Approve</td><td>The change is good to merge</td></tr>
+        <tr><td>Request changes</td><td>The author must address issues before merging</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>26.3 Suggested changes</h3>
+  <p>Inside a comment, choose the <b>Add a suggestion</b> button. GitHub inserts a special block that you edit to hold the replacement text, for example:</p>
+<pre class="code"><code>total = price * quantity</code></pre>
+  <p>The author accepts it with <b>Commit suggestion</b>, and GitHub makes the commit for them. Suggestions are ideal for typos and small fixes.</p>
+
+  <h3>26.4 What to look for</h3>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Area</th><th>Questions</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Correctness</td><td>Does it do what the description says? Are edge cases handled?</td></tr>
+        <tr><td>Tests</td><td>Are there tests, and do they pass?</td></tr>
+        <tr><td>Readability</td><td>Are names clear? Is anything too complicated?</td></tr>
+        <tr><td>Security</td><td>Any secrets, unsafe input or risky permissions?</td></tr>
+        <tr><td>Scope</td><td>Is the change focused, or did unrelated edits slip in?</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>26.5 Writing helpful comments</h3>
+  <ul>
+    <li>Comment on the code, not the person: "This loop can skip the last item" rather than "You made a mistake".</li>
+    <li>Explain <b>why</b>, and offer an alternative when you can.</li>
+    <li>Label small preferences, for example "nit:" for style points that need not block merging.</li>
+    <li>Praise good work. It is part of a review too.</li>
+  </ul>
+
+  <h3>26.6 Receiving feedback</h3>
+  <ul>
+    <li>Assume good intent. Reviewers want the project to succeed.</li>
+    <li>Reply to every comment, even if only to say "Done".</li>
+    <li>Disagree politely with reasons, and ask questions if something is unclear.</li>
+    <li>Push fixes as new commits, then click <b>Resolve conversation</b> once addressed.</li>
+  </ul>
+
+  <h3>26.7 Requesting a review</h3>
+  <p>Use the <b>Reviewers</b> panel on the right of the pull request. A file called <code>CODEOWNERS</code> (Chapter 33) can add the right reviewers automatically.</p>
+
+  <h3>26.8 Common mistakes</h3>
+  <ul>
+    <li><b>Approving without reading.</b> A rubber stamp helps nobody.</li>
+    <li><b>Rewriting the author's design in comments.</b> Discuss big design questions before the code is written.</li>
+    <li><b>Waiting days to review.</b> Slow feedback blocks the team. Aim to respond within a working day.</li>
+  </ul>
+  <div class="panel recap">
+    <div class="panel-h"><svg class="i"><use href="#i-checkc"/></svg>Quick recap</div>
+    <div class="panel-b">
+      <ul>
+        <li>Reviews catch bugs and share knowledge.</li>
+        <li>Choose Comment, Approve or Request changes when you finish.</li>
+        <li>Be specific, kind and focused on the code.</li>
+        <li>Reply to comments and resolve conversations as you fix them.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="panel quiz">
+    <div class="panel-h"><svg class="i"><use href="#i-info"/></svg>Check yourself</div>
+    <div class="panel-b">
+      <div class="q" data-a="2">
+        <p class="qt">1. Which review choice blocks a pull request until the author responds?</p>
+        <div class="opts">
+          <button type="button" class="opt">Comment</button>
+          <button type="button" class="opt">Approve</button>
+          <button type="button" class="opt">Request changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="panel ex">
+    <div class="panel-h"><svg class="i"><use href="#i-task"/></svg>Practice exercise</div>
+    <div class="panel-b">
+      <ul class="tasks">
+        <li><input type="checkbox" data-k="ch26-1" aria-labelledby="tch26-1"><span id="tch26-1">Open a pull request in a practice repository with a friend, and leave three comments, one of them a suggestion.</span></li>
+        <li><input type="checkbox" data-k="ch26-2" aria-labelledby="tch26-2"><span id="tch26-2">Apply a suggestion as the author and resolve the conversation.</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="nextrow"><a class="btn pri" href="#ch27">Next: Issues, labels and projects</a></div>
+</article>

@@ -1,0 +1,104 @@
+<article class="chapter" id="ch35" data-title="Reflog and recovery" data-part="5" data-no="35">
+  <div class="ch-meta"><span class="chip git">Part 5</span><span class="chip">Chapter 35</span><span>3 min read</span></div>
+  <h2>Reflog and recovery</h2>
+  <p class="lead">Git rarely loses committed work, and the reflog is the diary that lets you find it again.</p>
+
+  <h3>35.1 The safety net</h3>
+  <p>You ran <code>git reset --hard</code> and your commits disappeared from <code>git log</code>. They are not truly gone. Git keeps a private diary, the <b>reflog</b>, of every place HEAD has pointed. As long as a commit appears in it, you can bring it back.</p>
+<pre class="term"><code><span class="p">$</span> git reflog
+<span class="o">9a1c4e7 HEAD@{0}: reset: moving to HEAD~2</span>
+<span class="o">b81e6d2 HEAD@{1}: commit: Add search</span>
+<span class="o">3f2a9c1 HEAD@{2}: commit: Add login</span></code></pre>
+  <p>Entry <code>HEAD@{1}</code> is the commit that the reset made unreachable.</p>
+  <figure class="fig">
+    <svg role="img" aria-label="Reset moved main back, but the reflog still remembers C3" viewBox="0 0 720 140" xmlns="http://www.w3.org/2000/svg">
+      <path class="eg eg-b" d="M250.0 80 L360.0 80"/>
+      <path class="eg eg-b" d="M360.0 80 L470.0 80"/>
+      <circle class="dot-b" cx="250.0" cy="80" r="11"/>
+      <text x="250.0" y="112" text-anchor="middle" class="sm">C1</text>
+      <circle class="dot-b" cx="360.0" cy="80" r="11"/>
+      <text x="360.0" y="112" text-anchor="middle" class="sm">C2</text>
+      <circle class="dot-b" cx="470.0" cy="80" r="11"/>
+      <text x="470.0" y="112" text-anchor="middle" class="sm">C3 (lost)</text>
+      <rect class="pl-b" x="225.0" y="40" width="50" height="22" rx="11"/>
+      <text class="pill-t" x="250.0" y="55" text-anchor="middle">main</text>
+      <line class="ln2" x1="250.0" y1="62" x2="250.0" y2="69"/>
+      <rect class="pl-b" x="225.0" y="14" width="50" height="22" rx="11"/>
+      <text class="pill-t" x="250.0" y="29" text-anchor="middle">HEAD</text>
+      <line class="ln2" x1="250.0" y1="36" x2="250.0" y2="69"/>
+    </svg>
+    <figcaption>Reset moved main back, but the reflog still remembers C3</figcaption>
+  </figure>
+
+  <h3>35.2 Recovering a lost commit</h3>
+<pre class="term"><code><span class="p">$</span> git switch -c rescue b81e6d2
+<span class="p">$</span> git reset --hard b81e6d2</code></pre>
+  <p>Creating a branch at the old hash is the safest form, because it adds a label to the commit without moving anything else. You can also reset the current branch back to the entry shown by the reflog:</p>
+<pre class="term"><code><span class="p">$</span> git reset --hard HEAD@{1}</code></pre>
+
+  <h3>35.3 Typical rescue stories</h3>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Situation</th><th>What to do</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Reset too far</td><td>Find the old tip in <code>git reflog</code> and reset to it</td></tr>
+        <tr><td>Deleted a branch by mistake</td><td>Find its last commit in the reflog and <code>git switch -c name &lt;hash&gt;</code></td></tr>
+        <tr><td>Bad rebase</td><td>Find the entry before the rebase started and reset to it</td></tr>
+        <tr><td>Commits made in a detached HEAD</td><td>The reflog lists them; create a branch at the hash</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>35.4 Per-branch reflog</h3>
+<pre class="term"><code><span class="p">$</span> git reflog show feature</code></pre>
+  <p>Each branch also has its own history of movements.</p>
+
+  <h3>35.5 How long entries last</h3>
+  <p>Reflog entries are kept for a limited time, by default about 90 days for reachable entries and 30 days for unreachable ones, after which Git's clean-up can remove them. Recover work soon rather than later.</p>
+
+  <h3>35.6 When the reflog is not enough</h3>
+  <p>Work that was <b>never committed</b> is not in the reflog. A file you edited and discarded with <code>git restore</code> cannot be recovered by Git. Commit early and often to give Git something to remember. For objects not reachable even from the reflog, <code>git fsck --lost-found</code> can list dangling commits, which is a last resort.</p>
+
+  <h3>35.7 Common mistakes</h3>
+  <ul>
+    <li><b>Panicking and running more commands.</b> Stop and read the reflog first.</li>
+    <li><b>Expecting to recover uncommitted work.</b> Git cannot restore what it never saw.</li>
+    <li><b>Waiting weeks.</b> Old unreachable entries are eventually cleaned up.</li>
+  </ul>
+  <div class="panel recap">
+    <div class="panel-h"><svg class="i"><use href="#i-checkc"/></svg>Quick recap</div>
+    <div class="panel-b">
+      <ul>
+        <li>The reflog records where HEAD and branches pointed.</li>
+        <li>Find the lost commit hash in <code>git reflog</code>, then create a branch at it.</li>
+        <li>Entries expire after a while, so act soon.</li>
+        <li>Uncommitted work cannot be recovered from the reflog.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="panel quiz">
+    <div class="panel-h"><svg class="i"><use href="#i-info"/></svg>Check yourself</div>
+    <div class="panel-b">
+      <div class="q" data-a="1">
+        <p class="qt">1. You ran git reset --hard and lost commits. What should you try first?</p>
+        <div class="opts">
+          <button type="button" class="opt">Reinstall Git</button>
+          <button type="button" class="opt">git reflog to find the old commit hash</button>
+          <button type="button" class="opt">Delete the .git folder</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="panel ex">
+    <div class="panel-h"><svg class="i"><use href="#i-task"/></svg>Practice exercise</div>
+    <div class="panel-b">
+      <ul class="tasks">
+        <li><input type="checkbox" data-k="ch35-1" aria-labelledby="tch35-1"><span id="tch35-1">Make three commits, reset hard back two, then recover them using <code>git reflog</code>.</span></li>
+        <li><input type="checkbox" data-k="ch35-2" aria-labelledby="tch35-2"><span id="tch35-2">Delete a branch with <code>-D</code> and bring it back.</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="nextrow"><a class="btn pri" href="#ch36">Next: Bisect and interactive rebase</a></div>
+</article>

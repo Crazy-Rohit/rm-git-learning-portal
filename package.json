@@ -1,0 +1,15 @@
+{
+  "name": "rm-git-learning-portal",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Git Learning Portal by Rohit Manna. Handbook source is in src/. The site and the stage 1 verifier live beside it.",
+  "scripts": {
+    "build": "npm run build --prefix site",
+    "build:handbook": "node build.js",
+    "test": "npm test --prefix verifier",
+    "dev": "npm run dev --prefix site"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

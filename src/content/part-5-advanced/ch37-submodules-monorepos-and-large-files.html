@@ -1,0 +1,100 @@
+<article class="chapter" id="ch37" data-title="Submodules, monorepos and large files" data-part="5" data-no="37">
+  <div class="ch-meta"><span class="chip git">Part 5</span><span class="chip">Chapter 37</span><span>3 min read</span></div>
+  <h2>Submodules, monorepos and large files</h2>
+  <p class="lead">Big projects need tools for sharing code between repositories and storing large files, and each has trade-offs.</p>
+
+  <h3>37.1 Submodules: a repository inside a repository</h3>
+  <p>A <b>submodule</b> pins another repository at an exact commit inside yours. It is useful when you depend on a shared library that lives in its own repository.</p>
+<pre class="term"><code><span class="p">$</span> git submodule add https://github.com/example/shared-lib.git libs/shared-lib
+<span class="p">$</span> git commit -m "Add shared-lib as a submodule"</code></pre>
+  <p>Git records the submodule's address in <code>.gitmodules</code> and the commit it points to. Cloning needs one more flag, or the folder will be empty.</p>
+<pre class="term"><code><span class="p">$</span> git clone --recurse-submodules https://github.com/you/app.git
+<span class="p">$</span> git submodule update --init --recursive
+<span class="p">$</span> git submodule update --remote</code></pre>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Pros</th><th>Cons</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Exact, reproducible version of the dependency</td><td>Extra steps for every clone and update</td></tr>
+        <tr><td>Library stays in one place</td><td>Easy to forget to commit the new pointer</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Often a package manager (pip, npm, Maven) is simpler for libraries. Consider submodules when you need the source and its history together.</p>
+
+  <h3>37.2 Monorepo or many repositories</h3>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th></th><th>Monorepo</th><th>Many repositories</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Structure</td><td>All projects in one repository</td><td>One repository per project</td></tr>
+        <tr><td>Sharing code</td><td>Easy, one commit can change several parts</td><td>Needs published packages</td></tr>
+        <tr><td>Permissions</td><td>Harder to restrict one part</td><td>Per-repository access</td></tr>
+        <tr><td>Scale</td><td>Needs tooling as it grows</td><td>Many repositories to manage</td></tr>
+        <tr><td>Used by</td><td>Large engineering teams with strong tooling</td><td>Most small teams</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Very large repositories can use <b>sparse checkout</b>, which downloads only some folders, and <b>partial clone</b>, which downloads file contents on demand.</p>
+<pre class="term"><code><span class="p">$</span> git clone --filter=blob:none https://github.com/example/big-repo.git
+<span class="p">$</span> git sparse-checkout set services/api</code></pre>
+
+  <h3>37.3 Large files and Git LFS</h3>
+  <p>Git stores every version of every file forever, so large binary files such as videos, datasets and design files make a repository huge. GitHub warns about files over 50 MB and blocks files over 100 MB. <b>Git LFS</b> (Large File Storage) keeps lightweight pointer files in Git and stores the real content on a separate server.</p>
+<pre class="term"><code><span class="p">$</span> git lfs install
+<span class="p">$</span> git lfs track "*.psd"
+<span class="p">$</span> git add .gitattributes
+<span class="p">$</span> git add design.psd
+<span class="p">$</span> git commit -m "Add design file with LFS"</code></pre>
+  <p>Tracking rules are saved in <code>.gitattributes</code>, which you commit.</p>
+  <div class="callout warning">
+    <div class="t"><svg class="i"><use href="#i-warn"/></svg>Warning</div>
+    <p>Track files with LFS <b>before</b> committing them. Files already in history stay there and keep the repository large. Moving them later needs <code>git lfs migrate</code>, which rewrites history.</p>
+  </div>
+  <p>GitHub gives each account a limited LFS storage and bandwidth allowance, so check the current limits for your plan. Datasets that change often are better kept in dedicated tools for data versioning or in cloud storage.</p>
+
+  <h3>37.4 Common mistakes</h3>
+  <ul>
+    <li><b>Cloning a repository with submodules and getting empty folders.</b> Use <code>--recurse-submodules</code>.</li>
+    <li><b>Committing large datasets to normal Git.</b> Use LFS or external storage.</li>
+    <li><b>Moving to a monorepo without build tooling.</b> Builds and tests become slow.</li>
+  </ul>
+  <div class="panel recap">
+    <div class="panel-h"><svg class="i"><use href="#i-checkc"/></svg>Quick recap</div>
+    <div class="panel-b">
+      <ul>
+        <li>Submodules pin another repository at a specific commit.</li>
+        <li>Clone with <code>--recurse-submodules</code>.</li>
+        <li>Monorepos suit big teams with tooling; separate repositories suit most others.</li>
+        <li>Use Git LFS for large binary files, and set it up before committing them.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="panel quiz">
+    <div class="panel-h"><svg class="i"><use href="#i-info"/></svg>Check yourself</div>
+    <div class="panel-b">
+      <div class="q" data-a="1">
+        <p class="qt">1. Why is the folder of a submodule empty after a normal clone?</p>
+        <div class="opts">
+          <button type="button" class="opt">The submodule was deleted</button>
+          <button type="button" class="opt">Submodules need --recurse-submodules or an init and update</button>
+          <button type="button" class="opt">Git does not support submodules</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="panel ex">
+    <div class="panel-h"><svg class="i"><use href="#i-task"/></svg>Practice exercise</div>
+    <div class="panel-b">
+      <ul class="tasks">
+        <li><input type="checkbox" data-k="ch37-1" aria-labelledby="tch37-1"><span id="tch37-1">Add a small public repository as a submodule and clone your project with <code>--recurse-submodules</code>.</span></li>
+        <li><input type="checkbox" data-k="ch37-2" aria-labelledby="tch37-2"><span id="tch37-2">Track <code>*.zip</code> files with LFS in a practice repository.</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="nextrow"><a class="btn pri" href="#ch38">Next: Security: secrets, Dependabot and signed commits</a></div>
+</article>

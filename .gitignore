@@ -1,0 +1,12 @@
+node_modules/
+dist/
+site/public/handbook/
+*.pem
+secrets/
+.env
+.env.*
+.DS_Store
+Thumbs.db
+*.log
+.vite/
+*.tsbuildinfo

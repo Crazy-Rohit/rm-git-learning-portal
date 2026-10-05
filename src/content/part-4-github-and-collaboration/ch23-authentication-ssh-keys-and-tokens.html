@@ -1,0 +1,127 @@
+<article class="chapter" id="ch23" data-title="Authentication: SSH keys and tokens" data-part="4" data-no="23">
+  <div class="ch-meta"><span class="chip git">Part 4</span><span class="chip">Chapter 23</span><span>4 min read</span></div>
+  <h2>Authentication: SSH keys and tokens</h2>
+  <p class="lead">GitHub needs to know who you are before it accepts a push, and there are two safe ways to prove it: SSH keys and access tokens.</p>
+
+  <h3>23.1 Why passwords no longer work</h3>
+  <p>Since 2021 GitHub does not accept your account password for Git operations over HTTPS. You use either a <b>personal access token</b> or an <b>SSH key</b>. Both are safer, because they can be limited and revoked without changing your password.</p>
+
+  <h3>23.2 Option 1: SSH keys</h3>
+  <p>An SSH key is a pair of files. The <b>private key</b> stays secret on your computer. The <b>public key</b> is given to GitHub. GitHub uses the pair to check that you hold the private key, without the secret ever travelling.</p>
+  <figure class="fig">
+    <svg role="img" aria-label="Setting up an SSH key" viewBox="0 0 720 296" xmlns="http://www.w3.org/2000/svg">
+      <line class="ln" x1="34" y1="36" x2="34" y2="260"/>
+      <circle class="dot-b" cx="34" cy="36" r="15"/>
+      <text class="pill-t" x="34" y="40" text-anchor="middle">1</text>
+      <text class="ttl" x="68" y="33">Generate a key pair</text>
+      <text class="m" x="68" y="51">ssh-keygen creates a private and a public key file</text>
+      <circle class="dot-b" cx="34" cy="92" r="15"/>
+      <text class="pill-t" x="34" y="96" text-anchor="middle">2</text>
+      <text class="ttl" x="68" y="89">Start the agent</text>
+      <text class="m" x="68" y="107">ssh-agent holds your unlocked key in memory</text>
+      <circle class="dot-b" cx="34" cy="148" r="15"/>
+      <text class="pill-t" x="34" y="152" text-anchor="middle">3</text>
+      <text class="ttl" x="68" y="145">Add the private key</text>
+      <text class="m" x="68" y="163">ssh-add registers it with the agent</text>
+      <circle class="dot-b" cx="34" cy="204" r="15"/>
+      <text class="pill-t" x="34" y="208" text-anchor="middle">4</text>
+      <text class="ttl" x="68" y="201">Copy the public key</text>
+      <text class="m" x="68" y="219">Paste it into GitHub under SSH and GPG keys</text>
+      <circle class="dot-b" cx="34" cy="260" r="15"/>
+      <text class="pill-t" x="34" y="264" text-anchor="middle">5</text>
+      <text class="ttl" x="68" y="257">Test the connection</text>
+      <text class="m" x="68" y="275">ssh -T git@github.com</text>
+    </svg>
+    <figcaption>Setting up an SSH key</figcaption>
+  </figure>
+<pre class="term"><code><span class="p">$</span> ssh-keygen -t ed25519 -C "you@example.com"
+<span class="o">Generating public/private ed25519 key pair.</span>
+<span class="o">Enter file in which to save the key (/home/you/.ssh/id_ed25519):</span>
+<span class="o">Enter passphrase (empty for no passphrase):</span>
+<span class="p">$</span> eval "$(ssh-agent -s)"
+<span class="p">$</span> ssh-add ~/.ssh/id_ed25519
+<span class="p">$</span> cat ~/.ssh/id_ed25519.pub
+<span class="o">ssh-ed25519 AAAAC3Nz...example you@example.com</span></code></pre>
+  <p>Copy the whole line that starts with <code>ssh-ed25519</code>. On GitHub open <b>Settings</b>, then <b>SSH and GPG keys</b>, choose <b>New SSH key</b>, paste it and save.</p>
+<pre class="term"><code><span class="p">$</span> ssh -T git@github.com
+<span class="o">Hi your-username! You've successfully authenticated, but GitHub does not provide shell access.</span></code></pre>
+  <p>Now use the SSH form of the address:</p>
+<pre class="term"><code><span class="p">$</span> git remote set-url origin git@github.com:your-username/hello-git.git</code></pre>
+  <div class="callout important">
+    <div class="t"><svg class="i"><use href="#i-imp"/></svg>Important</div>
+    <p>Share only the file ending in <code>.pub</code>. The file without <code>.pub</code> is your private key. Never email it, paste it in chat or commit it.</p>
+  </div>
+  <p>Add a <b>passphrase</b> when asked. It protects the key if your laptop is stolen.</p>
+
+  <h3>23.3 Option 2: Personal access tokens</h3>
+  <p>A token is a long random string that acts like a password with limited powers. GitHub offers two kinds. <b>Fine-grained tokens</b> can be limited to selected repositories and permissions, and GitHub recommends them where possible. <b>Classic tokens</b> use broad scopes such as <code>repo</code>.</p>
+  <ol>
+    <li>Open <b>Settings</b>, then <b>Developer settings</b>, then <b>Personal access tokens</b>.</li>
+    <li>Create a token, choose the repositories and permissions, and set an expiry date.</li>
+    <li>Copy it immediately; GitHub shows it only once.</li>
+    <li>When Git asks for a password over HTTPS, paste the token.</li>
+  </ol>
+  <p>Git Credential Manager, which comes with Git for Windows and is available on other systems, stores the token safely so you do not paste it every time.</p>
+
+  <h3>23.4 Choosing between them</h3>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th></th><th>SSH key</th><th>Access token (HTTPS)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Setup effort</td><td>A few commands once</td><td>Create and store a token</td></tr>
+        <tr><td>Day-to-day</td><td>No prompts</td><td>Credential manager remembers it</td></tr>
+        <tr><td>Revoke</td><td>Delete the key on GitHub</td><td>Delete or expire the token</td></tr>
+        <tr><td>Good for</td><td>Your own laptop</td><td>Scripts, CI and restricted access</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>23.5 GitHub CLI shortcut</h3>
+  <p>The GitHub command-line tool <code>gh</code> can handle the login for you.</p>
+<pre class="term"><code><span class="p">$</span> gh auth login</code></pre>
+
+  <h3>23.6 Common mistakes</h3>
+  <ul>
+    <li><b>Committing a token or private key.</b> Treat it as leaked and revoke it at once.</li>
+    <li><b>Using a token with far too many permissions.</b> Give the minimum.</li>
+    <li><b>Mixing HTTPS and SSH remotes.</b> An SSH key does nothing if your remote is an <code>https://</code> address.</li>
+  </ul>
+  <div class="panel recap">
+    <div class="panel-h"><svg class="i"><use href="#i-checkc"/></svg>Quick recap</div>
+    <div class="panel-b">
+      <ul>
+        <li>Use SSH keys or personal access tokens; passwords are no longer accepted.</li>
+        <li>Keep the private key secret and give GitHub only the <code>.pub</code> file.</li>
+        <li>Fine-grained tokens with expiry dates are safest.</li>
+        <li><code>ssh -T git@github.com</code> tests an SSH setup.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="panel quiz">
+    <div class="panel-h"><svg class="i"><use href="#i-info"/></svg>Check yourself</div>
+    <div class="panel-b">
+      <div class="q" data-a="1">
+        <p class="qt">1. Which file do you upload to GitHub for SSH access?</p>
+        <div class="opts">
+          <button type="button" class="opt">id_ed25519</button>
+          <button type="button" class="opt">id_ed25519.pub</button>
+          <button type="button" class="opt">known_hosts</button>
+        </div>
+        <p class="qe" hidden>The .pub file is the public half; the other is your secret.</p>
+      </div>
+    </div>
+  </div>
+  <div class="panel ex">
+    <div class="panel-h"><svg class="i"><use href="#i-task"/></svg>Practice exercise</div>
+    <div class="panel-b">
+      <ul class="tasks">
+        <li><input type="checkbox" data-k="ch23-1" aria-labelledby="tch23-1"><span id="tch23-1">Generate an ed25519 key with a passphrase and add the public key to GitHub.</span></li>
+        <li><input type="checkbox" data-k="ch23-2" aria-labelledby="tch23-2"><span id="tch23-2">Run <code>ssh -T git@github.com</code> and confirm the greeting.</span></li>
+        <li><input type="checkbox" data-k="ch23-3" aria-labelledby="tch23-3"><span id="tch23-3">Switch your remote to the SSH address and push a commit.</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="nextrow"><a class="btn pri" href="#ch24">Next: Forks</a></div>
+</article>

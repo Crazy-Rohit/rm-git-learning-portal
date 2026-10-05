@@ -1,0 +1,16 @@
+{
+  "name": "rm-git-learning-portal-verifier",
+  "private": true,
+  "type": "module",
+  "description": "Checks a learner's public GitHub work for the Git Learning Portal.",
+  "scripts": {
+    "test": "node --test",
+    "start": "node index.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@octokit/rest": "^21.1.1"
+  }
+}

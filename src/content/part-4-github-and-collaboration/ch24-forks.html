@@ -1,0 +1,120 @@
+<article class="chapter" id="ch24" data-title="Forks" data-part="4" data-no="24">
+  <div class="ch-meta"><span class="chip git">Part 4</span><span class="chip">Chapter 24</span><span>3 min read</span></div>
+  <h2>Forks</h2>
+  <p class="lead">A fork is your own copy of someone else's repository on GitHub, which lets you propose changes to a project you do not own.</p>
+
+  <h3>24.1 Why forks exist</h3>
+  <p>You cannot push to a stranger's repository. A <b>fork</b> copies it into your account, where you have full control. You change your copy, then ask the owner to take your changes through a pull request (Chapter 25).</p>
+  <figure class="fig">
+    <svg role="img" aria-label="The fork workflow" viewBox="0 0 720 210" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="mk7" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path class="arh" d="M0 0L10 5L0 10z"/>
+        </marker>
+      </defs>
+      <rect class="bx bxs stk-g" x="20.0" y="64" width="166.7" height="78" rx="10"/>
+      <text class="ttl" x="103.3" y="94" text-anchor="middle">Upstream</text>
+      <text class="m sm" x="103.3" y="114" text-anchor="middle">Original project on GitHub</text>
+      <rect class="bx bxs stk-o" x="276.7" y="64" width="166.7" height="78" rx="10"/>
+      <text class="ttl" x="360.0" y="94" text-anchor="middle">Your fork</text>
+      <text class="m sm" x="360.0" y="114" text-anchor="middle">Your copy on GitHub</text>
+      <rect class="bx bxs" x="533.3" y="64" width="166.7" height="78" rx="10"/>
+      <text class="ttl" x="616.7" y="94" text-anchor="middle">Local clone</text>
+      <text class="m sm" x="616.7" y="114" text-anchor="middle">On your computer</text>
+      <path class="ln2" d="M117.3 64 C117.3 18.7 346.0 18.7 346.0 64" marker-end="url(#mk7)"/>
+      <text class="mono" x="231.7" y="24.0" text-anchor="middle">Fork</text>
+      <path class="ln2" d="M374.0 64 C374.0 18.7 602.7 18.7 602.7 64" marker-end="url(#mk7)"/>
+      <text class="mono" x="488.3" y="24.0" text-anchor="middle">git clone</text>
+      <path class="ln2" d="M602.7 142 C602.7 187.3 374.0 187.3 374.0 142" marker-end="url(#mk7)"/>
+      <text class="mono" x="488.3" y="194.0" text-anchor="middle">git push</text>
+      <path class="ln2" d="M346.0 142 C346.0 187.3 117.3 187.3 117.3 142" marker-end="url(#mk7)"/>
+      <text class="mono" x="231.7" y="194.0" text-anchor="middle">Pull request</text>
+    </svg>
+    <figcaption>The fork workflow</figcaption>
+  </figure>
+
+  <h3>24.2 Fork versus clone</h3>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th></th><th>Fork</th><th>Clone</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Where it happens</td><td>On GitHub, copy to your account</td><td>On your computer</td></tr>
+        <tr><td>Needs permission</td><td>No, if the repository is public</td><td>No, if you can read it</td></tr>
+        <tr><td>Purpose</td><td>Get your own writable copy online</td><td>Get files and history locally</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>You usually do both: fork on GitHub, then clone your fork.</p>
+
+  <h3>24.3 Forking step by step</h3>
+  <ol>
+    <li>Open the project's page and select <b>Fork</b>.</li>
+    <li>Choose your account and create the fork.</li>
+    <li>Clone <b>your</b> fork, not the original.</li>
+  </ol>
+<pre class="term"><code><span class="p">$</span> git clone git@github.com:your-username/project.git
+<span class="p">$</span> cd project
+<span class="p">$</span> git remote -v
+<span class="o">origin  git@github.com:your-username/project.git (fetch)</span></code></pre>
+
+  <h3>24.4 Adding the upstream remote</h3>
+  <p>The original repository is usually called <b>upstream</b>. Add it so you can pull in its new work.</p>
+<pre class="term"><code><span class="p">$</span> git remote add upstream https://github.com/original-owner/project.git
+<span class="p">$</span> git remote -v
+<span class="o">origin    git@github.com:your-username/project.git (fetch)</span>
+<span class="o">upstream  https://github.com/original-owner/project.git (fetch)</span></code></pre>
+
+  <h3>24.5 Keeping your fork up to date</h3>
+<pre class="term"><code><span class="p">$</span> git fetch upstream
+<span class="p">$</span> git switch main
+<span class="p">$</span> git merge upstream/main
+<span class="p">$</span> git push origin main</code></pre>
+  <p>GitHub also has a <b>Sync fork</b> button on your fork's page that does the same thing without the command line.</p>
+  <div class="callout tip">
+    <div class="t"><svg class="i"><use href="#i-tip"/></svg>Tip</div>
+    <p>Never work directly on your fork's <code>main</code>. Create a branch for each change, and keep <code>main</code> as a clean mirror of upstream.</p>
+  </div>
+
+  <h3>24.6 Common mistakes</h3>
+  <ul>
+    <li><b>Cloning the original instead of your fork.</b> You cannot push to it.</li>
+    <li><b>Forgetting to sync.</b> Your changes drift away from the project and conflict later.</li>
+    <li><b>Forking when you are already a collaborator.</b> If you have write access, a branch in the same repository is simpler.</li>
+  </ul>
+  <div class="panel recap">
+    <div class="panel-h"><svg class="i"><use href="#i-checkc"/></svg>Quick recap</div>
+    <div class="panel-b">
+      <ul>
+        <li>A fork is your own online copy of another repository.</li>
+        <li>Clone your fork, and add the original as <code>upstream</code>.</li>
+        <li>Keep <code>main</code> in sync with <code>git fetch upstream</code> and a merge.</li>
+        <li>Work on branches, then open a pull request to the original.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="panel quiz">
+    <div class="panel-h"><svg class="i"><use href="#i-info"/></svg>Check yourself</div>
+    <div class="panel-b">
+      <div class="q" data-a="1">
+        <p class="qt">1. Which repository should you clone to contribute to a project you do not own?</p>
+        <div class="opts">
+          <button type="button" class="opt">The original</button>
+          <button type="button" class="opt">Your fork</button>
+          <button type="button" class="opt">Neither</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="panel ex">
+    <div class="panel-h"><svg class="i"><use href="#i-task"/></svg>Practice exercise</div>
+    <div class="panel-b">
+      <ul class="tasks">
+        <li><input type="checkbox" data-k="ch24-1" aria-labelledby="tch24-1"><span id="tch24-1">Fork a practice repository, clone it, and add the <code>upstream</code> remote.</span></li>
+        <li><input type="checkbox" data-k="ch24-2" aria-labelledby="tch24-2"><span id="tch24-2">Run <code>git remote -v</code> and check you see both.</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="nextrow"><a class="btn pri" href="#ch25">Next: Pull requests</a></div>
+</article>

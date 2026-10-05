@@ -1,0 +1,63 @@
+/* Print / Save-as-PDF layout (A4, light colours). */
+/* print: A4 pages in light colours */
+@page{size:A4;margin:18mm 16mm 20mm;@bottom-center{content:"Git & GitHub Handbook · page " counter(page);font:9pt sans-serif;color:#59636e}}
+@media print{
+  :root,:root:not([data-theme="light"]),:root[data-theme="dark"]{
+    color-scheme:light;padding:0;
+    --canvas:#fff;--subtle:#f6f8fa;--border:#d1d9e0;--border-muted:#d8dee4;--fg:#1f2328;--muted:#59636e;
+    --accent:#0969da;--success:#1a7f37;--attn:#9a6700;--danger:#d1242f;--done:#8250df;
+    --code-inline:rgba(129,139,152,.15);--code-bg:#f6f8fa;
+    --term-bg:#f6f8fa;--term-fg:#1f2328;--term-border:#d1d9e0;--term-muted:#59636e;--term-prompt:#1a7f37;
+  }
+  html{scroll-padding-top:0}
+  body{font-size:11pt}
+  .top,.side,.scrim,.copy,.cta,.nextrow,.builder .fields,.tablist,.md h3 .anchor{display:none!important}
+  .shell{display:block}
+  .content{padding:0}
+  .wrap{max-width:none}
+  .cover{break-after:page;padding:0}
+  .part,.chapter{break-before:page}
+  .md h2,.md h3{break-after:avoid}
+  pre,figure,table,.callout,.panel,.steps li,.fb-row,.part{break-inside:avoid}
+  pre{white-space:pre-wrap;word-break:break-word}
+  figure.fig{overflow:visible}figure.fig svg,figure.fig figcaption{min-width:0}
+  .fbg .fb-rows{display:block!important}
+  details.qa .qa-b{display:block}
+  .opt{break-inside:avoid}
+  .tabpanel[hidden]{display:block!important}
+  .tabs{border:0}.tabpanel{padding:0}
+  .tabpanel::before{content:attr(data-label);display:block;font-weight:600;margin:8px 0 4px}
+  .fb{margin-top:24px}
+}
+
+@media print{
+  @page{margin:14mm 13mm 16mm}
+  body{font-size:10pt;line-height:1.42}
+  .md h2{font-size:19pt;margin-bottom:4px}
+  .md h3{font-size:12.5pt;margin:14px 0 6px}
+  .lead{font-size:11pt;margin-bottom:4px}
+  .md p,.md ul,.md ol{margin-bottom:7px}
+  .md li+li{margin-top:1px}
+  pre{font-size:8.2pt;line-height:1.4;padding:7px 10px;margin-bottom:8px}
+  table{font-size:8.8pt}
+  th,td{padding:3px 8px}
+  .tw{margin-bottom:8px}
+  figure.fig{padding:5px;margin-bottom:10px}
+  figure.fig svg{max-height:62mm}
+  figure.fig figcaption{font-size:8.5pt;margin-top:2px}
+  .callout{margin-bottom:8px;padding:0 .8rem}
+  .panel{margin:12px 0}
+  .panel-h{padding:5px 12px;font-size:9.5pt}
+  .panel-b{padding:8px 12px 2px}
+  .quiz .q{padding:2px 0 8px}
+  .opts{gap:3px}
+  .opt{padding:3px 8px;font-size:9pt}
+  .part{padding:16px;margin:0}
+  .part .big{font-size:40pt}
+  .part+.chapter{break-before:avoid}
+  .chapter{margin-bottom:0;padding-top:0}
+  details.qa{margin-bottom:4px}
+  details.qa summary{padding:6px 10px}
+  .ch-meta{margin-bottom:6px}
+  .steps li{padding:6px 8px;font-size:8.8pt}
+}

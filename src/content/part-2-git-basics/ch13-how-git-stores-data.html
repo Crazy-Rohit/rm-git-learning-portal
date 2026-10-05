@@ -1,0 +1,115 @@
+<article class="chapter" id="ch13" data-title="How Git stores data" data-part="2" data-no="13">
+  <div class="ch-meta"><span class="chip git">Part 2</span><span class="chip">Chapter 13</span><span>3 min read</span></div>
+  <h2>How Git stores data</h2>
+  <p class="lead">Git is a database of snapshots identified by hashes, and seeing its structure makes the commands feel logical.</p>
+
+  <h3>13.1 Snapshots, not differences</h3>
+  <p>Older tools stored a list of changes for every file. Git instead stores a <b>snapshot</b> of the whole project at each commit. Unchanged files are not copied again; the new snapshot simply points to the version that already exists. This is why branching and switching are so fast.</p>
+
+  <h3>13.2 The four object types</h3>
+  <p>Git stores everything as objects inside <code>.git/objects</code>, each named by a hash.</p>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Object</th><th>Stores</th><th>Analogy</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Blob</td><td>The contents of one file</td><td>A page of text</td></tr>
+        <tr><td>Tree</td><td>A folder: a list of names pointing to blobs and other trees</td><td>A table of contents</td></tr>
+        <tr><td>Commit</td><td>A pointer to a tree, plus author, date, message and parent</td><td>A dated photo with a caption</td></tr>
+        <tr><td>Tag</td><td>A named pointer, often to a commit</td><td>A bookmark</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <figure class="fig">
+    <svg role="img" aria-label="How one commit points to your files" viewBox="0 0 720 166" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="mk4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path class="arh" d="M0 0L10 5L0 10z"/>
+        </marker>
+      </defs>
+      <rect class="bx bxs stk-o" x="20.0" y="64" width="166.7" height="78" rx="10"/>
+      <text class="ttl" x="103.3" y="94" text-anchor="middle">Commit</text>
+      <text class="m sm" x="103.3" y="114" text-anchor="middle">Message, author, parent</text>
+      <rect class="bx bxs" x="276.7" y="64" width="166.7" height="78" rx="10"/>
+      <text class="ttl" x="360.0" y="94" text-anchor="middle">Tree</text>
+      <text class="m sm" x="360.0" y="114" text-anchor="middle">Folder listing</text>
+      <rect class="bx bxs stk-g" x="533.3" y="64" width="166.7" height="78" rx="10"/>
+      <text class="ttl" x="616.7" y="94" text-anchor="middle">Blobs</text>
+      <text class="m sm" x="616.7" y="114" text-anchor="middle">File contents</text>
+      <path class="ln2" d="M117.3 64 C117.3 18.7 346.0 18.7 346.0 64" marker-end="url(#mk4)"/>
+      <text class="mono" x="231.7" y="24.0" text-anchor="middle">points to</text>
+      <path class="ln2" d="M374.0 64 C374.0 18.7 602.7 18.7 602.7 64" marker-end="url(#mk4)"/>
+      <text class="mono" x="488.3" y="24.0" text-anchor="middle">points to</text>
+    </svg>
+    <figcaption>How one commit points to your files</figcaption>
+  </figure>
+
+  <h3>13.3 Hashes: the fingerprint of content</h3>
+  <p>Every object is named by a hash of its contents. By default Git uses SHA-1, a 40-character hexadecimal code. Identical content always gives an identical hash, and any tiny change produces a completely different one.</p>
+<pre class="term"><code><span class="p">$</span> echo "hello" | git hash-object --stdin
+<span class="o">ce013625030ba8dba906f756967f9e9ca394464a</span></code></pre>
+  <p>This is why Git history is trustworthy: a commit's hash depends on its content and its parent's hash, so changing an old commit changes every hash after it. Git also has experimental support for SHA-256 as a stronger option.</p>
+
+  <h3>13.4 Looking inside</h3>
+<pre class="term"><code><span class="p">$</span> git cat-file -t 3f2a9c1
+<span class="o">commit</span>
+<span class="p">$</span> git cat-file -p 3f2a9c1
+<span class="o">tree 8c3a1b9d0e7f2a4b6c5d8e9f0a1b2c3d4e5f6a7b</span>
+<span class="o">author Your Name &lt;you@example.com&gt; 1759640000 +0530</span>
+<span class="o">committer Your Name &lt;you@example.com&gt; 1759640000 +0530</span>
+
+<span class="o">Add README</span>
+<span class="p">$</span> git cat-file -p 8c3a1b9
+<span class="o">100644 blob 2f8d6a1b7c9e0a3b5d4c6e8f9a0b1c2d3e4f5a6b	README.md</span></code></pre>
+  <p><code>-t</code> shows the type and <code>-p</code> pretty-prints the content. The hashes above are examples; yours will differ.</p>
+
+  <h3>13.5 Branches and HEAD are just pointers</h3>
+  <p>A branch is a tiny file that holds one commit hash. <b>HEAD</b> is a file that says which branch you are on.</p>
+<pre class="term"><code><span class="p">$</span> cat .git/HEAD
+<span class="o">ref: refs/heads/main</span>
+<span class="p">$</span> cat .git/refs/heads/main
+<span class="o">9a1c4e7d2b8f0c3a5e6d7f8a9b0c1d2e3f4a5b6c</span></code></pre>
+  <p>Creating a branch means writing a 41-byte file, which explains why it is instant. Chapter 14 builds on this.</p>
+
+  <h3>13.6 Common mistakes</h3>
+  <ul>
+    <li><b>Thinking commits store only the differences.</b> They store full snapshots, efficiently shared.</li>
+    <li><b>Editing files inside <code>.git</code>.</b> Use Git commands instead, so the data stays consistent.</li>
+  </ul>
+  <div class="panel recap">
+    <div class="panel-h"><svg class="i"><use href="#i-checkc"/></svg>Quick recap</div>
+    <div class="panel-b">
+      <ul>
+        <li>Git stores snapshots as objects: blobs, trees, commits and tags.</li>
+        <li>Objects are named by a hash of their content.</li>
+        <li>A branch is a pointer to a commit; HEAD points to the current branch.</li>
+        <li>Hashes make history tamper-evident.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="panel quiz">
+    <div class="panel-h"><svg class="i"><use href="#i-info"/></svg>Check yourself</div>
+    <div class="panel-b">
+      <div class="q" data-a="1">
+        <p class="qt">1. What is a branch, inside Git?</p>
+        <div class="opts">
+          <button type="button" class="opt">A full copy of the project</button>
+          <button type="button" class="opt">A small pointer to a commit</button>
+          <button type="button" class="opt">A list of changed lines</button>
+        </div>
+        <p class="qe" hidden>Because a branch is only a pointer, creating one is instant.</p>
+      </div>
+    </div>
+  </div>
+  <div class="panel ex">
+    <div class="panel-h"><svg class="i"><use href="#i-task"/></svg>Practice exercise</div>
+    <div class="panel-b">
+      <ul class="tasks">
+        <li><input type="checkbox" data-k="ch13-1" aria-labelledby="tch13-1"><span id="tch13-1">Run <code>git cat-file -p HEAD</code> in one of your repositories and follow the tree hash.</span></li>
+        <li><input type="checkbox" data-k="ch13-2" aria-labelledby="tch13-2"><span id="tch13-2">Open <code>.git/HEAD</code> and <code>.git/refs/heads/</code> in a file explorer and find your branch.</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="nextrow"><a class="btn pri" href="#ch14">Next: Branches and HEAD</a></div>
+</article>

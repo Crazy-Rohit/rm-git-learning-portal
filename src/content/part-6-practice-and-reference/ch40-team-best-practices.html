@@ -1,0 +1,133 @@
+<article class="chapter" id="ch40" data-title="Team best practices" data-part="6" data-no="40">
+  <div class="ch-meta"><span class="chip git">Part 6</span><span class="chip">Chapter 40</span><span>3 min read</span></div>
+  <h2>Team best practices</h2>
+  <p class="lead">Good habits make a repository pleasant for everyone, and most of them take only a few seconds.</p>
+
+  <h3>40.1 Commits</h3>
+  <ul>
+    <li>Commit small and often; each commit does one thing.</li>
+    <li>Write messages in the imperative: "Add", "Fix", "Remove".</li>
+    <li>Never commit secrets, generated files or large binaries.</li>
+    <li>Make sure the project builds and the tests pass at every commit when you can.</li>
+  </ul>
+
+  <h3>40.2 Conventional commits</h3>
+  <p>Many teams add a short type prefix, which helps tools generate change logs and version numbers.</p>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Prefix</th><th>Use for</th><th>Example</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>feat</code></td><td>A new feature</td><td><code>feat: add password reset</code></td></tr>
+        <tr><td><code>fix</code></td><td>A bug fix</td><td><code>fix: handle empty cart</code></td></tr>
+        <tr><td><code>docs</code></td><td>Documentation only</td><td><code>docs: explain install steps</code></td></tr>
+        <tr><td><code>refactor</code></td><td>Code restructuring without behaviour change</td><td><code>refactor: split payment module</code></td></tr>
+        <tr><td><code>test</code></td><td>Adding or fixing tests</td><td><code>test: cover login errors</code></td></tr>
+        <tr><td><code>chore</code></td><td>Tooling and maintenance</td><td><code>chore: update dependencies</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>40.3 Branches</h3>
+  <ul>
+    <li>Name branches by purpose: <code>feature/search</code>, <code>fix/login-timeout</code>.</li>
+    <li>Keep them short-lived and delete them after merging.</li>
+    <li>Update from <code>main</code> regularly to avoid giant conflicts.</li>
+  </ul>
+
+  <h3>40.4 Pull requests</h3>
+  <ul>
+    <li>Keep them small. A few hundred changed lines at most is a good target.</li>
+    <li>Explain what and why, and link the issue.</li>
+    <li>Run the tests yourself before asking for review.</li>
+    <li>Review your own pull request first; you will catch things.</li>
+  </ul>
+
+  <h3>40.5 Reviews</h3>
+  <ul>
+    <li>Respond within a working day.</li>
+    <li>Be kind, specific and constructive (Chapter 26).</li>
+    <li>Authors fix; reviewers do not push to someone else's branch without asking.</li>
+  </ul>
+
+  <h3>40.6 Repository settings</h3>
+  <ul>
+    <li>Protect <code>main</code> and require reviews and checks (Chapter 33).</li>
+    <li>Keep a clear README, <code>CONTRIBUTING.md</code> and <code>.gitignore</code>.</li>
+    <li>Turn on Dependabot and secret scanning (Chapter 38).</li>
+    <li>Use one line-ending policy through <code>.gitattributes</code>.</li>
+  </ul>
+<pre class="code"><code># .gitattributes
+* text=auto
+*.sh text eol=lf</code></pre>
+
+  <h3>40.7 Onboarding a new teammate</h3>
+  <figure class="fig">
+    <svg role="img" aria-label="A one-hour Git onboarding" viewBox="0 0 720 296" xmlns="http://www.w3.org/2000/svg">
+      <line class="ln" x1="34" y1="36" x2="34" y2="260"/>
+      <circle class="dot-b" cx="34" cy="36" r="15"/>
+      <text class="pill-t" x="34" y="40" text-anchor="middle">1</text>
+      <text class="ttl" x="68" y="33">Install and configure Git</text>
+      <text class="m" x="68" y="51">Name, email and default branch</text>
+      <circle class="dot-b" cx="34" cy="92" r="15"/>
+      <text class="pill-t" x="34" y="96" text-anchor="middle">2</text>
+      <text class="ttl" x="68" y="89">Set up access</text>
+      <text class="m" x="68" y="107">SSH key or token and two-factor authentication</text>
+      <circle class="dot-b" cx="34" cy="148" r="15"/>
+      <text class="pill-t" x="34" y="152" text-anchor="middle">3</text>
+      <text class="ttl" x="68" y="145">Clone the project</text>
+      <text class="m" x="68" y="163">Run it and run the tests</text>
+      <circle class="dot-b" cx="34" cy="204" r="15"/>
+      <text class="pill-t" x="34" y="208" text-anchor="middle">4</text>
+      <text class="ttl" x="68" y="201">Read the guide</text>
+      <text class="m" x="68" y="219">README and CONTRIBUTING</text>
+      <circle class="dot-b" cx="34" cy="260" r="15"/>
+      <text class="pill-t" x="34" y="264" text-anchor="middle">5</text>
+      <text class="ttl" x="68" y="257">Make a first small change</text>
+      <text class="m" x="68" y="275">A typo fix through a real pull request</text>
+    </svg>
+    <figcaption>A one-hour Git onboarding</figcaption>
+  </figure>
+
+  <h3>40.8 Common mistakes</h3>
+  <ul>
+    <li><b>Different habits for each person.</b> Write the rules down once.</li>
+    <li><b>Huge, rare merges.</b> Integrate small and often.</li>
+    <li><b>Skipping reviews under pressure.</b> That is exactly when bugs slip in.</li>
+  </ul>
+  <div class="panel recap">
+    <div class="panel-h"><svg class="i"><use href="#i-checkc"/></svg>Quick recap</div>
+    <div class="panel-b">
+      <ul>
+        <li>Small, clear commits and focused pull requests keep history readable.</li>
+        <li>Conventional commit prefixes help automation.</li>
+        <li>Protect <code>main</code>, review quickly and keep documentation current.</li>
+        <li>A simple onboarding path gets newcomers productive fast.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="panel quiz">
+    <div class="panel-h"><svg class="i"><use href="#i-info"/></svg>Check yourself</div>
+    <div class="panel-b">
+      <div class="q" data-a="1">
+        <p class="qt">1. What is a good size for a pull request?</p>
+        <div class="opts">
+          <button type="button" class="opt">As large as possible</button>
+          <button type="button" class="opt">Small enough to review in one sitting</button>
+          <button type="button" class="opt">One per month</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="panel ex">
+    <div class="panel-h"><svg class="i"><use href="#i-task"/></svg>Practice exercise</div>
+    <div class="panel-b">
+      <ul class="tasks">
+        <li><input type="checkbox" data-k="ch40-1" aria-labelledby="tch40-1"><span id="tch40-1">Add a conventional-commits section and a pull request checklist to your team's <code>CONTRIBUTING.md</code>.</span></li>
+        <li><input type="checkbox" data-k="ch40-2" aria-labelledby="tch40-2"><span id="tch40-2">Write the onboarding steps for your team and test them with a new joiner.</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="nextrow"><a class="btn pri" href="#ch41">Next: Common mistakes and fixes</a></div>
+</article>

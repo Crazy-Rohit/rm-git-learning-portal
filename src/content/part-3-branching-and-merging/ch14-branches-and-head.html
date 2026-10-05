@@ -1,0 +1,165 @@
+<article class="chapter" id="ch14" data-title="Branches and HEAD" data-part="3" data-no="14">
+  <div class="ch-meta"><span class="chip git">Part 3</span><span class="chip">Chapter 14</span><span>5 min read</span></div>
+  <h2>Branches and HEAD</h2>
+  <p class="lead">A branch is a separate line of work, so you can try ideas without disturbing the stable version of your project.</p>
+
+  <h3>14.1 The idea: parallel drafts</h3>
+  <p>Writing a report, you might copy the document to try a risky rewrite. If it works you keep it, and if not you throw the copy away. A <b>branch</b> gives you that without copying any files. Your stable work stays on <code>main</code>, while the experiment lives on its own branch.</p>
+  <figure class="fig">
+    <svg role="img" aria-label="Two lines of work that share a starting point" viewBox="0 0 720 198" xmlns="http://www.w3.org/2000/svg">
+      <path class="eg eg-b" d="M195.0 54 L305.0 54"/>
+      <path class="eg eg-b" d="M305.0 54 L525.0 54"/>
+      <path class="eg eg-p" d="M305.0 54 C360.0 54 360.0 138 415.0 138"/>
+      <path class="eg eg-p" d="M415.0 138 L525.0 138"/>
+      <circle class="dot-b" cx="195.0" cy="54" r="11"/>
+      <text x="195.0" y="86" text-anchor="middle" class="sm">C1</text>
+      <circle class="dot-b" cx="305.0" cy="54" r="11"/>
+      <text x="305.0" y="86" text-anchor="middle" class="sm">C2</text>
+      <circle class="dot-b" cx="525.0" cy="54" r="11"/>
+      <text x="525.0" y="86" text-anchor="middle" class="sm">C5</text>
+      <circle class="dot-p" cx="415.0" cy="138" r="11"/>
+      <text x="415.0" y="170" text-anchor="middle" class="sm">C3</text>
+      <circle class="dot-p" cx="525.0" cy="138" r="11"/>
+      <text x="525.0" y="170" text-anchor="middle" class="sm">C4</text>
+      <rect class="pl-b" x="500.0" y="14" width="50" height="22" rx="11"/>
+      <text class="pill-t" x="525.0" y="29" text-anchor="middle">main</text>
+      <line class="ln2" x1="525.0" y1="36" x2="525.0" y2="43"/>
+      <rect class="pl-p" x="488.0" y="98" width="74" height="22" rx="11"/>
+      <text class="pill-t" x="525.0" y="113" text-anchor="middle">feature</text>
+      <line class="ln2" x1="525.0" y1="120" x2="525.0" y2="127"/>
+    </svg>
+    <figcaption>Two lines of work that share a starting point</figcaption>
+  </figure>
+  <p>Because a branch is only a pointer to a commit (Chapter 13), creating one is instant and costs almost no space.</p>
+
+  <h3>14.2 Creating and listing branches</h3>
+<pre class="term"><code><span class="p">$</span> git branch feature-login
+<span class="p">$</span> git branch
+<span class="o">  feature-login</span>
+<span class="o">* main</span></code></pre>
+  <p>The <code>*</code> marks the branch you are on. Creating a branch does not move you onto it.</p>
+
+  <h3>14.3 Switching branches</h3>
+<pre class="term"><code><span class="p">$</span> git switch feature-login
+<span class="o">Switched to branch 'feature-login'</span>
+<span class="p">$</span> git switch -c feature-search
+<span class="o">Switched to a new branch 'feature-search'</span></code></pre>
+  <p><code>git switch -c &lt;name&gt;</code> creates and switches in one step, which is the form you will use most.</p>
+  <div class="callout note">
+    <div class="t"><svg class="i"><use href="#i-info"/></svg>Note</div>
+    <p>Older tutorials use <code>git checkout &lt;branch&gt;</code> and <code>git checkout -b &lt;branch&gt;</code>. They still work. <code>switch</code> was added in 2019 to give branch changes a clearer name.</p>
+  </div>
+  <p>When you switch, Git rewrites the files in your working directory to match that branch. Work you committed on another branch seems to vanish and returns when you switch back.</p>
+
+  <h3>14.4 HEAD: where you are</h3>
+  <p><b>HEAD</b> points to the branch you are on, and that branch points to its latest commit. Each new commit moves the branch forward, and HEAD follows.</p>
+  <figure class="fig">
+    <svg role="img" aria-label="HEAD is on feature-login, so the next commit extends that branch" viewBox="0 0 720 224" xmlns="http://www.w3.org/2000/svg">
+      <path class="eg eg-b" d="M250.0 80 L360.0 80"/>
+      <path class="eg eg-p" d="M360.0 80 C415.0 80 415.0 164 470.0 164"/>
+      <circle class="dot-b" cx="250.0" cy="80" r="11"/>
+      <text x="250.0" y="112" text-anchor="middle" class="sm">C1</text>
+      <circle class="dot-b" cx="360.0" cy="80" r="11"/>
+      <text x="360.0" y="112" text-anchor="middle" class="sm">C2</text>
+      <circle class="dot-p" cx="470.0" cy="164" r="11"/>
+      <text x="470.0" y="196" text-anchor="middle" class="sm">C3</text>
+      <rect class="pl-b" x="335.0" y="40" width="50" height="22" rx="11"/>
+      <text class="pill-t" x="360.0" y="55" text-anchor="middle">main</text>
+      <line class="ln2" x1="360.0" y1="62" x2="360.0" y2="69"/>
+      <rect class="pl-b" x="445.0" y="124" width="50" height="22" rx="11"/>
+      <text class="pill-t" x="470.0" y="139" text-anchor="middle">HEAD</text>
+      <line class="ln2" x1="470.0" y1="146" x2="470.0" y2="153"/>
+      <rect class="pl-p" x="409.0" y="98" width="122" height="22" rx="11"/>
+      <text class="pill-t" x="470.0" y="113" text-anchor="middle">feature-login</text>
+      <line class="ln2" x1="470.0" y1="120" x2="470.0" y2="153"/>
+    </svg>
+    <figcaption>HEAD is on feature-login, so the next commit extends that branch</figcaption>
+  </figure>
+
+  <h3>14.5 Everyday branch commands</h3>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Command</th><th>What it does</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>git branch</code></td><td>List local branches</td></tr>
+        <tr><td><code>git branch -a</code></td><td>List local and remote branches</td></tr>
+        <tr><td><code>git branch -m old new</code></td><td>Rename a branch</td></tr>
+        <tr><td><code>git branch -d name</code></td><td>Delete a merged branch</td></tr>
+        <tr><td><code>git branch -D name</code></td><td>Force-delete a branch, even if unmerged</td></tr>
+        <tr><td><code>git switch -</code></td><td>Jump back to the previous branch</td></tr>
+        <tr><td><code>git branch -vv</code></td><td>Show each branch's latest commit and upstream</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>14.6 Detached HEAD</h3>
+  <p>If you check out a commit hash or a tag, HEAD points straight at a commit, not a branch. Git calls this a <b>detached HEAD</b>.</p>
+<pre class="term"><code><span class="p">$</span> git switch --detach 3f2a9c1
+<span class="o">HEAD is now at 3f2a9c1 Add README</span></code></pre>
+  <p>You can look around safely. But a commit made here belongs to no branch and can be lost. To keep the work, give it a branch:</p>
+<pre class="term"><code><span class="p">$</span> git switch -c rescue-work</code></pre>
+  <p>To leave without keeping anything, run <code>git switch main</code>.</p>
+
+  <h3>14.7 Naming branches</h3>
+  <ul>
+    <li>Use short lowercase names with hyphens: <code>fix-login-bug</code>.</li>
+    <li>Group by purpose with a prefix: <code>feature/search</code>, <code>bugfix/crash</code>, <code>docs/readme</code>.</li>
+    <li>Avoid spaces and personal names.</li>
+  </ul>
+
+  <h3>14.8 Uncommitted changes when switching</h3>
+  <p>If your edits do not touch files that differ between the branches, they travel with you. If they would be overwritten, Git refuses to switch and asks you to commit or stash first (Chapter 19).</p>
+
+  <h3>14.9 Common mistakes</h3>
+  <ul>
+    <li><b>Committing on <code>main</code> by accident.</b> Check <code>git branch</code> before you start.</li>
+    <li><b>Forgetting which branch you are on.</b> Use <code>git status</code> or a prompt that shows it.</li>
+    <li><b>Deleting an unmerged branch with <code>-D</code>.</b> You may lose the only copy of that work.</li>
+  </ul>
+  <div class="panel recap">
+    <div class="panel-h"><svg class="i"><use href="#i-checkc"/></svg>Quick recap</div>
+    <div class="panel-b">
+      <ul>
+        <li>A branch is a movable pointer to a commit; creating one is instant.</li>
+        <li><code>git switch -c name</code> creates and enters a branch.</li>
+        <li>HEAD points to your current branch; commits move it forward.</li>
+        <li>Detached HEAD means HEAD points at a commit; create a branch to keep work done there.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="panel quiz">
+    <div class="panel-h"><svg class="i"><use href="#i-info"/></svg>Check yourself</div>
+    <div class="panel-b">
+      <div class="q" data-a="1">
+        <p class="qt">1. What does git switch -c login do?</p>
+        <div class="opts">
+          <button type="button" class="opt">Deletes the branch login</button>
+          <button type="button" class="opt">Creates the branch login and switches to it</button>
+          <button type="button" class="opt">Merges login into main</button>
+        </div>
+        <p class="qe" hidden>The -c flag means create.</p>
+      </div>
+      <div class="q" data-a="1">
+        <p class="qt">2. You made commits in a detached HEAD state. How do you keep them?</p>
+        <div class="opts">
+          <button type="button" class="opt">They are saved automatically</button>
+          <button type="button" class="opt">Create a branch with git switch -c name</button>
+          <button type="button" class="opt">Run git clean</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="panel ex">
+    <div class="panel-h"><svg class="i"><use href="#i-task"/></svg>Practice exercise</div>
+    <div class="panel-b">
+      <ul class="tasks">
+        <li><input type="checkbox" data-k="ch14-1" aria-labelledby="tch14-1"><span id="tch14-1">Create a branch named <code>feature-hello</code> and switch to it.</span></li>
+        <li><input type="checkbox" data-k="ch14-2" aria-labelledby="tch14-2"><span id="tch14-2">Make a commit, switch back to <code>main</code>, and confirm the file disappears. Switch again and it returns.</span></li>
+        <li><input type="checkbox" data-k="ch14-3" aria-labelledby="tch14-3"><span id="tch14-3">Run <code>git log --oneline --graph --all</code> to see both branches.</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="nextrow"><a class="btn pri" href="#ch15">Next: Merging</a></div>
+</article>

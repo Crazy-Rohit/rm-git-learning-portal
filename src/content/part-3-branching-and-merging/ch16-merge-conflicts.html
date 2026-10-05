@@ -1,0 +1,153 @@
+<article class="chapter" id="ch16" data-title="Merge conflicts" data-part="3" data-no="16">
+  <div class="ch-meta"><span class="chip git">Part 3</span><span class="chip">Chapter 16</span><span>3 min read</span></div>
+  <h2>Merge conflicts</h2>
+  <p class="lead">A conflict happens when two branches change the same lines, and Git asks you to decide what the result should be.</p>
+
+  <h3>16.1 Why conflicts happen</h3>
+  <p>Git merges automatically when branches change different parts of a file. When both branches edit the same lines, Git cannot know which version you want. It stops and asks you. That is not an error, only a question that needs a human answer.</p>
+
+  <h3>16.2 What a conflict looks like</h3>
+<pre class="term"><code><span class="p">$</span> git merge feature-login
+<span class="o">Auto-merging app.py</span>
+<span class="o">CONFLICT (content): Merge conflict in app.py</span>
+<span class="o">Automatic merge failed; fix conflicts and then commit the result.</span></code></pre>
+  <p>Open the file. Git has marked the conflicting area.</p>
+<pre class="code"><code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+greeting = "Hello, user!"
+=======
+greeting = "Welcome back!"
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature-login</code></pre>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Marker</th><th>Meaning</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code></td><td>Start of your version (the branch you are on)</td></tr>
+        <tr><td><code>=======</code></td><td>Divider between the two versions</td></tr>
+        <tr><td><code>&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature-login</code></td><td>End of the incoming version</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>16.3 Resolving it step by step</h3>
+  <figure class="fig">
+    <svg role="img" aria-label="The conflict resolution routine" viewBox="0 0 720 352" xmlns="http://www.w3.org/2000/svg">
+      <line class="ln" x1="34" y1="36" x2="34" y2="316"/>
+      <circle class="dot-b" cx="34" cy="36" r="15"/>
+      <text class="pill-t" x="34" y="40" text-anchor="middle">1</text>
+      <text class="ttl" x="68" y="33">Run git status</text>
+      <text class="m" x="68" y="51">Find the files listed under "both modified"</text>
+      <circle class="dot-b" cx="34" cy="92" r="15"/>
+      <text class="pill-t" x="34" y="96" text-anchor="middle">2</text>
+      <text class="ttl" x="68" y="89">Open each file</text>
+      <text class="m" x="68" y="107">Locate the conflict markers</text>
+      <circle class="dot-b" cx="34" cy="148" r="15"/>
+      <text class="pill-t" x="34" y="152" text-anchor="middle">3</text>
+      <text class="ttl" x="68" y="145">Decide the result</text>
+      <text class="m" x="68" y="163">Keep one side, the other, or combine both</text>
+      <circle class="dot-b" cx="34" cy="204" r="15"/>
+      <text class="pill-t" x="34" y="208" text-anchor="middle">4</text>
+      <text class="ttl" x="68" y="201">Delete the markers</text>
+      <text class="m" x="68" y="219">Remove every &lt;&lt;&lt;&lt;&lt;&lt;&lt;, ======= and &gt;&gt;&gt;&gt;&gt;&gt;&gt; line</text>
+      <circle class="dot-b" cx="34" cy="260" r="15"/>
+      <text class="pill-t" x="34" y="264" text-anchor="middle">5</text>
+      <text class="ttl" x="68" y="257">git add the file</text>
+      <text class="m" x="68" y="275">This tells Git the conflict is resolved</text>
+      <circle class="dot-b" cx="34" cy="316" r="15"/>
+      <text class="pill-t" x="34" y="320" text-anchor="middle">6</text>
+      <text class="ttl" x="68" y="313">Finish the merge</text>
+      <text class="m" x="68" y="331">Run git commit, or git merge --continue</text>
+    </svg>
+    <figcaption>The conflict resolution routine</figcaption>
+  </figure>
+  <p>Suppose you decide to combine both greetings. Edit the file to the final text you want and remove the markers.</p>
+<pre class="code"><code>greeting = "Welcome back, user!"</code></pre>
+<pre class="term"><code><span class="p">$</span> git add app.py
+<span class="p">$</span> git commit
+<span class="o">[main 4d5e6f7] Merge branch 'feature-login'</span></code></pre>
+
+  <h3>16.4 Useful commands during a conflict</h3>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Command</th><th>Use</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>git status</code></td><td>See which files still conflict</td></tr>
+        <tr><td><code>git diff</code></td><td>See remaining conflicts</td></tr>
+        <tr><td><code>git merge --abort</code></td><td>Cancel and return to the state before the merge</td></tr>
+        <tr><td><code>git checkout --ours file</code></td><td>Keep your side of one file entirely</td></tr>
+        <tr><td><code>git checkout --theirs file</code></td><td>Keep the incoming side of one file entirely</td></tr>
+        <tr><td><code>git mergetool</code></td><td>Open a visual merge tool</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout tip">
+    <div class="t"><svg class="i"><use href="#i-tip"/></svg>Tip</div>
+    <p>Visual Studio Code shows buttons above each conflict: Accept Current, Accept Incoming, Accept Both. Many people find this easier than editing markers by hand.</p>
+  </div>
+
+  <h3>16.5 Making conflicts less likely</h3>
+  <ul>
+    <li>Pull the latest <code>main</code> into your branch often.</li>
+    <li>Keep branches short-lived and focused.</li>
+    <li>Talk to teammates before large refactors or file moves.</li>
+    <li>Keep functions and files small so edits rarely overlap.</li>
+  </ul>
+
+  <h3>16.6 Seeing more context</h3>
+  <p>By default Git shows only two sides. The <code>zdiff3</code> style also shows the common ancestor, which often makes the right choice obvious.</p>
+<pre class="term"><code><span class="p">$</span> git config --global merge.conflictStyle zdiff3</code></pre>
+
+  <h3>16.7 Common mistakes</h3>
+  <ul>
+    <li><b>Leaving markers in the file.</b> Search for <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code> before you commit. A project with markers will not run.</li>
+    <li><b>Accepting one side without reading.</b> You may silently throw away a teammate's work.</li>
+    <li><b>Panicking.</b> <code>git merge --abort</code> always takes you back to safety.</li>
+  </ul>
+  <div class="panel recap">
+    <div class="panel-h"><svg class="i"><use href="#i-checkc"/></svg>Quick recap</div>
+    <div class="panel-b">
+      <ul>
+        <li>Conflicts occur when both branches change the same lines.</li>
+        <li>Markers show your version, a divider and the incoming version.</li>
+        <li>Edit, remove markers, <code>git add</code>, then commit.</li>
+        <li><code>git merge --abort</code> cancels the merge.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="panel quiz">
+    <div class="panel-h"><svg class="i"><use href="#i-info"/></svg>Check yourself</div>
+    <div class="panel-b">
+      <div class="q" data-a="1">
+        <p class="qt">1. What must you do after fixing a conflicted file?</p>
+        <div class="opts">
+          <button type="button" class="opt">Delete the .git folder</button>
+          <button type="button" class="opt">Remove the markers, git add the file, then commit</button>
+          <button type="button" class="opt">Run git reset --hard</button>
+        </div>
+        <p class="qe" hidden>Staging the file tells Git the conflict is resolved.</p>
+      </div>
+      <div class="q" data-a="0">
+        <p class="qt">2. Which command cancels a merge in progress?</p>
+        <div class="opts">
+          <button type="button" class="opt">git merge --abort</button>
+          <button type="button" class="opt">git stash</button>
+          <button type="button" class="opt">git clean</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="panel ex">
+    <div class="panel-h"><svg class="i"><use href="#i-task"/></svg>Practice exercise</div>
+    <div class="panel-b">
+      <ul class="tasks">
+        <li><input type="checkbox" data-k="ch16-1" aria-labelledby="tch16-1"><span id="tch16-1">Create a conflict on purpose: edit the same line differently on two branches and merge.</span></li>
+        <li><input type="checkbox" data-k="ch16-2" aria-labelledby="tch16-2"><span id="tch16-2">Resolve it by combining both versions and finish the merge.</span></li>
+        <li><input type="checkbox" data-k="ch16-3" aria-labelledby="tch16-3"><span id="tch16-3">Repeat, then cancel the second attempt with <code>git merge --abort</code>.</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="nextrow"><a class="btn pri" href="#ch17">Next: Rebase</a></div>
+</article>

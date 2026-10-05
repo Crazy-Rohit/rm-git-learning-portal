@@ -1,0 +1,129 @@
+<article class="chapter" id="ch10" data-title="Ignoring files" data-part="2" data-no="10">
+  <div class="ch-meta"><span class="chip git">Part 2</span><span class="chip">Chapter 10</span><span>3 min read</span></div>
+  <h2>Ignoring files</h2>
+  <p class="lead">A .gitignore file tells Git which files to leave alone, such as secrets, build output and temporary files.</p>
+
+  <h3>10.1 Why some files must not be tracked</h3>
+  <p>Some files should never enter your history:</p>
+  <ul>
+    <li>Passwords, API keys and <code>.env</code> files.</li>
+    <li>Dependencies such as <code>node_modules/</code> or <code>venv/</code>, which can be downloaded again.</li>
+    <li>Build output, logs and cache files.</li>
+    <li>Editor or operating system files such as <code>.DS_Store</code> or <code>.vscode/</code>.</li>
+  </ul>
+  <p>Ignoring them keeps the repository small, clean and safe.</p>
+
+  <h3>10.2 Creating a .gitignore</h3>
+  <p>Create a plain text file named <code>.gitignore</code> in the project root. Each line is a pattern.</p>
+<pre class="code"><code># Python
+__pycache__/
+*.pyc
+venv/
+
+# Secrets
+.env
+
+# Logs
+*.log
+
+# Operating system
+.DS_Store</code></pre>
+<pre class="term"><code><span class="p">$</span> git add .gitignore
+<span class="p">$</span> git commit -m "Add .gitignore"</code></pre>
+  <p>Commit the <code>.gitignore</code> itself so everyone on the team shares the same rules.</p>
+
+  <h3>10.3 Pattern rules</h3>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Pattern</th><th>Matches</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>*.log</code></td><td>Any file ending in .log, in any folder</td></tr>
+        <tr><td><code>build/</code></td><td>A folder named build</td></tr>
+        <tr><td><code>/todo.txt</code></td><td>Only <code>todo.txt</code> in the project root</td></tr>
+        <tr><td><code>docs/*.pdf</code></td><td>PDF files directly inside docs</td></tr>
+        <tr><td><code>**/temp</code></td><td>A folder named temp at any depth</td></tr>
+        <tr><td><code>!important.log</code></td><td>Exception: do not ignore this file</td></tr>
+        <tr><td><code># comment</code></td><td>A comment line</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout note">
+    <div class="t"><svg class="i"><use href="#i-info"/></svg>Note</div>
+    <p>The order matters. A later <code>!</code> rule can re-include something an earlier rule ignored, but only if the parent folder itself is not ignored.</p>
+  </div>
+
+  <h3>10.4 When a file is already tracked</h3>
+  <p><code>.gitignore</code> only affects files Git is not yet tracking. If you committed <code>.env</code> before ignoring it, Git keeps tracking it. Tell Git to stop, but keep the file on disk:</p>
+<pre class="term"><code><span class="p">$</span> git rm --cached .env
+<span class="o">rm '.env'</span>
+<span class="p">$</span> git commit -m "Stop tracking .env"</code></pre>
+  <div class="callout caution">
+    <div class="t"><svg class="i"><use href="#i-stop"/></svg>Caution</div>
+    <p>The file is still in your old history. If it contained a real secret, treat the secret as leaked and change it. Chapter 38 explains this.</p>
+  </div>
+
+  <h3>10.5 Checking why a file is ignored</h3>
+<pre class="term"><code><span class="p">$</span> git check-ignore -v debug.log
+<span class="o">.gitignore:3:*.log	debug.log</span>
+<span class="p">$</span> git status --ignored</code></pre>
+
+  <h3>10.6 A global ignore file</h3>
+  <p>Rules for your own computer, such as editor files, belong in a global file so you do not repeat them in every project.</p>
+<pre class="term"><code><span class="p">$</span> git config --global core.excludesfile ~/.gitignore_global</code></pre>
+
+  <h3>10.7 Ready-made templates</h3>
+  <p>GitHub maintains a collection of <code>.gitignore</code> templates for most languages and frameworks. Start from the one that matches your stack, then adjust it. GitHub also offers to add one when you create a new repository.</p>
+
+  <h3>10.8 Common mistakes</h3>
+  <ul>
+    <li><b>Ignoring after committing.</b> Remember <code>git rm --cached</code>.</li>
+    <li><b>Ignoring a folder, then expecting an exception inside it to work.</b> Ignore files, or use <code>folder/*</code> style patterns.</li>
+    <li><b>Ignoring everything with <code>*</code>.</b> This hides real work. Be specific.</li>
+  </ul>
+  <div class="panel recap">
+    <div class="panel-h"><svg class="i"><use href="#i-checkc"/></svg>Quick recap</div>
+    <div class="panel-b">
+      <ul>
+        <li><code>.gitignore</code> lists patterns of files Git should not track.</li>
+        <li>Commit it so your whole team shares it.</li>
+        <li>Already tracked files need <code>git rm --cached</code> first.</li>
+        <li>Secrets in old history stay leaked until you rotate them.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="panel quiz">
+    <div class="panel-h"><svg class="i"><use href="#i-info"/></svg>Check yourself</div>
+    <div class="panel-b">
+      <div class="q" data-a="1">
+        <p class="qt">1. You committed a file, then added it to .gitignore. What happens?</p>
+        <div class="opts">
+          <button type="button" class="opt">Git deletes the file from history</button>
+          <button type="button" class="opt">Git keeps tracking it until you run git rm --cached</button>
+          <button type="button" class="opt">Git ignores it immediately</button>
+        </div>
+        <p class="qe" hidden>Ignore rules only apply to untracked files.</p>
+      </div>
+      <div class="q" data-a="0">
+        <p class="qt">2. Which pattern ignores every .log file?</p>
+        <div class="opts">
+          <button type="button" class="opt">*.log</button>
+          <button type="button" class="opt">log/</button>
+          <button type="button" class="opt">!.log</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="panel ex">
+    <div class="panel-h"><svg class="i"><use href="#i-task"/></svg>Practice exercise</div>
+    <div class="panel-b">
+      <ul class="tasks">
+        <li><input type="checkbox" data-k="ch10-1" aria-labelledby="tch10-1"><span id="tch10-1">Create a <code>.gitignore</code> that ignores <code>*.log</code> and a folder named <code>build/</code>.</span></li>
+        <li><input type="checkbox" data-k="ch10-2" aria-labelledby="tch10-2"><span id="tch10-2">Create <code>debug.log</code> and check that <code>git status</code> does not list it.</span></li>
+        <li><input type="checkbox" data-k="ch10-3" aria-labelledby="tch10-3"><span id="tch10-3">Use <code>git check-ignore -v debug.log</code> to see which rule matched.</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="nextrow"><a class="btn pri" href="#ch11">Next: Undoing changes</a></div>
+</article>
