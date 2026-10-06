@@ -240,8 +240,9 @@ test('a passed stage 1 issues a signed badge and keeps it on a later pass', asyn
     user: author,
     created_at: '2026-10-05T12:30:00Z',
   }, passingRepos(code));
+  const shareDir = path.join(dir, 'share');
   const result = await handleIssue({
-    gh, ledgerDir: dir, issueNumber: 2, portal: PORTAL, secret: SECRET, signingKey: pem, keys,
+    gh, ledgerDir: dir, issueNumber: 2, portal: PORTAL, secret: SECRET, signingKey: pem, keys, shareDir,
     now: () => new Date('2026-10-05T12:30:00Z'),
   });
   assert.equal(result.passed, true);
@@ -252,7 +253,12 @@ test('a passed stage 1 issues a signed badge and keeps it on a later pass', asyn
   assert.equal(stored.recipient.githubId, USER_ID);
   assert.equal(stored.evidence.repo, 'learner/git-lab');
   assert.match(gh.comments[0], /verify\.html\?id=GGP-2026-42-S1/);
+  assert.match(gh.comments[0], /share\/GGP-2026-42-S1\.html/);
   assert.match(gh.comments[0], /badges\/first-repository\.png/);
+  const card = readFileSync(path.join(shareDir, 'GGP-2026-42-S1.html'), 'utf8');
+  assert.match(card, /property="og:title" content="First Repository"/);
+  assert.match(card, /Awarded to @learner by Rohit Manna/);
+  assert.match(card, /badges\/first-repository\.png/);
   const again = issueGh({
     title: '[Submit] ',
     body: '### Stage\n\n1\n\n### Your lab repository\n\nlearner/git-lab\n',

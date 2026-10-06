@@ -18,6 +18,10 @@ export function badgeFor(stage: number) {
   return BADGES.find((item) => item.stage === stage) ?? null;
 }
 
+export function sharePageUrl(id: string) {
+  return `${SITE}share/${id}.html`;
+}
+
 export function profileSnippet(stage: number, id: string) {
   const badge = badgeFor(stage);
   if (!badge) return '';

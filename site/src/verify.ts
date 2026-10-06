@@ -1,5 +1,5 @@
 import { canonical } from './canonical';
-import { CERTIFICATE_COURSE, ISSUER, LEDGER, SITE, badgeFor, profileSnippet } from './catalog';
+import { CERTIFICATE_COURSE, ISSUER, LEDGER, SITE, badgeFor, profileSnippet, sharePageUrl } from './catalog';
 
 type PublicKey = { kid: string; x: string; validFrom?: string };
 type RevokedItem = string | { id?: string };
@@ -163,6 +163,29 @@ function renderRecord(credential: Credential, status: 'valid' | 'revoked' | 'inv
     facts.append(repo);
   }
   root.append(facts);
+
+  if (status === 'valid') {
+    const page = sharePageUrl(credential.id);
+    const text = `${credential.title || credential.course || 'Credential'}\nAwarded by Rohit Manna\n${page}`;
+    const actions = document.createElement('div');
+    actions.className = 'actions';
+    const addShare = (label: string, href: string) => {
+      const link = document.createElement('a');
+      link.className = 'btn';
+      link.href = href;
+      link.target = '_blank';
+      link.rel = 'noopener';
+      link.textContent = label;
+      actions.append(link);
+    };
+    addShare('WhatsApp', `https://wa.me/?text=${encodeURIComponent(text)}`);
+    addShare('Facebook', `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(page)}`);
+    addShare('LinkedIn', `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(page)}`);
+    const note = document.createElement('p');
+    note.className = 'note';
+    note.textContent = 'Send the link from the app. The post shows the badge, the name, and Rohit Manna as the issuer.';
+    root.append(actions, note);
+  }
 
   if (status !== 'valid' || credential.type === 'GitGitHubPractitioner' || !credential.stage) return;
   const snippet = profileSnippet(credential.stage, credential.id);

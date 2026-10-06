@@ -1,5 +1,6 @@
 import { badgeFor } from './badges.mjs';
 import { PORTAL } from './portal.mjs';
+import { sharePageUrl } from './share.mjs';
 
 export function profileSnippet(stage, id) {
   const badge = badgeFor(stage);
@@ -45,7 +46,9 @@ export function renderResult({ stage, passed, checks, credentialId, signingNote 
       '',
       `Signed badge: ${verify}`,
       '',
-      'Anyone can open that page and check the signature. Paste this into your GitHub profile README:',
+      `Share this link on WhatsApp, Facebook, or LinkedIn: ${sharePageUrl(credentialId)}`,
+      '',
+      'Anyone can open the badge page and check the signature. Paste this into your GitHub profile README:',
       '',
       snippet,
     );

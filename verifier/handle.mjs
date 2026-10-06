@@ -3,6 +3,7 @@ import { renderResult, startMessage } from './lib/comment.mjs';
 import { buildBadge, buildCertificate, chooseKey, signCredential, verifyCredential, writeCredential } from './lib/credential.mjs';
 import { parseForm } from './lib/form.mjs';
 import { loadLearner, saveLearner } from './lib/ledger.mjs';
+import { writeSharePage } from './lib/share.mjs';
 import { DAILY_SUBMIT_LIMIT } from './lib/portal.mjs';
 import { checkStage1 } from './stages/stage1.mjs';
 
@@ -53,7 +54,7 @@ function certificateName(form, login) {
   return login;
 }
 
-export async function handleIssue({ gh, ledgerDir, issueNumber, portal, secret, signingKey = '', keys = [], now = () => new Date() }) {
+export async function handleIssue({ gh, ledgerDir, issueNumber, portal, secret, signingKey = '', keys = [], shareDir = '', now = () => new Date() }) {
   const issue = (await gh.issues.get({
     owner: portal.owner,
     repo: portal.repo,
@@ -153,8 +154,10 @@ export async function handleIssue({ gh, ledgerDir, issueNumber, portal, secret, 
           issuerName: portal.issuerName,
           siteUrl: portal.siteUrl,
         }), signingKey, key);
-        if (signed) learner.stages[stage].credentialId = signed.id;
-        else signingNote = 'The stage passed, but the badge could not be signed. The signing key does not match the public key on the site.';
+        if (signed) {
+          learner.stages[stage].credentialId = signed.id;
+          writeSharePage(shareDir, signed);
+        } else signingNote = 'The stage passed, but the badge could not be signed. The signing key does not match the public key on the site.';
       }
     }
     if (Number(stage) === 7 && !learner.certificateId && signingKey && key) {
@@ -169,7 +172,10 @@ export async function handleIssue({ gh, ledgerDir, issueNumber, portal, secret, 
           issuerName: portal.issuerName,
           siteUrl: portal.siteUrl,
         }), signingKey, key);
-        if (signed) learner.certificateId = signed.id;
+        if (signed) {
+          learner.certificateId = signed.id;
+          writeSharePage(shareDir, signed);
+        }
       }
     }
     credentialId = learner.stages[stage].credentialId || '';

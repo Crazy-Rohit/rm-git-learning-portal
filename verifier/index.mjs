@@ -20,6 +20,7 @@ const result = await handleIssue({
   secret: process.env.CHALLENGE_SECRET || '',
   signingKey: process.env.SIGNING_KEY_PEM || '',
   keys,
+  shareDir: process.env.SHARE_DIR || '',
 });
 
 if (result.error) process.exit(1);

@@ -12,6 +12,8 @@ jobs:
   verify:
     if: startsWith(github.event.issue.title, '[Submit]') || startsWith(github.event.issue.title, '[Start]')
     runs-on: ubuntu-latest
+    outputs:
+      share: ${{ steps.share.outputs.published }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/checkout@v4
@@ -28,6 +30,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
           LEDGER_DIR: ${{ github.workspace }}/ledger-data
+          SHARE_DIR: ${{ github.workspace }}/site/public/share
           CHALLENGE_SECRET: ${{ secrets.CHALLENGE_SECRET }}
           SIGNING_KEY_PEM: ${{ secrets.SIGNING_KEY_PEM }}
       - name: Publish ledger changes
@@ -37,3 +40,49 @@ jobs:
           git config user.email "portal-bot@users.noreply.github.com"
           git add -A
           git diff --cached --quiet || (git commit -m "Ledger update for issue ${{ github.event.issue.number }}" && git push)
+      - name: Publish share cards
+        id: share
+        run: |
+          if [ -d site/public/share ]; then
+            git config user.name "portal-bot"
+            git config user.email "portal-bot@users.noreply.github.com"
+            git add site/public/share
+            if git diff --cached --quiet; then
+              echo "published=false" >> "$GITHUB_OUTPUT"
+            else
+              git commit -m "Share card for issue ${{ github.event.issue.number }}"
+              git push
+              echo "published=true" >> "$GITHUB_OUTPUT"
+            fi
+          else
+            echo "published=false" >> "$GITHUB_OUTPUT"
+          fi
+  deploy-share:
+    needs: verify
+    if: needs.verify.outputs.share == 'true'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    concurrency:
+      group: pages
+      cancel-in-progress: true
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci && npm run build
+        working-directory: site
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site/dist
+      - id: deployment
+        uses: actions/deploy-pages@v4
