@@ -180,20 +180,31 @@ On Windows PowerShell, `echo` can add a hidden byte-order mark. If the code chec
    git commit -m "Ignore log files"
    ```
 
-6. Look at your history:
+6. Put your name on your card. Open `index.html` in an editor, find the two lines under the comment `Change the two lines below`, and replace `YOUR NAME` with your name and `YOUR-USERNAME` with your GitHub username. Open the file in a browser to see the card, then commit:
+
+   ```bash
+   git add index.html
+   git commit -m "Put my name on the card"
+   ```
+
+7. Look at your history:
 
    ```bash
    git log --oneline
    ```
 
-7. Push everything:
+8. Push everything:
 
    ```bash
    git push
    ```
 
-8. Open your repository on GitHub and click a commit. Your avatar should appear next to it. If it shows a grey icon, GitHub has not linked the commit to your account. Fix your email first, as described in [step 3 of Before you begin](#3-tell-git-who-you-are).
-9. Open a [Submit issue](https://github.com/Crazy-Rohit/rm-git-learning-portal/issues/new?template=submit-stage.yml). Choose **1** and enter `your-username/git-lab`.
+9. Open your repository on GitHub and click a commit. Your avatar should appear next to it. If it shows a grey icon, GitHub has not linked the commit to your account. Fix your email first, as described in [step 3 of Before you begin](#3-tell-git-who-you-are).
+10. Open a [Submit issue](https://github.com/Crazy-Rohit/rm-git-learning-portal/issues/new?template=submit-stage.yml). Choose **1** and enter `your-username/git-lab`.
+
+### Your card on the web
+
+`index.html` in `git-lab` is a small portfolio card. To put it online, open your repository's **Settings → Pages**, choose **Deploy from a branch**, pick `main` and `/ (root)`, and save. After a minute the card is live at `https://your-username.github.io/git-lab/`. Every time you change the file and push, the page updates.
 
 ### What the check looks for
 
