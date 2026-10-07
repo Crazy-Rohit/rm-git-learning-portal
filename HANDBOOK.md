@@ -8,6 +8,7 @@ The course is by Rohit Manna. Everything runs on GitHub, so you only need a free
 
 - [How the portal works](#how-the-portal-works)
 - [Before you begin](#before-you-begin)
+- [Apps, platforms, and commands](#apps-platforms-and-commands)
 - [The cycle for every stage](#the-cycle-for-every-stage)
 - [Stage 1: First repository](#stage-1-first-repository)
 - [Stage 2: Branches and pull requests](#stage-2-branches-and-pull-requests)
@@ -45,45 +46,288 @@ You do the work in **GitHub Codespaces**: an editor with a terminal that opens i
 
 The Start reply for each stage gives you the links and commands. You do not have to choose a terminal or configure anything.
 
-### Optional: work on your own computer instead
+Working on your own computer is optional. The full steps for Windows, macOS, Linux, Git Bash, Git CMD, PowerShell, and Visual Studio Code are in [Apps, platforms, and commands](#apps-platforms-and-commands).
 
-Skip this unless you want Git on your own machine. If you use it, do these steps once, then run the same commands from the Start reply in your own terminal inside the `git-lab` folder.
+## Apps, platforms, and commands
 
-**Install Git.** Follow [handbook chapter 4](https://crazy-rohit.github.io/rm-git-learning-portal/handbook/#ch4). Then check it works:
+Git is one program. Git Bash, Git CMD, PowerShell, Terminal, Visual Studio Code, and Codespaces are only windows that run it. The `git` lines are the same in every window. The lines that create a file (`echo`, folder paths) change with the window. Pick one window and stay with it.
 
-```bash
+The prompt tells you which window you have:
+
+| Prompt | Window | Commands in this guide |
+| --- | --- | --- |
+| `user@machine MINGW64 ~/git-lab $` | Git Bash on Windows | The `bash` blocks |
+| `C:\Users\You\Documents\git-lab>` | Git CMD, or Command Prompt | The Windows CMD blocks |
+| `PS C:\Users\You\Documents\git-lab>` | PowerShell | The `bash` blocks, except the code file. Create that file in an editor |
+| `you@mac git-lab %` or `$` | macOS Terminal | The `bash` blocks |
+| `you@pc:~/git-lab$` | Linux terminal | The `bash` blocks |
+| `$` inside a browser editor | GitHub Codespaces | The `bash` blocks. Git is already signed in |
+
+### What to create, in this order
+
+Do not skip ahead, and do not create the lab with `git init`.
+
+1. A GitHub account, in the browser.
+2. A Start issue for the stage. The reply contains your personal code. Copy it.
+3. The `git-lab` repository, in the browser, from the template. Name it exactly `git-lab`, set it to Public, and tick **Include all branches**. This happens on github.com, not in the terminal.
+4. A place to type commands: Codespaces, or one app on your computer.
+5. Four pieces of work, each as its own commit: the code file, a README line, a `.gitignore` line, and optionally your name in `index.html`.
+6. A push, so GitHub has the commits.
+7. A Submit issue.
+
+Stages 1 to 4 and stage 6 all use this same `git-lab`. Stage 5 also uses a fork of `rm-practice-repo`. Stage 7 uses a new repository that you choose.
+
+### Codespaces, in the browser
+
+This is the path the Start reply uses. Nothing is installed.
+
+1. Finish step 1 of the Start reply, so `git-lab` exists.
+2. Open the **My git-lab in Codespaces** link and choose **Create codespace**. The first time, GitHub asks you to allow Codespaces. Personal accounts include a free monthly allowance, which covers this course.
+3. Wait until the editor finishes loading. A file list is on the left. A terminal is at the bottom. If you do not see it, open the menu **Terminal → New Terminal**.
+4. Click the terminal. Copy every line from the reply's code block, paste, and press Enter. If a box asks about pasting several lines, choose **Paste**.
+5. `git push` does not ask you to sign in. The codespace is already your GitHub account.
+6. `git log --oneline` lists the commits. Your GitHub username should be the author.
+
+To edit `index.html`, click it in the file list, change the two lines, press Ctrl+S (Command+S on a Mac), then run `git commit -am "Put my name on the card"` and `git push`.
+
+### Windows
+
+#### Install Git once
+
+1. Download the installer only from [git-scm.com/download/win](https://git-scm.com/download/win).
+2. Run it. Keep the defaults, and check three screens:
+   - **Default editor:** Visual Studio Code, if you have it. Otherwise keep Vim.
+   - **Initial branch name:** override it and type `main`.
+   - **PATH:** keep "Git from the command line and also from 3rd-party software".
+3. Finish. Close any terminal that was already open, then open a new one.
+
+Or, in PowerShell:
+
+```powershell
+winget install --id Git.Git -e --source winget
+```
+
+Check, in a new window:
+
+```bat
 git --version
 ```
 
-**Tell Git who you are.** On your own computer this step matters more than any other. The portal only counts commits that GitHub links to your account, and GitHub links a commit by its email address.
+A line like `git version 2.45.0` means it worked. The number can differ. If Windows says `git is not recognized`, the PATH screen was skipped. Run the installer again and choose the PATH option above.
+
+#### Which Windows app to open
+
+The installer adds more than one app. You only need one.
+
+| App | How to open | Notes |
+| --- | --- | --- |
+| **Git Bash** | Start menu, type `Git Bash` | Use this if you can. Every `bash` block in this guide pastes as written |
+| **Git CMD** | Start menu, type `Git CMD` | Use this if Git Bash is not there. Use the CMD block below, not the bash block |
+| **Command Prompt** | Start menu, type `cmd` | Same commands as Git CMD, once `git --version` works |
+| **PowerShell** | Start menu, type `PowerShell` | `git` commands work. Do not use `echo` to write `.stage/stage-1.txt`. PowerShell can hide a byte-order mark in the file, and the code check then fails. Create that file in Notepad |
+| **Visual Studio Code** | Start menu, type `Visual Studio Code` | An editor with a terminal inside. Set that terminal to Git Bash, as below |
+| **Cursor** | The Cursor app | Same as Visual Studio Code. **Terminal → New Terminal**, then choose Git Bash |
+
+Git CMD and Git Bash can both pass the stage. They are not two different courses.
+
+#### Windows, first time, in Git Bash
 
 ```bash
 git config --global user.name "Your Name"
 git config --global user.email "you@example.com"
 git config --global init.defaultBranch main
+cd ~
+mkdir -p Documents
+cd Documents
+git clone https://github.com/YOUR-USERNAME/git-lab.git
+cd git-lab
+git status
 ```
 
-Use an email that is **added and verified** on GitHub under **Settings → Emails**. If you want to keep your email private, use the noreply address shown on that page. It looks like `12345678+your-username@users.noreply.github.com`.
+`git status` should say `On branch main` and `nothing to commit, working tree clean`. If it says `not a git repository`, you are not inside `git-lab`. Run `cd ~/Documents/git-lab` and try again.
 
-To check what Git will use:
+#### Windows, first time, in Git CMD
+
+```bat
+git config --global user.name "Your Name"
+git config --global user.email "you@example.com"
+git config --global init.defaultBranch main
+cd %USERPROFILE%\Documents
+git clone https://github.com/YOUR-USERNAME/git-lab.git
+cd git-lab
+git status
+```
+
+#### The email GitHub will count
+
+The portal counts a commit only when GitHub links it to your account. GitHub does that by the email on the commit.
+
+1. Open GitHub → your avatar → **Settings → Emails**.
+2. Use an email that is listed there and marked verified.
+3. To hide your address, use the noreply address on that page. It looks like `12345678+your-username@users.noreply.github.com`.
+
+Then:
 
 ```bash
+git config --global user.email "THE-VERIFIED-EMAIL"
 git config user.name
 git config user.email
 ```
 
-See [handbook chapter 5](https://crazy-rohit.github.io/rm-git-learning-portal/handbook/#ch5) for the full setup, including your editor and line endings.
+In Git CMD those last two lines are the same. In Codespaces you skip this. GitHub has already set the name and the noreply email.
 
-**Sign in and clone.** Create `git-lab` first (stage 1, step 1 below), then:
+After the first real commit, open the repository on GitHub, click the commit, and check the avatar. Your picture means the email matched. A grey octagon means it did not. Fix the email, then make a new commit. Old commits keep the old email.
+
+#### Sign in when you push
+
+The first `git push` on your own computer opens a browser window titled **Sign in to GitHub**. Sign in as the account that owns `git-lab`, then come back to the terminal. Later pushes reuse that sign-in. A password typed into the terminal is not the right method. For SSH keys or tokens, read [handbook chapter 23](https://crazy-rohit.github.io/rm-git-learning-portal/handbook/#ch23).
+
+#### Visual Studio Code on Windows
+
+1. Install Git first, then install [Visual Studio Code](https://code.visualstudio.com/).
+2. Choose **File → Open Folder** and open the `git-lab` folder, after you have cloned it.
+3. Choose **Terminal → New Terminal**.
+4. In the terminal panel, open the dropdown beside the `+` and choose **Git Bash**. If Git Bash is missing, choose **Select Default Profile** and pick Git Bash.
+5. The prompt should end in `$` and the path should end in `git-lab`. Then paste the bash commands.
+
+`code .` typed inside Git Bash opens the current folder in Visual Studio Code, if the installer added `code` to PATH.
+
+#### Stage 1 commands in Git CMD
+
+Run these inside `git-lab`, after the Start reply. There is no space before `>`.
+
+```bat
+mkdir .stage
+echo YOUR-CODE> .stage\stage-1.txt
+git add .stage\stage-1.txt
+git commit -m "Add stage 1 code"
+echo I am learning Git with Rohit Manna.>> README.md
+git add README.md
+git commit -m "Introduce myself in the README"
+echo *.log> .gitignore
+git add .gitignore
+git commit -m "Ignore log files"
+git push
+git log --oneline
+```
+
+`echo *.log> .gitignore` writes the exact line `*.log`. In Git CMD, `echo *.log >> .gitignore` can also work, but a brand-new file should use one `>`.
+
+Open `index.html` with `notepad index.html`, change `YOUR NAME` and `YOUR-USERNAME`, save, then:
+
+```bat
+git add index.html
+git commit -m "Put my name on the card"
+git push
+```
+
+### macOS
+
+1. Open **Terminal** from Applications → Utilities, or press Command+Space and type `Terminal`.
+2. Run `git --version`. If Git is missing, macOS offers the command line tools. Install them. With Homebrew, `brew install git` gives a newer Git.
+3. Set your name and verified email with the same three `git config --global` lines as Git Bash.
+4. Clone and enter the lab:
 
 ```bash
+cd ~/Documents
 git clone https://github.com/YOUR-USERNAME/git-lab.git
 cd git-lab
 ```
 
-The first time you push, Git asks you to sign in and a browser window opens. For SSH keys or tokens, read [handbook chapter 23](https://crazy-rohit.github.io/rm-git-learning-portal/handbook/#ch23).
+5. Paste the bash blocks from each stage. The first `git push` opens the browser to sign in.
 
-You use the same `git-lab` repository for stages 1 to 4 and 6.
+Visual Studio Code is the same as on Windows: **File → Open Folder**, then **Terminal → New Terminal**. The built-in terminal is already a Unix shell, so the bash blocks work without choosing Git Bash.
+
+### Linux
+
+Open a terminal with Ctrl+Alt+T, or your distribution's terminal app. Install Git, then use the bash blocks.
+
+```bash
+# Debian or Ubuntu
+sudo apt update
+sudo apt install git
+
+# Fedora
+sudo dnf install git
+
+# Arch
+sudo pacman -S git
+```
+
+```bash
+git --version
+git config --global user.name "Your Name"
+git config --global user.email "you@example.com"
+git config --global init.defaultBranch main
+cd ~/Documents
+git clone https://github.com/YOUR-USERNAME/git-lab.git
+cd git-lab
+```
+
+### Every stage 1 command
+
+Run them from inside `git-lab`. Replace `YOUR-CODE` with the code from your Start reply, and nothing else.
+
+| Command | What it does | What you should see |
+| --- | --- | --- |
+| `echo "YOUR-CODE" > .stage/stage-1.txt` | Creates the file, or replaces it, with one line: your code | No output. In Git CMD: `echo YOUR-CODE> .stage\stage-1.txt` |
+| `git add .stage/stage-1.txt` | Copies that file into the staging area, ready for the next commit | No output |
+| `git commit -m "Add stage 1 code"` | Saves the staging area as a commit with that message | `1 file changed` and a short hash |
+| `echo "I am learning Git with Rohit Manna." >> README.md` | Adds one line at the end of the README. `>>` appends. `>` would wipe the file | No output |
+| `git add README.md` | Stages the README | No output |
+| `git commit -m "Introduce myself in the README"` | Second commit. The checker requires this file to change | `1 file changed` |
+| `echo "*.log" >> .gitignore` | Adds a line that is exactly `*.log`, so Git ignores log files | No output. In Git CMD: `echo *.log> .gitignore` |
+| `echo test > debug.log` | Makes a log file, to prove the ignore rule | No output |
+| `git status` | Shows what Git sees | `debug.log` is absent. README or `.gitignore` may be listed if you have not committed them |
+| `git add .gitignore` | Stages the ignore file. Do not add `debug.log` | No output |
+| `git commit -m "Ignore log files"` | Third commit | `1 file changed` |
+| `git push` | Sends the commits on this branch to GitHub | `main -> main`. The first time, a browser may ask you to sign in |
+| `git log --oneline` | Lists commits, newest first, one line each | At least three commits with your messages |
+| `git commit -am "Put my name on the card"` | Stages tracked files and commits in one step. It does not add brand-new files | `1 file changed`, after you saved `index.html` |
+| `git diff` | Shows edits that are not staged yet | The changed lines, in the terminal |
+| `git diff --staged` | Shows what the next commit will contain | The staged lines |
+| `git restore --staged <file>` | Takes a file back out of the staging area. The edit stays in the file | No output |
+| `git show HEAD` | Shows the newest commit, including its patch | The commit message and the lines it changed |
+
+`git status` is the command to run whenever you are unsure. It names the branch, the files waiting to be committed, and whether you are inside a repository.
+
+### Commands used in later stages
+
+These are the same on every platform. Angle brackets mean you substitute a real value. You do not type the brackets.
+
+| Command | What it does |
+| --- | --- |
+| `git switch main` | Moves you onto the `main` branch |
+| `git switch -c feature/about-page` | Creates `feature/about-page` and moves onto it. Stage 2 needs a name that starts with `feature/` |
+| `git push -u origin feature/about-page` | Sends that branch to GitHub and remembers the link, so later `git push` is enough |
+| `git pull` | Downloads new commits from GitHub and merges them into the branch you are on |
+| `git fetch origin` | Downloads commits and branches without merging them |
+| `git merge origin/greeting-a` | Merges that branch into the branch you are on. Stage 3 merges `greeting-a`, then `greeting-b` |
+| `git log --oneline --graph` | Draws the branch lines. A merge commit has two parents |
+| `git revert <sha>` | Adds a new commit that undoes the named commit. Safe after a push. Stage 4 |
+| `git reset` | Moves the branch pointer. Use it only on commits you have not pushed |
+| `git reflog` | Lists where your branch has been, including commits you reset away |
+| `git tag -a v1.0.0 -m "First stable version of my lab"` | Creates an annotated tag. A message, author, and date are stored |
+| `git push origin v1.0.0` | Sends that tag to GitHub. `git push` alone does not send tags |
+| `git clone <url>` | Copies a GitHub repository onto your computer, including its history |
+| `git remote add upstream <url>` | Remembers a second remote. Stage 5 uses `upstream` for the original project and `origin` for your fork |
+| `git remote -v` | Prints the remotes and their URLs |
+| `git merge upstream/main` | Brings the original project's `main` into your current branch |
+| `mkdir -p .github/workflows` | Creates folders, including parents. In Git CMD the path uses backslashes: `mkdir .github\workflows` |
+
+A pull request is not a Git command. You open it on GitHub from the branch you pushed. The description is the text box on that page. Stage 2 asks for a few sentences about what changed and why. Stage 5 asks for one file, `contributors/<your-username>.md`, and a pull request into `Crazy-Rohit/rm-practice-repo`.
+
+### When the terminal says no
+
+| Message | What it means | What to do |
+| --- | --- | --- |
+| `git is not recognized` | This window cannot find Git | Close it, open Git Bash or Git CMD, or reinstall Git with the PATH option |
+| `not a git repository` | You are outside `git-lab` | `cd` into `git-lab`, then run `git status` |
+| `Please tell me who you are` | Name or email was never set | Run the two `git config --global` lines, then commit again |
+| `Authentication failed` or a repeated sign-in window | The push used the wrong GitHub account | Sign in as the account that owns `git-lab`. On Windows, Windows Credential Manager can forget the old account |
+| `failed to push` and `non-fast-forward` | GitHub has commits you do not have | Run `git pull`, then `git push` |
+| The code check fails and the file looks right | PowerShell wrote a hidden mark, or the file has a quote or a second line | Recreate `.stage/stage-1.txt` in Notepad, paste only the code, save as UTF-8, commit, and push |
+| `nothing to commit, working tree clean` | The save did not change a tracked file, or you already committed | Run `git status` and `git log --oneline` before assuming it failed |
 
 ## The cycle for every stage
 
@@ -538,7 +782,7 @@ The reply lists every check and says how to fix each one that failed. Fix them, 
 | Problem | Likely cause and fix |
 | --- | --- |
 | Commits are not counted | Git used an email that is not verified on GitHub. Fix `git config user.email`, then make new commits. Old commits keep their old email |
-| Challenge code file is wrong | Extra text, quotes, or a byte-order mark. The file must contain only the code. Check that it is on `main` and pushed |
+| Challenge code file is wrong | Extra text, quotes, or a byte-order mark. The file must contain only the code. On Windows, write it with the Git CMD line or with Notepad, not with PowerShell `echo`. Check that it is on `main` and pushed |
 | Repository not found | It is private, misspelled, or not named exactly `git-lab` |
 | Not created from the template | You created an empty repository. Make a new one with **Use this template** |
 | Commits made before the start time | Only work after your Start issue counts. Make new commits |
@@ -553,6 +797,8 @@ The reply lists every check and says how to fix each one that failed. Fix them, 
 - Read more in [docs/PRIVACY.md](docs/PRIVACY.md) and [docs/METHODOLOGY.md](docs/METHODOLOGY.md).
 
 ## Command reference
+
+The same commands, with what to type on Windows, macOS, and Linux, are in [Apps, platforms, and commands](#apps-platforms-and-commands).
 
 | Task | Command |
 | --- | --- |
