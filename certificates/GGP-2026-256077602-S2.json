@@ -1,0 +1,22 @@
+{
+  "id": "GGP-2026-256077602-S2",
+  "type": "StageBadge",
+  "version": 1,
+  "stage": 2,
+  "title": "Branches and PRs",
+  "recipient": {
+    "githubId": 256077602,
+    "githubLogin": "rohit-manna-healthplans-ai"
+  },
+  "issuedAt": "2026-10-07T18:05:11.804Z",
+  "issuer": {
+    "name": "Rohit Manna",
+    "url": "https://crazy-rohit.github.io/rm-git-learning-portal/"
+  },
+  "kid": "2026-1",
+  "evidence": {
+    "repo": "rohit-manna-healthplans-ai/git-lab",
+    "issue": 8
+  },
+  "signature": "cQ8iWZ2r9Y1Q4Qh7g3uh82M_ghCdmKcRwXvNhWK04FEShh_SzmPf4_xD-G8tZUAVccx9eXGwvvrqmGrTISg0Bw"
+}
