@@ -18,6 +18,11 @@ export function badgeFor(stage: number) {
   return BADGES.find((item) => item.stage === stage) ?? null;
 }
 
+export function startHref(stage: number) {
+  if (stage === 1) return './stage-1.html';
+  return `https://github.com/Crazy-Rohit/rm-git-learning-portal/issues/new?template=start-stage.yml&stage=${stage}`;
+}
+
 export function sharePageUrl(id: string) {
   return `${SITE}share/${id}.html`;
 }

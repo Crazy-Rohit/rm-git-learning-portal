@@ -1,4 +1,4 @@
-import { BADGES, LEDGER } from './catalog';
+import { BADGES, LEDGER, startHref } from './catalog';
 
 type StageRecord = { startedAt?: string; passedAt?: string; credentialId?: string };
 type LearnerFile = { stages?: Record<string, StageRecord> };
@@ -38,17 +38,11 @@ function render(stages: Record<string, StageRecord>) {
       } else {
         state.textContent = `Passed ${record.passedAt.slice(0, 10)}`;
       }
-    } else if (previousPassed && number === 1) {
-      state.className = 'open';
-      const link = document.createElement('a');
-      link.href = `${import.meta.env.BASE_URL}stage-1.html`;
-      link.textContent = record?.startedAt ? 'Started' : 'Available';
-      state.append(link);
     } else if (previousPassed) {
       state.className = 'open';
       const link = document.createElement('a');
-      link.href = `https://github.com/Crazy-Rohit/rm-git-learning-portal/issues/new?template=start-stage.yml&stage=${number}`;
-      link.textContent = record?.startedAt ? 'Started' : 'Available';
+      link.href = startHref(number);
+      link.textContent = record?.startedAt ? 'In progress' : 'Open now';
       state.append(link);
     } else {
       state.className = 'lock';

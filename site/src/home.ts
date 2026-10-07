@@ -1,3 +1,5 @@
+import { BADGES, startHref } from './catalog';
+
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 type Line = { kind: 'cmd' | 'out' | 'head'; text: string };
@@ -152,6 +154,36 @@ async function learnerStages(login: string) {
   return file.stages ?? {};
 }
 
+function nextStage(stages: Record<string, StageRecord>) {
+  return BADGES.find((badge) => !stages[String(badge.stage)]?.passedAt) ?? null;
+}
+
+function paintCta(stages: Record<string, StageRecord>) {
+  const next = nextStage(stages);
+  const buttons = document.querySelectorAll<HTMLAnchorElement>('.js-next');
+  const title = document.querySelector('#next-title');
+  const copy = document.querySelector('#next-copy');
+  if (!next) {
+    buttons.forEach((button) => {
+      button.textContent = 'Course complete';
+      button.href = './progress.html';
+    });
+    if (title) title.textContent = 'Every stage is done.';
+    if (copy) copy.textContent = 'Open Progress to read the signed badges, or share a credential from the verify page.';
+    return;
+  }
+  buttons.forEach((button) => {
+    button.textContent = `Start stage ${next.stage}`;
+    button.href = startHref(next.stage);
+  });
+  if (title) title.textContent = next.stage === 1 ? 'Make your first commit today.' : `Continue with stage ${next.stage}.`;
+  if (copy) {
+    copy.textContent = next.stage === 1
+      ? 'Stage 1 takes about an hour. You need a free GitHub account, and the handbook open beside you.'
+      : `${next.title} is open. Pass it to unlock the stage after it.`;
+  }
+}
+
 function paintPath(stages: Record<string, StageRecord>) {
   const items = document.querySelectorAll<HTMLElement>('#timeline [data-stage]');
   let passed = 0;
@@ -161,7 +193,7 @@ function paintPath(stages: Record<string, StageRecord>) {
     const previousPassed = number === 1 || Boolean(stages[String(number - 1)]?.passedAt);
     const label = item.querySelector<HTMLElement>('.label');
     const card = item.querySelector<HTMLAnchorElement>('a.card');
-    item.classList.remove('open', 'done');
+    item.classList.remove('open', 'done', 'locked');
     if (done) {
       passed += 1;
       item.classList.add('done');
@@ -177,9 +209,12 @@ function paintPath(stages: Record<string, StageRecord>) {
         label.textContent = 'Open now';
       }
       card?.removeAttribute('title');
-    } else if (label) {
-      label.className = 'label';
-      label.textContent = 'Locked';
+    } else {
+      item.classList.add('locked');
+      if (label) {
+        label.className = 'label wait';
+        label.textContent = 'Locked';
+      }
       card?.removeAttribute('title');
     }
   });
@@ -187,6 +222,7 @@ function paintPath(stages: Record<string, StageRecord>) {
     timeline.dataset.filled = '1';
     timeline.style.setProperty('--fill', String(Math.min(1, passed / 7)));
   }
+  paintCta(stages);
 }
 
 const pathForm = document.querySelector<HTMLFormElement>('#path-lookup');
@@ -202,8 +238,9 @@ function showPath(login: string) {
     paintPath(stages);
     const done = Object.values(stages).filter((stage) => stage.passedAt).length;
     if (pathStatus) {
+      const next = nextStage(stages);
       pathStatus.textContent = done
-        ? `${name}: ${done} stage${done === 1 ? '' : 's'} done. A done stage can be opened again.`
+        ? `${name}: ${done} stage${done === 1 ? '' : 's'} done.${next ? ` Stage ${next.stage} is open.` : ' Course complete.'}`
         : `${name} has not passed a stage yet.`;
     }
   }).catch((error: unknown) => {
