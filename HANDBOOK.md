@@ -39,17 +39,23 @@ Stages open in order. You can start stage 2 only after stage 1 is passed, and so
 
 Sign up at [github.com](https://github.com/signup). Pick a username you are happy to show to employers, because your work in this course is public.
 
-### 2. Install Git
+### 2. That is all you need
 
-Follow [handbook chapter 4](https://crazy-rohit.github.io/rm-git-learning-portal/handbook/#ch4). Then check it works:
+You do the work in **GitHub Codespaces**: an editor with a terminal that opens in your browser, with Git already set up and signed in to your account. Nothing to install. Personal accounts get a free monthly allowance, which is far more than this course needs.
+
+The Start reply for each stage gives you the links and commands. You do not have to choose a terminal or configure anything.
+
+### Optional: work on your own computer instead
+
+Skip this unless you want Git on your own machine. If you use it, do these steps once, then run the same commands from the Start reply in your own terminal inside the `git-lab` folder.
+
+**Install Git.** Follow [handbook chapter 4](https://crazy-rohit.github.io/rm-git-learning-portal/handbook/#ch4). Then check it works:
 
 ```bash
 git --version
 ```
 
-### 3. Tell Git who you are
-
-This step matters more than any other. The portal only counts commits that GitHub links to your account, and GitHub links a commit by its email address.
+**Tell Git who you are.** On your own computer this step matters more than any other. The portal only counts commits that GitHub links to your account, and GitHub links a commit by its email address.
 
 ```bash
 git config --global user.name "Your Name"
@@ -68,27 +74,16 @@ git config user.email
 
 See [handbook chapter 5](https://crazy-rohit.github.io/rm-git-learning-portal/handbook/#ch5) for the full setup, including your editor and line endings.
 
-### 4. Sign in to GitHub from Git
-
-The first time you push, Git asks you to sign in. On Windows and macOS a browser window opens. If you prefer SSH keys or tokens, read [handbook chapter 23](https://crazy-rohit.github.io/rm-git-learning-portal/handbook/#ch23).
-
-### 5. Create your lab repository
-
-1. Open [rm-git-lab-template](https://github.com/Crazy-Rohit/rm-git-lab-template).
-2. Choose **Use this template → Create a new repository**.
-3. Tick **Include all branches**. Stage 3 needs the extra branches.
-4. Name it exactly `git-lab`.
-5. Make it **Public**.
-6. Choose **Create repository**.
-
-Then clone it to your computer:
+**Sign in and clone.** Create `git-lab` first (stage 1, step 1 below), then:
 
 ```bash
 git clone https://github.com/YOUR-USERNAME/git-lab.git
 cd git-lab
 ```
 
-You use this same `git-lab` repository for stages 1 to 4 and 6.
+The first time you push, Git asks you to sign in and a browser window opens. For SSH keys or tokens, read [handbook chapter 23](https://crazy-rohit.github.io/rm-git-learning-portal/handbook/#ch23).
+
+You use the same `git-lab` repository for stages 1 to 4 and 6.
 
 ## The cycle for every stage
 
@@ -114,7 +109,7 @@ git commit -m "Add stage 1 code"
 git push
 ```
 
-On Windows PowerShell, `echo` can add a hidden byte-order mark. If the code check fails, create the file in your editor instead, paste the code, and save it as UTF-8.
+For stage 1 the Start reply gives you this command with your code filled in. In Codespaces it works as written. On your own Windows computer, PowerShell's `echo` can add a hidden byte-order mark; if the code check fails, create the file in an editor, paste the code, and save it as UTF-8.
 
 ---
 
@@ -128,8 +123,6 @@ On Windows PowerShell, `echo` can add a hidden byte-order mark. If the code chec
 
 | Chapter | Topic |
 | --- | --- |
-| [4](https://crazy-rohit.github.io/rm-git-learning-portal/handbook/#ch4) | Installing Git |
-| [5](https://crazy-rohit.github.io/rm-git-learning-portal/handbook/#ch5) | First-time configuration |
 | [6](https://crazy-rohit.github.io/rm-git-learning-portal/handbook/#ch6) | Your first repository |
 | [7](https://crazy-rohit.github.io/rm-git-learning-portal/handbook/#ch7) | The three areas of Git |
 | [8](https://crazy-rohit.github.io/rm-git-learning-portal/handbook/#ch8) | Making commits |
@@ -144,63 +137,37 @@ On Windows PowerShell, `echo` can add a hidden byte-order mark. If the code chec
 
 ### Step by step
 
-1. Create `git-lab` from the template, as in [Before you begin](#5-create-your-lab-repository).
-2. Open a [Start issue](https://github.com/Crazy-Rohit/rm-git-learning-portal/issues/new?template=start-stage.yml) and choose **1**. Copy the code from the reply.
-3. Save the code:
+1. Choose [Start stage 1](https://github.com/Crazy-Rohit/rm-git-learning-portal/issues/new?template=start-stage.yml&stage=1), then **Create**. GitHub shows the issue page. That is expected.
+2. Wait about a minute and refresh. The portal replies with your personal code and three steps. Follow them in order:
+   - **Create my git-lab.** The link opens GitHub's new-repository page already filled in: from `rm-git-lab-template`, named `git-lab`, public. Tick **Include all branches** and choose **Create repository**.
+   - **My git-lab in Codespaces.** Choose **Create codespace**. An editor opens with a terminal at the bottom. Paste the commands from the reply and press Enter. They save your code, change the README, ignore log files, commit each change, and push.
+   - **Submit stage 1.** The link opens the Submit form already filled in. Choose **Create**.
+3. Wait a minute and refresh the Submit issue. The reply lists every check.
 
-   ```bash
-   cd git-lab
-   git pull
-   mkdir -p .stage
-   echo "PASTE-YOUR-CODE" > .stage/stage-1.txt
-   git add .stage/stage-1.txt
-   git commit -m "Add stage 1 code"
-   ```
+The commands in the reply, with your code in place of `YOUR-CODE`:
 
-4. Change the README. Add a line about yourself and what you want to learn:
+```bash
+echo "YOUR-CODE" > .stage/stage-1.txt   # save your personal code
+git add .stage/stage-1.txt               # stage it
+git commit -m "Add stage 1 code"         # commit 1
+echo "I am learning Git with Rohit Manna." >> README.md
+git add README.md
+git commit -m "Introduce myself in the README"   # commit 2
+echo "*.log" >> .gitignore               # ignore log files
+git add .gitignore
+git commit -m "Ignore log files"         # commit 3
+git push                                 # send the commits to GitHub
+git log --oneline                        # list your commits
+```
 
-   ```bash
-   git status
-   git add README.md
-   git commit -m "Introduce myself in the README"
-   ```
+To see the ignore rule work, run `echo test > debug.log` and then `git status`. `debug.log` is not listed.
 
-5. Ignore log files. Add a line that is exactly `*.log` to `.gitignore`:
+**Put your name on your card (optional).** In the codespace, open `index.html` from the file list on the left. Under the comment `Change the two lines below`, replace `YOUR NAME` with your name and `YOUR-USERNAME` with your GitHub username. Then run:
 
-   ```bash
-   echo "*.log" >> .gitignore
-   echo "test" > debug.log
-   git status
-   ```
-
-   `git status` should not list `debug.log`. That shows the rule works.
-
-   ```bash
-   git add .gitignore
-   git commit -m "Ignore log files"
-   ```
-
-6. Put your name on your card. Open `index.html` in an editor, find the two lines under the comment `Change the two lines below`, and replace `YOUR NAME` with your name and `YOUR-USERNAME` with your GitHub username. Open the file in a browser to see the card, then commit:
-
-   ```bash
-   git add index.html
-   git commit -m "Put my name on the card"
-   ```
-
-7. Look at your history:
-
-   ```bash
-   git log --oneline
-   ```
-
-8. Push everything:
-
-   ```bash
-   git push
-   ```
-
-9. Open your repository on GitHub and click a commit. Your avatar should appear next to it. If it shows a grey icon, GitHub has not linked the commit to your account. Fix your email first, as described in [step 3 of Before you begin](#3-tell-git-who-you-are).
-10. Open a [Submit issue](https://github.com/Crazy-Rohit/rm-git-learning-portal/issues/new?template=submit-stage.yml). Choose **1** and enter `your-username/git-lab`.
+```bash
+git commit -am "Put my name on the card"
+git push
+```
 
 ### Your card on the web
 

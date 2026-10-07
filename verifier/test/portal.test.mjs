@@ -91,6 +91,10 @@ test('a Start issue records the time and returns a code', async () => {
   const code = challengeCode(USER_ID, '1', SECRET);
   assert.match(gh.comments[0], new RegExp(code));
   assert.match(gh.comments[0], /\.stage\/stage-1\.txt/);
+  assert.match(gh.comments[0], new RegExp(`echo "${code}" > \\.stage/stage-1\\.txt`));
+  assert.match(gh.comments[0], /https:\/\/codespaces\.new\/learner\/git-lab/);
+  assert.match(gh.comments[0], /template_name=rm-git-lab-template/);
+  assert.match(gh.comments[0], /repo=learner%2Fgit-lab/);
   assert.equal(loadLearner(dir, USER_ID, LOGIN).stages['1'].startedAt, '2026-10-05T10:00:00.000Z');
 });
 
