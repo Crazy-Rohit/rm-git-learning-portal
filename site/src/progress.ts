@@ -90,6 +90,7 @@ form?.addEventListener('submit', (event) => {
   const login = loginInput?.value.trim().replace(/^@/, '') ?? '';
   if (!login) return;
   setStatus('Looking up the public record…');
+  try { localStorage.setItem('rm-portal-login', login); } catch { /* storage can be blocked */ }
   lookup(login).then((stages) => {
     setStatus(`Progress for ${login}.`);
     render(stages);

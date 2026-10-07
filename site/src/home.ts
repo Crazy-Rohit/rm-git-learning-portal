@@ -113,6 +113,115 @@ function buildContrib(grid: HTMLElement) {
   return paint;
 }
 
+const LOGIN_KEY = 'rm-portal-login';
+const LEDGER = 'https://raw.githubusercontent.com/Crazy-Rohit/rm-git-learning-portal/ledger';
+
+type StageRecord = { passedAt?: string };
+
+function storedLogin() {
+  try { return localStorage.getItem(LOGIN_KEY) || ''; } catch { return ''; }
+}
+
+function storeLogin(login: string) {
+  try { localStorage.setItem(LOGIN_KEY, login); } catch { /* storage can be blocked */ }
+}
+
+function cacheGet(key: string) {
+  try { return localStorage.getItem(key); } catch { return null; }
+}
+
+function cacheSet(key: string, value: string) {
+  try { localStorage.setItem(key, value); } catch { /* storage can be blocked */ }
+}
+
+async function learnerStages(login: string) {
+  const key = `rm-portal-id:${login.toLowerCase()}`;
+  let id = cacheGet(key);
+  if (!id) {
+    const user = await fetch(`https://api.github.com/users/${encodeURIComponent(login)}`);
+    if (user.status === 404) throw new Error('No GitHub account uses that username.');
+    if (!user.ok) throw new Error('GitHub did not return that account. Wait a minute and try again.');
+    const body = await user.json() as { id: number };
+    id = String(body.id);
+    cacheSet(key, id);
+  }
+  const ledger = await fetch(`${LEDGER}/learners/${id}.json`);
+  if (ledger.status === 404) return {};
+  if (!ledger.ok) throw new Error('The progress record could not be read.');
+  const file = await ledger.json() as { stages?: Record<string, StageRecord> };
+  return file.stages ?? {};
+}
+
+function paintPath(stages: Record<string, StageRecord>) {
+  const items = document.querySelectorAll<HTMLElement>('#timeline [data-stage]');
+  let passed = 0;
+  items.forEach((item) => {
+    const number = Number(item.dataset.stage);
+    const done = Boolean(stages[String(number)]?.passedAt);
+    const previousPassed = number === 1 || Boolean(stages[String(number - 1)]?.passedAt);
+    const label = item.querySelector<HTMLElement>('.label');
+    const card = item.querySelector<HTMLAnchorElement>('a.card');
+    item.classList.remove('open', 'done');
+    if (done) {
+      passed += 1;
+      item.classList.add('done');
+      if (label) {
+        label.className = 'label done';
+        label.textContent = 'Done';
+      }
+      card?.setAttribute('title', 'Run this stage again');
+    } else if (previousPassed) {
+      item.classList.add('open');
+      if (label) {
+        label.className = 'label go';
+        label.textContent = 'Open now';
+      }
+      card?.removeAttribute('title');
+    } else if (label) {
+      label.className = 'label';
+      label.textContent = 'Locked';
+      card?.removeAttribute('title');
+    }
+  });
+  if (timeline) {
+    timeline.dataset.filled = '1';
+    timeline.style.setProperty('--fill', String(Math.min(1, passed / 7)));
+  }
+}
+
+const pathForm = document.querySelector<HTMLFormElement>('#path-lookup');
+const pathLogin = document.querySelector<HTMLInputElement>('#path-login');
+const pathStatus = document.querySelector<HTMLElement>('#path-status');
+
+function showPath(login: string) {
+  const name = login.trim().replace(/^@/, '');
+  if (!name) return;
+  storeLogin(name);
+  if (pathStatus) pathStatus.textContent = 'Reading the public record…';
+  learnerStages(name).then((stages) => {
+    paintPath(stages);
+    const done = Object.values(stages).filter((stage) => stage.passedAt).length;
+    if (pathStatus) {
+      pathStatus.textContent = done
+        ? `${name}: ${done} stage${done === 1 ? '' : 's'} done. A done stage can be opened again.`
+        : `${name} has not passed a stage yet.`;
+    }
+  }).catch((error: unknown) => {
+    if (pathStatus) pathStatus.textContent = error instanceof Error ? error.message : 'The lookup failed.';
+  });
+}
+
+pathForm?.addEventListener('submit', (event) => {
+  event.preventDefault();
+  showPath(pathLogin?.value || '');
+});
+
+const remembered = storedLogin();
+if (pathLogin && remembered) {
+  pathLogin.value = remembered;
+  showPath(remembered);
+}
+
 const terminal = document.querySelector<HTMLElement>('#term');
 if (terminal) void runTerminal(terminal);
 
@@ -141,7 +250,7 @@ if (graph) {
   const graphObserver = new IntersectionObserver(([entry]) => {
     if (!entry?.isIntersecting) return;
     graph.classList.add('in');
-    timeline?.style.setProperty('--fill', '0.08');
+    if (!timeline?.dataset.filled) timeline?.style.setProperty('--fill', '0.08');
     graphObserver.disconnect();
   }, { threshold: 0.3 });
   graphObserver.observe(graph);
