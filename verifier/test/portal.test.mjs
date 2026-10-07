@@ -276,3 +276,198 @@ test('a passed stage 1 issues a signed badge and keeps it on a later pass', asyn
   assert.equal(loadLearner(dir, USER_ID, LOGIN).stages['1'].credentialId, 'GGP-2026-42-S1');
   assert.equal(loadLearner(dir, USER_ID, LOGIN).stages['1'].passedAt, '2026-10-05T12:30:00.000Z');
 });
+
+const AUTHOR = { id: USER_ID, login: LOGIN };
+const LATER = '2026-10-06T09:00:00Z';
+
+function textFile(text) {
+  return { data: { type: 'file', content: Buffer.from(text).toString('base64') } };
+}
+
+async function passStage1(dir) {
+  await handleIssue({
+    gh: issueGh({ title: '[Start] ', body: '### Stage\n\n1\n', user: AUTHOR, created_at: '2026-10-05T09:00:00Z' }),
+    ledgerDir: dir, issueNumber: 1, portal: PORTAL, secret: SECRET,
+    now: () => new Date('2026-10-05T09:00:00Z'),
+  });
+  const gh = issueGh({
+    title: '[Submit] ',
+    body: '### Stage\n\n1\n\n### Your lab repository\n\nlearner/git-lab\n',
+    user: AUTHOR,
+    created_at: '2026-10-05T10:00:00Z',
+  }, passingRepos(challengeCode(USER_ID, '1', SECRET)));
+  const result = await handleIssue({
+    gh, ledgerDir: dir, issueNumber: 2, portal: PORTAL, secret: SECRET,
+    now: () => new Date('2026-10-05T10:00:00Z'),
+  });
+  assert.equal(result.passed, true);
+}
+
+async function openStage(dir, stage) {
+  const gh = issueGh({ title: '[Start] ', body: `### Stage\n\n${stage}\n`, user: AUTHOR, created_at: LATER });
+  await handleIssue({
+    gh, ledgerDir: dir, issueNumber: 20 + stage, portal: PORTAL, secret: SECRET,
+    now: () => new Date(LATER),
+  });
+  return gh;
+}
+
+test('stages 2 to 7 pass when the public evidence is present', async () => {
+  const dir = mkdtempSync(path.join(tmpdir(), 'ledger-'));
+  await passStage1(dir);
+  const stage2 = await openStage(dir, 2);
+  assert.match(stage2.comments[0], /feature\/about-page/);
+  const code2 = challengeCode(USER_ID, '2', SECRET);
+  const gh2 = issueGh({
+    title: '[Submit] ',
+    body: '### Stage\n\n2\n\n### Your lab repository\n\nlearner/git-lab\n',
+    user: AUTHOR,
+    created_at: '2026-10-06T12:00:00Z',
+  }, {
+    get: async () => ({ data: { private: false, owner: { id: USER_ID } } }),
+    getContent: async ({ path: filePath }) => textFile(filePath.endsWith('stage-2.txt') ? code2 : ''),
+  });
+  gh2.pulls = {
+    list: async () => ({ data: [{
+      number: 8, merged_at: '2026-10-06T11:00:00Z', base: { ref: 'main' }, head: { ref: 'feature/about-page' },
+      user: { id: USER_ID }, body: 'This adds an about page. It records what I want to learn.',
+    }] }),
+    listCommits: async () => ({ data: [{ commit: { message: 'Add an about page with my learning goals' } }] }),
+  };
+  assert.equal((await handleIssue({
+    gh: gh2, ledgerDir: dir, issueNumber: 30, portal: PORTAL, secret: SECRET,
+    now: () => new Date('2026-10-06T12:00:00Z'),
+  })).passed, true);
+
+  await openStage(dir, 3);
+  const code3 = challengeCode(USER_ID, '3', SECRET);
+  const gh3 = issueGh({
+    title: '[Submit] ',
+    body: '### Stage\n\n3\n\n### Your lab repository\n\nlearner/git-lab\n',
+    user: AUTHOR,
+    created_at: '2026-10-06T13:00:00Z',
+  }, {
+    get: async () => ({ data: { private: false, owner: { id: USER_ID } } }),
+    getContent: async ({ path: filePath }) => textFile(filePath === 'greeting.txt' ? 'Hello, welcome to the team and good luck\n' : code3),
+    listCommits: async () => ({ data: [{ sha: 'merge', author: { id: USER_ID }, commit: { committer: { date: '2026-10-06T12:30:00Z' }, message: 'Merge' } }] }),
+    getCommit: async () => ({ data: { parents: [{ sha: 'a' }, { sha: 'b' }] } }),
+  });
+  assert.equal((await handleIssue({
+    gh: gh3, ledgerDir: dir, issueNumber: 31, portal: PORTAL, secret: SECRET,
+    now: () => new Date('2026-10-06T13:00:00Z'),
+  })).passed, true);
+
+  await openStage(dir, 4);
+  const code4 = challengeCode(USER_ID, '4', SECRET);
+  const gh4 = issueGh({
+    title: '[Submit] ',
+    body: '### Stage\n\n4\n\n### Your lab repository\n\nlearner/git-lab\n',
+    user: AUTHOR,
+    created_at: '2026-10-06T14:00:00Z',
+  }, {
+    get: async () => ({ data: { private: false, owner: { id: USER_ID } } }),
+    getContent: async () => textFile(code4),
+    listCommits: async () => ({ data: [{
+      sha: 'rev', author: { id: USER_ID },
+      commit: { committer: { date: '2026-10-06T13:30:00Z' }, message: 'Revert "Add a note"\n\nThis reverts commit abcdef1.' },
+    }] }),
+  });
+  gh4.git = {
+    getRef: async () => ({ data: { object: { type: 'tag', sha: 'tagsha' } } }),
+    getTag: async () => ({ data: { message: 'First stable version of my lab', tagger: { date: '2026-10-06T13:40:00Z' } } }),
+  };
+  assert.equal((await handleIssue({
+    gh: gh4, ledgerDir: dir, issueNumber: 32, portal: PORTAL, secret: SECRET,
+    now: () => new Date('2026-10-06T14:00:00Z'),
+  })).passed, true);
+
+  await openStage(dir, 5);
+  const code5 = challengeCode(USER_ID, '5', SECRET);
+  const gh5 = issueGh({
+    title: '[Submit] ',
+    body: '### Stage\n\n5\n\n### Your lab repository\n\nlearner/git-lab\n',
+    user: AUTHOR,
+    created_at: '2026-10-06T15:00:00Z',
+  }, {
+    get: async ({ repo }) => ({
+      data: repo === 'rm-practice-repo'
+        ? { fork: true, private: false, owner: { id: USER_ID }, parent: { full_name: 'Crazy-Rohit/rm-practice-repo' } }
+        : { private: false, owner: { id: USER_ID } },
+    }),
+    getContent: async () => textFile(code5),
+  });
+  gh5.pulls = {
+    list: async () => ({ data: [{ number: 3, merged_at: '2026-10-06T14:30:00Z', user: { id: USER_ID } }] }),
+    listFiles: async () => ({ data: [{ filename: 'contributors/learner.md', status: 'added' }] }),
+  };
+  assert.equal((await handleIssue({
+    gh: gh5, ledgerDir: dir, issueNumber: 33, portal: PORTAL, secret: SECRET,
+    now: () => new Date('2026-10-06T15:00:00Z'),
+  })).passed, true);
+
+  await openStage(dir, 6);
+  const code6 = challengeCode(USER_ID, '6', SECRET);
+  const gh6 = issueGh({
+    title: '[Submit] ',
+    body: '### Stage\n\n6\n\n### Your lab repository\n\nlearner/git-lab\n',
+    user: AUTHOR,
+    created_at: '2026-10-06T16:00:00Z',
+  }, {
+    get: async () => ({ data: { private: false, owner: { id: USER_ID } } }),
+    getContent: async ({ path: filePath }) => (
+      filePath === '.github/workflows' ? { data: [{ name: 'check.yml', type: 'file' }] } : textFile(code6)
+    ),
+  });
+  gh6.actions = {
+    listWorkflowRunsForRepo: async () => ({ data: { workflow_runs: [
+      { id: 1, head_branch: 'main', conclusion: 'failure', created_at: '2026-10-06T15:10:00Z' },
+      { id: 2, head_branch: 'main', conclusion: 'success', created_at: '2026-10-06T15:20:00Z' },
+    ] } }),
+  };
+  assert.equal((await handleIssue({
+    gh: gh6, ledgerDir: dir, issueNumber: 34, portal: PORTAL, secret: SECRET,
+    now: () => new Date('2026-10-06T16:00:00Z'),
+  })).passed, true);
+
+  await openStage(dir, 7);
+  const code7 = challengeCode(USER_ID, '7', SECRET);
+  const files = {
+    'README.md': 'Notes for the Git course, and how to open them.',
+    LICENSE: 'MIT License',
+    '.gitignore': '*.log\n',
+    '.stage/stage-7.txt': code7,
+  };
+  const gh7 = issueGh({
+    title: '[Submit] ',
+    body: '### Stage\n\n7\n\n### Your lab repository\n\nlearner/notes\n',
+    user: AUTHOR,
+    created_at: '2026-10-06T17:00:00Z',
+  }, {
+    get: async () => ({ data: { private: false, owner: { id: USER_ID } } }),
+    getContent: async ({ path: filePath }) => (
+      filePath === '.github/workflows' ? { data: [{ name: 'check.yml', type: 'file' }] } : textFile(files[filePath] || '')
+    ),
+    getPages: async () => ({ data: { html_url: 'https://learner.github.io/notes/' } }),
+    getReleaseByTag: async () => ({ data: { body: 'First public release of my notes.', published_at: '2026-10-06T16:30:00Z' } }),
+  });
+  gh7.pulls = {
+    list: async () => ({ data: [1, 2, 3].map((number) => ({
+      number, merged_at: '2026-10-06T16:00:00Z', base: { ref: 'main' },
+      body: number === 1 ? 'Adds the home page.\n\nFixes #4' : 'Adds another page for the notes site.',
+    })) }),
+  };
+  gh7.actions = {
+    listWorkflowRunsForRepo: async () => ({ data: { workflow_runs: [
+      { id: 9, head_branch: 'main', conclusion: 'success', created_at: '2026-10-06T16:10:00Z' },
+    ] } }),
+  };
+  const portalIssue = { title: '[Submit] ', body: '### Stage\n\n7\n\n### Your lab repository\n\nlearner/notes\n', user: AUTHOR };
+  gh7.issues.get = async (params) => ({
+    data: params.owner === 'learner' ? { state: 'closed' } : portalIssue,
+  });
+  assert.equal((await handleIssue({
+    gh: gh7, ledgerDir: dir, issueNumber: 35, portal: PORTAL, secret: SECRET,
+    now: () => new Date('2026-10-06T17:00:00Z'),
+  })).passed, true);
+  assert.equal(loadLearner(dir, USER_ID, LOGIN).certificateId, null);
+});

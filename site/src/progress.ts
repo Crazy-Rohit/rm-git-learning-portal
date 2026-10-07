@@ -45,8 +45,11 @@ function render(stages: Record<string, StageRecord>) {
       link.textContent = record?.startedAt ? 'Started' : 'Available';
       state.append(link);
     } else if (previousPassed) {
-      state.className = 'lock';
-      state.textContent = 'Not open yet';
+      state.className = 'open';
+      const link = document.createElement('a');
+      link.href = `https://github.com/Crazy-Rohit/rm-git-learning-portal/issues/new?template=start-stage.yml&stage=${number}`;
+      link.textContent = record?.startedAt ? 'Started' : 'Available';
+      state.append(link);
     } else {
       state.className = 'lock';
       state.textContent = 'Locked';

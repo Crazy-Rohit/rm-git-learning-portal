@@ -7,7 +7,7 @@ body:
     id: stage
     attributes:
       label: Stage
-      description: Only stage 1 is open. Later stages unlock after the one before them is passed.
+      description: Choose the stage number. Pass the previous stage first. All seven stages can be checked.
       options: ["1", "2", "3", "4", "5", "6", "7"]
     validations:
       required: true

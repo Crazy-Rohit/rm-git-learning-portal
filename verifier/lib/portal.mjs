@@ -3,6 +3,8 @@ export const PORTAL = {
   repo: 'rm-git-learning-portal',
   templateFullName: 'Crazy-Rohit/rm-git-lab-template',
   labName: 'git-lab',
+  practiceName: 'rm-practice-repo',
+  practiceFullName: 'Crazy-Rohit/rm-practice-repo',
   issuerName: 'Rohit Manna',
   siteUrl: 'https://crazy-rohit.github.io/rm-git-learning-portal/',
   handbookUrl: 'https://crazy-rohit.github.io/rm-git-learning-portal/handbook/',

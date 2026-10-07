@@ -6,8 +6,22 @@ import { loadLearner, saveLearner } from './lib/ledger.mjs';
 import { writeSharePage } from './lib/share.mjs';
 import { DAILY_SUBMIT_LIMIT } from './lib/portal.mjs';
 import { checkStage1 } from './stages/stage1.mjs';
+import { checkStage2 } from './stages/stage2.mjs';
+import { checkStage3 } from './stages/stage3.mjs';
+import { checkStage4 } from './stages/stage4.mjs';
+import { checkStage5 } from './stages/stage5.mjs';
+import { checkStage6 } from './stages/stage6.mjs';
+import { checkStage7 } from './stages/stage7.mjs';
 
-const CHECKS = { 1: checkStage1 };
+const CHECKS = {
+  1: checkStage1,
+  2: checkStage2,
+  3: checkStage3,
+  4: checkStage4,
+  5: checkStage5,
+  6: checkStage6,
+  7: checkStage7,
+};
 
 async function closeWith(gh, portal, issueNumber, body) {
   await gh.issues.createComment({

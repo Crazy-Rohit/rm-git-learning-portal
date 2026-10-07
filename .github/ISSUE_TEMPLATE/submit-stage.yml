@@ -14,7 +14,7 @@ body:
     id: repo
     attributes:
       label: Your lab repository
-      description: For stage 1 this is your-username/git-lab
+      description: Stages 1 to 6 use your-username/git-lab. Stage 7 uses your new project, your-username/project-name.
       placeholder: your-username/git-lab
     validations:
       required: true

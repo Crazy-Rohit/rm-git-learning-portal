@@ -32,7 +32,7 @@ The portal never runs your code and cannot read private repositories. Every chec
 
 Stages open in order. You can start stage 2 only after stage 1 is passed, and so on.
 
-> **What is open today:** stage 1. Stages 2 to 7 are described below so you can learn and practise now. Their checks open later, and the details may change slightly when they do.
+All seven stages can be checked. Pass them in order.
 
 ## Before you begin
 
@@ -440,8 +440,6 @@ git push
 
 ## Stage 2: Branches and pull requests
 
-> Not open yet. You can learn and practise it now.
-
 **You learn:** how to work on a branch, push it, and merge it through a pull request with a clear description.
 
 ### Read first
@@ -486,7 +484,7 @@ git push
 
 8. Submit stage 2.
 
-### What the check is planned to look for
+### What the check looks for
 
 - A pull request merged into `main` from a branch named `feature/...` after your start time.
 - A written description on that pull request.
@@ -496,8 +494,6 @@ git push
 ---
 
 ## Stage 3: Merge conflicts
-
-> Not open yet. You can learn and practise it now.
 
 **You learn:** why conflicts happen, how to read conflict markers, and how to finish a merge.
 
@@ -565,7 +561,7 @@ If you did not tick **Include all branches**, create a new `git-lab` from the te
 7. Run `git log --oneline --graph` and find the merge commit with two parents.
 8. Submit stage 3.
 
-### What the check is planned to look for
+### What the check looks for
 
 - A merge commit with two parents on `main` after your start time.
 - `greeting.txt` contains both `welcome` and `good luck`.
@@ -575,8 +571,6 @@ If you did not tick **Include all branches**, create a new `git-lab` from the te
 ---
 
 ## Stage 4: Undo and history
-
-> Not open yet. You can learn and practise it now.
 
 **You learn:** the safe way to undo a commit that is already pushed, how reset differs from revert, and how to mark a release with a tag.
 
@@ -626,7 +620,7 @@ If you did not tick **Include all branches**, create a new `git-lab` from the te
 
 6. Submit stage 4.
 
-### What the check is planned to look for
+### What the check looks for
 
 - A commit made by `git revert` that reverts one of your own commits.
 - An annotated tag named `v1.0.0` on GitHub.
@@ -635,8 +629,6 @@ If you did not tick **Include all branches**, create a new `git-lab` from the te
 ---
 
 ## Stage 5: Fork and pull request
-
-> Not open yet. You can learn and practise it now.
 
 **You learn:** how to contribute to a project you do not own, which is how open source works.
 
@@ -684,7 +676,7 @@ If you did not tick **Include all branches**, create a new `git-lab` from the te
    git push
    ```
 
-### What the check is planned to look for
+### What the check looks for
 
 - A fork of `rm-practice-repo` on your account.
 - A merged pull request from that fork that adds only `contributors/<your-username>.md`.
@@ -693,8 +685,6 @@ If you did not tick **Include all branches**, create a new `git-lab` from the te
 ---
 
 ## Stage 6: Automation
-
-> Not open yet. You can learn and practise it now.
 
 **You learn:** how GitHub Actions runs checks on every push, and how to read a failing run and fix it.
 
@@ -727,7 +717,7 @@ If you did not tick **Include all branches**, create a new `git-lab` from the te
 5. Watch the next run turn green.
 6. Submit stage 6.
 
-### What the check is planned to look for
+### What the check looks for
 
 - A workflow file in `.github/workflows/` in `git-lab`.
 - A failed run followed by a successful run on the same branch, both after your start time.
@@ -736,8 +726,6 @@ If you did not tick **Include all branches**, create a new `git-lab` from the te
 ---
 
 ## Stage 7: Capstone project
-
-> Not open yet. You can start planning it now.
 
 **You learn:** to run a small project the way real teams do, from first commit to a live site and a release.
 
@@ -754,7 +742,7 @@ If you did not tick **Include all branches**, create a new `git-lab` from the te
 
 ### What to build
 
-Pick something small you care about: a personal page, notes for a subject, or a tiny tool. Create a **new public repository** for it, separate from `git-lab`.
+Pick something small you care about: a personal page, notes for a subject, or a tiny tool. Create a **new public repository** for it, separate from `git-lab`. Save the stage 7 code as the only line of `.stage/stage-7.txt` in that new repository. On the Submit form, enter `your-username/your-project-name`, not `git-lab`.
 
 ### Checklist
 
