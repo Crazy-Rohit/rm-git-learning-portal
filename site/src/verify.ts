@@ -1,5 +1,6 @@
 import { canonical } from './canonical';
-import { CERTIFICATE_COURSE, ISSUER, LEDGER, SITE, badgeFor, profileSnippet, sharePageUrl } from './catalog';
+import { CERTIFICATE_COURSE, ISSUER, LEDGER, SITE, badgeFor, sharePageUrl } from './catalog';
+import { downloadCertificateImage, downloadCertificatePdf, downloadUrl } from './export';
 
 type PublicKey = { kid: string; x: string; validFrom?: string };
 type RevokedItem = string | { id?: string };
@@ -151,6 +152,29 @@ async function copyText(value: string, button: HTMLButtonElement) {
   window.setTimeout(() => { button.textContent = previous; }, 1600);
 }
 
+function downloadButton(label: string, run: () => Promise<void>) {
+  const button = document.createElement('button');
+  button.className = 'btn';
+  button.type = 'button';
+  button.textContent = label;
+  button.addEventListener('click', async () => {
+    const previous = button.textContent;
+    button.disabled = true;
+    button.textContent = 'Preparing…';
+    try {
+      await run();
+      button.textContent = 'Downloaded';
+    } catch {
+      button.textContent = 'Could not download';
+    }
+    window.setTimeout(() => {
+      button.disabled = false;
+      button.textContent = previous;
+    }, 1600);
+  });
+  return button;
+}
+
 function renderRecord(credential: Credential, status: 'valid' | 'revoked' | 'invalid', root: HTMLElement) {
   root.replaceChildren();
   const banner = document.createElement('p');
@@ -213,28 +237,33 @@ function renderRecord(credential: Credential, status: 'valid' | 'revoked' | 'inv
       shareButton('Facebook', 'fb', `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(page)}`, facebookMark()),
       shareButton('LinkedIn', 'in', `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(page)}`, linkedInMark()),
     );
-    panel.append(heading, note, row);
+    const copies = document.createElement('div');
+    copies.className = 'share-copy';
+    const copyLink = document.createElement('button');
+    copyLink.className = 'btn';
+    copyLink.type = 'button';
+    copyLink.textContent = 'Copy verify link';
+    copyLink.addEventListener('click', () => copyText(`${SITE}verify.html?id=${encodeURIComponent(credential.id)}`, copyLink));
+    copies.append(copyLink);
 
-    if (credential.type !== 'GitGitHubPractitioner' && credential.stage) {
-      const snippet = profileSnippet(credential.stage, credential.id);
-      const copies = document.createElement('div');
-      copies.className = 'share-copy';
-      const copyLink = document.createElement('button');
-      copyLink.className = 'btn';
-      copyLink.type = 'button';
-      copyLink.textContent = 'Copy verify link';
-      copyLink.addEventListener('click', () => copyText(`${SITE}verify.html?id=${encodeURIComponent(credential.id)}`, copyLink));
-      const copySnippet = document.createElement('button');
-      copySnippet.className = 'btn';
-      copySnippet.type = 'button';
-      copySnippet.textContent = 'Copy GitHub README snippet';
-      copySnippet.addEventListener('click', () => copyText(snippet, copySnippet));
-      copies.append(copyLink, copySnippet);
-      const code = document.createElement('pre');
-      code.className = 'snippet';
-      code.textContent = snippet;
-      panel.append(copies, code);
+    const downloadHead = document.createElement('h2');
+    downloadHead.textContent = 'Download';
+    const downloads = document.createElement('div');
+    downloads.className = 'share-copy';
+    if (credential.type === 'GitGitHubPractitioner') {
+      downloads.append(
+        downloadButton('Download certificate image', async () => downloadCertificateImage(credential)),
+        downloadButton('Download certificate PDF', async () => downloadCertificatePdf(credential)),
+      );
+    } else if (badge) {
+      downloads.append(
+        downloadButton('Download badge image', async () => {
+          await downloadUrl(`${import.meta.env.BASE_URL}badges/${badge.slug}.png`, `${credential.id}-${badge.slug}.png`);
+        }),
+      );
     }
+
+    panel.append(heading, note, row, copies, downloadHead, downloads);
     root.append(panel);
   }
 }

@@ -255,6 +255,7 @@ button.btn { cursor: pointer; font: inherit; }
   background: var(--bg-raise);
 }
 .share-panel h2 { margin: 0 0 6px; font-size: 1.05rem; }
+.share-copy + h2 { margin-top: 18px; }
 .share-row { display: flex; flex-wrap: wrap; gap: 10px; margin: 14px 0 6px; }
 .share-btn {
   display: inline-flex;
@@ -494,7 +495,7 @@ button.btn { cursor: pointer; font: inherit; }
 }
 
 @media print {
-  .site-head, footer, form, .actions, .snippet, .verdict { display: none; }
+  .site-head, footer, form, .actions, .snippet, .verdict, .share-panel { display: none; }
   body { background: #ffffff; }
   .sheet { border: 0; }
 }
