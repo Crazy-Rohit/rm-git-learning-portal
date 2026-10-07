@@ -17,7 +17,7 @@
       <nav>
         <a href="./" aria-current="page">Home</a>
         <a href="handbook/">Handbook</a>
-        <a href="stage-1.html">Stage 1</a>
+        <a class="js-stage" href="stage-1.html">Stage 1</a>
         <a href="progress.html">Progress</a>
         <a href="verify.html">Verify</a>
         <button class="theme-btn" type="button" aria-label="Switch theme">
@@ -33,7 +33,7 @@
       <div>
         <span class="eyebrow"><img src="/rm-logo.png" alt=""><strong>Rohit Manna</strong> Free Git and GitHub course</span>
         <h1>Learn Git by making <span class="gradient">real commits</span> on your own GitHub.</h1>
-        <p class="lede">Read a chapter, do the work in a repository you own, and open an issue. A check on GitHub reads your public work and replies with what passed and what to fix.</p>
+        <p class="lede">Read a chapter, do the work in Codespaces in your browser, and open an issue. A check on GitHub reads your public work and replies with what passed and what to fix. Nothing to install.</p>
         <div class="actions">
           <a class="btn pri js-next" href="stage-1.html">Start stage 1</a>
           <a class="btn" href="handbook/">Read the handbook</a>
@@ -65,17 +65,17 @@
       <article class="card reveal">
         <span class="icon"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z"/><path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Z"/></svg></span>
         <h2>2. Start</h2>
-        <p>Open a Start issue. The reply gives you a personal code.</p>
+        <p>Open a Start issue. If Stage says None, choose 1. The reply is your worksheet.</p>
       </article>
       <article class="card reveal">
         <span class="icon"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M11.93 8.5a4.002 4.002 0 0 1-7.86 0H.75a.75.75 0 0 1 0-1.5h3.32a4.002 4.002 0 0 1 7.86 0h3.32a.75.75 0 0 1 0 1.5Zm-1.43-.75a2.5 2.5 0 1 0-5 0 2.5 2.5 0 0 0 5 0Z"/></svg></span>
         <h2>3. Commit</h2>
-        <p>Do the work in your own <code>git-lab</code> repository.</p>
+        <p>Paste the whole command block in Codespaces. That is your <code>git-lab</code>.</p>
       </article>
       <article class="card reveal">
         <span class="icon"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"/></svg></span>
         <h2>4. Submit</h2>
-        <p>Open a Submit issue. You get pass or fail, with the reason.</p>
+        <p>Open a Submit issue. If a box is empty, the reply links to the fix.</p>
       </article>
     </div>
 
@@ -133,9 +133,32 @@
       </div>
     </div>
 
+    <div class="section-head reveal">
+      <h2>If a screen looks wrong</h2>
+      <p>Match what you see, then open the fix. Do not start the stage over.</p>
+    </div>
+    <div class="flow">
+      <article class="card reveal">
+        <h2>Stage says None</h2>
+        <p>Click the box, choose 1, then Create. <a href="https://github.com/Crazy-Rohit/rm-git-learning-portal/blob/main/HANDBOOK.md#the-stage-box-says-none">Open the fix</a></p>
+      </article>
+      <article class="card reveal">
+        <h2>An issue opened</h2>
+        <p>Wait one minute and refresh. The bot comment is the next step. <a href="https://github.com/Crazy-Rohit/rm-git-learning-portal/blob/main/HANDBOOK.md#github-opened-an-issue-and-nothing-else-happened">Open the fix</a></p>
+      </article>
+      <article class="card reveal">
+        <h2>Git CMD or a folder</h2>
+        <p>Skip both. Use Codespaces from the Start comment. <a href="https://github.com/Crazy-Rohit/rm-git-learning-portal/blob/main/HANDBOOK.md#i-already-have-github-do-i-still-make-a-folder">Open the fix</a></p>
+      </article>
+      <article class="card reveal">
+        <h2>A check failed</h2>
+        <p>Paste the lines you skipped, push, and submit again. <a href="https://github.com/Crazy-Rohit/rm-git-learning-portal/blob/main/HANDBOOK.md#when-a-check-fails">Open the fix</a></p>
+      </article>
+    </div>
+
     <section class="cta reveal">
       <h2 id="next-title">Make your first commit today.</h2>
-      <p id="next-copy">Stage 1 takes about an hour. You need Git, a free GitHub account, and the handbook open beside you.</p>
+      <p id="next-copy">Stage 1 takes about an hour. You need a free GitHub account. Work happens in the browser.</p>
       <div class="actions">
         <a class="btn pri js-next" href="stage-1.html">Start stage 1</a>
         <a class="btn" href="https://github.com/Crazy-Rohit/rm-git-learning-portal/blob/main/HANDBOOK.md">Stage guide</a>

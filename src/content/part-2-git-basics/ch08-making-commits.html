@@ -2,6 +2,10 @@
   <div class="ch-meta"><span class="chip git">Part 2</span><span class="chip">Chapter 8</span><span>4 min read</span></div>
   <h2>Making commits</h2>
   <p class="lead">A commit is a permanent snapshot of your staged changes together with a message explaining why you made them.</p>
+  <div class="callout important">
+    <div class="t"><svg class="i"><use href="#i-imp"/></svg>Course</div>
+    <p>Stage 1 needs three commits after your Start issue: the code file, the README line, and the <code>*.log</code> ignore rule. Editing <code>index.html</code> is optional and does not replace those three. If Submit says you only have two commits, paste the rest of the Start block. <a href="https://github.com/Crazy-Rohit/rm-git-learning-portal/blob/main/HANDBOOK.md#only-two-commits">Fix: only two commits</a> · <a href="https://github.com/Crazy-Rohit/rm-git-learning-portal/blob/main/HANDBOOK.md#challenge-code-file-is-wrong">Fix: challenge code file</a></p>
+  </div>
 
   <h3>8.1 Your first commit</h3>
 <pre class="term"><code><span class="p">$</span> git commit -m "Add README"
@@ -120,6 +124,7 @@ raised an exception. Return a friendly error instead.</code></pre>
     <li><b>Committing with no message or a vague one.</b> Future you will not remember what "stuff" meant.</li>
     <li><b>Huge commits that mix unrelated changes.</b> Use <code>git add -p</code> to split them.</li>
     <li><b>Committing secrets such as passwords or API keys.</b> Removing them later is painful. Part 5 covers prevention.</li>
+    <li><b>Skipping the Start command block.</b> The portal counts only commits after Start that are pushed to GitHub. Paste every line, then <code>git push</code>.</li>
   </ul>
   <div class="panel recap">
     <div class="panel-h"><svg class="i"><use href="#i-checkc"/></svg>Quick recap</div>

@@ -1,13 +1,22 @@
 name: Start a stage
-description: Get your personal challenge code before you do the work
+description: Choose the stage number, then Create. For the first time, choose 1.
 title: "[Start] "
 labels: ["start"]
 body:
+  - type: markdown
+    attributes:
+      value: |
+        This form only asks which stage you are starting. After **Create**, GitHub shows an issue. That is expected. Wait one minute, refresh, and follow the bot comment. Do not open Git CMD. Do not create a folder on your computer.
+
+        The **Stage** box may say **None** until you click it. Choose **1** the first time. Later numbers open only after the previous stage is passed. If you pick too soon, the bot tells you.
+
+        [Stage 1 steps](https://github.com/Crazy-Rohit/rm-git-learning-portal/blob/main/HANDBOOK.md#stage-1-first-repository) · [If the Stage box says None](https://github.com/Crazy-Rohit/rm-git-learning-portal/blob/main/HANDBOOK.md#the-stage-box-says-none)
   - type: dropdown
     id: stage
     attributes:
       label: Stage
-      description: Choose the stage number. Pass the previous stage first. All seven stages can be checked.
+      description: Click this box if it says None. Choose 1 first. Choose 2 only after stage 1 is passed.
       options: ["1", "2", "3", "4", "5", "6", "7"]
+      default: 0
     validations:
       required: true

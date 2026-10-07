@@ -1,13 +1,23 @@
 name: Submit a stage
-description: Ask the verifier to check your public repository
+description: Check the public repository you just pushed. If a check already failed, fix it and use this form again.
 title: "[Submit] "
 labels: ["submission"]
 body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form after you have pushed the work from the Start comment. Choose the **same** stage you started. For stages 1 to 6 the repository is `your-username/git-lab`.
+
+        If a previous Submit failed, do **not** open a new Start. Fix the unchecked items, push, and submit again.
+
+        [When a check fails](https://github.com/Crazy-Rohit/rm-git-learning-portal/blob/main/HANDBOOK.md#when-a-check-fails)
   - type: dropdown
     id: stage
     attributes:
       label: Stage
+      description: Click this box if it says None. Pick the stage you started, not a later one.
       options: ["1", "2", "3", "4", "5", "6", "7"]
+      default: 0
     validations:
       required: true
   - type: input

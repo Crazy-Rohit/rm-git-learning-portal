@@ -95,6 +95,9 @@ test('a Start issue records the time and returns a code', async () => {
   assert.match(gh.comments[0], /https:\/\/codespaces\.new\/learner\/git-lab/);
   assert.match(gh.comments[0], /template_name=rm-git-lab-template/);
   assert.match(gh.comments[0], /repo=learner%2Fgit-lab/);
+  assert.match(gh.comments[0], /greeting-a/);
+  assert.match(gh.comments[0], /screens-you-will-see/);
+  assert.match(gh.comments[0], /when-a-check-fails/);
   assert.equal(loadLearner(dir, USER_ID, LOGIN).stages['1'].startedAt, '2026-10-05T10:00:00.000Z');
 });
 
@@ -162,6 +165,7 @@ test('a complete stage 1 submission passes and records evidence', async () => {
   assert.equal(saved.stages['1'].passedAt, '2026-10-05T12:30:00.000Z');
   assert.deepEqual(saved.stages['1'].evidence.commits, ['abc1', 'abc2', 'abc3']);
   assert.match(gh.comments[0], /Stage 1 passed/);
+  assert.match(gh.comments[0], /Start stage 2/);
   assert.match(gh.comments[0], /signing key is not configured/);
   assert.equal(saved.stages['1'].credentialId, undefined);
 });
@@ -185,6 +189,8 @@ test('a wrong challenge code fails the stage', async () => {
   });
   assert.equal(result.passed, false);
   assert.match(gh.comments[0], /Challenge code file is correct/);
+  assert.match(gh.comments[0], /challenge-code-file-is-wrong/);
+  assert.match(gh.comments[0], /when-a-check-fails/);
   assert.equal(loadLearner(dir, USER_ID, LOGIN).stages['1'].passedAt, undefined);
 });
 

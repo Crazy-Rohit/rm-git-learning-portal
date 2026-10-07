@@ -2,6 +2,10 @@
   <div class="ch-meta"><span class="chip git">Part 2</span><span class="chip">Chapter 6</span><span>4 min read</span></div>
   <h2>Your first repository</h2>
   <p class="lead">Creating a repository turns an ordinary folder into a project that Git can track.</p>
+  <div class="callout important">
+    <div class="t"><svg class="i"><use href="#i-imp"/></svg>Course</div>
+    <p>For the Git Learning Portal, do <b>not</b> run <code>git init</code> or <code>mkdir</code> on your computer. Create <code>git-lab</code> from the template in the browser, then open it in Codespaces. This chapter still uses <code>git init</code> so you can see what a repository is. <a href="https://github.com/Crazy-Rohit/rm-git-learning-portal/blob/main/HANDBOOK.md#stage-1-first-repository">Stage 1 guide</a> · <a href="https://github.com/Crazy-Rohit/rm-git-learning-portal/blob/main/HANDBOOK.md#i-already-have-github-do-i-still-make-a-folder">I already have GitHub. Do I still make a folder?</a></p>
+  </div>
 
   <h3>6.1 Creating a repository with git init</h3>
   <p>A <b>repository</b> is a folder that Git is watching. Any folder can become one with a single command.</p>
@@ -92,6 +96,8 @@
     <li><b>Running <code>git init</code> inside another repository.</b> You then have a repository inside a repository, which confuses Git. Check with <code>git status</code> first; if it says "not a git repository" you are safe to initialise.</li>
     <li><b>Initialising your home folder.</b> Always create a project folder first. Running <code>git init</code> in <code>~</code> makes Git try to track everything you own.</li>
     <li><b>Running Git commands outside a repository.</b> The error <code>fatal: not a git repository</code> simply means you are in the wrong folder.</li>
+    <li><b>Making a folder on your computer for the course.</b> A folder is not a GitHub repository. For stage 1, use the template link in the Start comment, then Codespaces.</li>
+    <li><b>Opening the yellow Compare &amp; pull request banners on <code>git-lab</code>.</b> <code>greeting-a</code> and <code>greeting-b</code> are for stage 3. Ignore them in stage 1. <a href="https://github.com/Crazy-Rohit/rm-git-learning-portal/blob/main/HANDBOOK.md#yellow-compare-and-pull-request-banners">Yellow banners</a></li>
   </ul>
   <div class="callout tip">
     <div class="t"><svg class="i"><use href="#i-tip"/></svg>Tip</div>

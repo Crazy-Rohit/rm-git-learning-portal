@@ -7,6 +7,7 @@ The course is by Rohit Manna. Everything runs on GitHub, so you only need a free
 ## Contents
 
 - [How the portal works](#how-the-portal-works)
+- [Screens you will see](#screens-you-will-see)
 - [Before you begin](#before-you-begin)
 - [Apps, platforms, and commands](#apps-platforms-and-commands)
 - [The cycle for every stage](#the-cycle-for-every-stage)
@@ -30,27 +31,80 @@ The course is by Rohit Manna. Everything runs on GitHub, so you only need a free
 
 The portal never runs your code and cannot read private repositories. Every check is something anyone could see on your public GitHub profile.
 
-Stages open in order. You can start stage 2 only after stage 1 is passed, and so on.
+Stages open in order. You can start stage 2 only after stage 1 is passed, and so on. The Start form lists every number so you can pick the stage you are on. Picking a later number too soon does not unlock it; the bot replies **Pass stage N first**.
 
 All seven stages can be checked. Pass them in order.
 
+## Screens you will see
+
+These are the screens that most often look like errors. They are not. Match what you see, then follow the link.
+
+### The Stage box says None
+
+The Start form is a GitHub issue form. The **Stage** box often starts as **None**. Click it, choose **1** the first time, then **Create**. GitHub will not let you submit while it still says None.
+
+Do not pick 2 to 7 until the previous stage is passed. The list is there so later stages use the same form.
+
+[Open Start stage 1](https://github.com/Crazy-Rohit/rm-git-learning-portal/issues/new?template=start-stage.yml&stage=1) · [Stage 1 steps](#stage-1-first-repository)
+
+### GitHub opened an issue and nothing else happened
+
+After **Create**, GitHub shows the issue page. That is the Start. Wait about a minute and refresh. A bot comment appears with three links and a command block. That comment is your worksheet. Close Git CMD, Git Bash, and VS Code if you opened them. You do not install Git for this path.
+
+[The cycle for every stage](#the-cycle-for-every-stage)
+
+### I already have GitHub. Do I still make a folder
+
+No. You already have an account, so skip signup. You still do **not** create a folder on your computer, and you do not run `git init` or `git clone` for stage 1. The lab is a **public GitHub repository** named `git-lab`, made from a template in the browser. Codespaces opens that repository. Skip every `mkdir` line unless you later choose the optional local path.
+
+[Before you begin](#before-you-begin) · [What to create, in this order](#what-to-create-in-this-order)
+
+### Yellow Compare and pull request banners
+
+After you create `git-lab`, GitHub may show yellow bars for `greeting-a` and `greeting-b`. Those branches come with the template. They are for [stage 3](#stage-3-merge-conflicts). **Do not open those pull requests in stage 1 or 2.** Ignore the banners and open Codespaces.
+
+### Where to put my name and GitHub username
+
+In Codespaces, open `index.html` from the file list. Find the comment `Change the two lines below`.
+
+- `YOUR NAME` becomes your display name, for example `Rohit Manna`.
+- `YOUR-USERNAME` becomes your GitHub login, for example `crazy-rohit`. Leave out the `YOUR-` prefix. Do not type the words `YOUR-USERNAME`.
+
+This card is optional. It does **not** replace the three required commits in the bot command block. If you only edit `index.html` and submit, the check fails.
+
+[Stage 1 steps](#stage-1-first-repository) · [Only two commits](#only-two-commits)
+
+### I used Git CMD or Git Bash instead of Codespaces
+
+Git CMD and Git Bash are two windows for the same Git program, not two courses. You can still pass on your own computer, but then you must clone `git-lab` and use the matching command block. The Start reply is written for Codespaces. If you are lost, go back to the Codespaces link in that reply.
+
+[Apps, platforms, and commands](#apps-platforms-and-commands)
+
+### A check failed
+
+Do not open another Start. Your personal code and start time stay the same. Stay in the same codespace, paste any commands you skipped, `git push`, then open a **new** Submit issue.
+
+[When a check fails](#when-a-check-fails)
+
 ## Before you begin
 
-### 1. Create a GitHub account
+### 1. Create a GitHub account, if you do not have one
 
-Sign up at [github.com](https://github.com/signup). Pick a username you are happy to show to employers, because your work in this course is public.
+Sign up at [github.com](https://github.com/signup). Pick a username you are happy to show to employers, because your work in this course is public. If you already have an account, skip this step.
 
 ### 2. That is all you need
 
 You do the work in **GitHub Codespaces**: an editor with a terminal that opens in your browser, with Git already set up and signed in to your account. Nothing to install. Personal accounts get a free monthly allowance, which is far more than this course needs.
 
-The Start reply for each stage gives you the links and commands. You do not have to choose a terminal or configure anything.
+The Start reply for each stage gives you the links and commands. You do not have to choose a terminal, create a directory, or configure anything.
 
-Working on your own computer is optional. The full steps for Windows, macOS, Linux, Git Bash, Git CMD, PowerShell, and Visual Studio Code are in [Apps, platforms, and commands](#apps-platforms-and-commands).
+Working on your own computer is optional. The full steps for Windows, macOS, Linux, Git Bash, Git CMD, PowerShell, and Visual Studio Code are in [Apps, platforms, and commands](#apps-platforms-and-commands). Skip that section until you want Git on your machine.
 
 ## Apps, platforms, and commands
 
-Git is one program. Git Bash, Git CMD, PowerShell, Terminal, Visual Studio Code, and Codespaces are only windows that run it. The `git` lines are the same in every window. The lines that create a file (`echo`, folder paths) change with the window. Pick one window and stay with it.
+If you are following the Start reply in Codespaces, **skip this whole section** and go to [The cycle for every stage](#the-cycle-for-every-stage). Come back only if you want Git on your own computer.
+
+Git is one program. Git Bash, Git CMD, PowerShell, Terminal, Visual Studio Code, and Codespaces are only windows that run it. The `git` lines are the same in every window. The lines that create a file (`echo`, folder paths) change with the window. Pick one window and stay with it. Git CMD is not a different course from Git Bash.
 
 The prompt tells you which window you have:
 
@@ -65,15 +119,15 @@ The prompt tells you which window you have:
 
 ### What to create, in this order
 
-Do not skip ahead, and do not create the lab with `git init`.
+Do not skip ahead, and do not create the lab with `git init`. A folder on your computer is not a GitHub repository.
 
-1. A GitHub account, in the browser.
-2. A Start issue for the stage. The reply contains your personal code. Copy it.
-3. The `git-lab` repository, in the browser, from the template. Name it exactly `git-lab`, set it to Public, and tick **Include all branches**. This happens on github.com, not in the terminal.
-4. A place to type commands: Codespaces, or one app on your computer.
-5. Four pieces of work, each as its own commit: the code file, a README line, a `.gitignore` line, and optionally your name in `index.html`.
-6. A push, so GitHub has the commits.
-7. A Submit issue.
+1. A GitHub account, in the browser. Skip this if you already have one.
+2. A Start issue for the stage. On the form, click **Stage**, choose the number, then **Create**. The reply contains your personal code. Copy it.
+3. The `git-lab` repository, in the browser, from the template. Name it exactly `git-lab`, set it to Public, and tick **Include all branches**. This happens on github.com, not in the terminal. Ignore yellow **Compare & pull request** banners for `greeting-a` and `greeting-b`.
+4. A place to type commands: the **My git-lab in Codespaces** link in the Start reply. A local app is optional.
+5. Three required commits from the bot command block: the code file, a README line, and a `.gitignore` line. Optionally a fourth commit for your name in `index.html`. Paste the **whole** block. Editing the card first is not enough.
+6. A push, so GitHub has the commits. The last line of the block does this.
+7. A Submit issue. If it fails, fix and submit again. Do not Start again.
 
 Stages 1 to 4 and stage 6 all use this same `git-lab`. Stage 5 also uses a fork of `rm-practice-repo`. Stage 7 uses a new repository that you choose.
 
@@ -333,11 +387,11 @@ A pull request is not a Git command. You open it on GitHub from the branch you p
 
 Every stage follows the same five steps.
 
-1. **Read.** Each stage below lists the handbook chapters to read first.
-2. **Start.** Open a [Start issue](https://github.com/Crazy-Rohit/rm-git-learning-portal/issues/new?template=start-stage.yml) and choose the stage. Within a minute the portal replies with your **personal code** and closes the issue.
-3. **Save the code.** Commit the code as the only line of `.stage/stage-N.txt` on `main`, where `N` is the stage number.
+1. **Read.** Each stage below lists the handbook chapters to read first. Those chapters teach the idea. This guide tells you what to type.
+2. **Start.** Open a [Start issue](https://github.com/Crazy-Rohit/rm-git-learning-portal/issues/new?template=start-stage.yml). If **Stage** says None, click it and choose the number. Then **Create**. Within a minute the portal replies with your **personal code** and closes the issue. Stay on that issue until the bot comment appears.
+3. **Save the code.** Commit the code as the only line of `.stage/stage-N.txt` on `main`, where `N` is the stage number. The Start reply already has this command filled in. Paste the whole block.
 4. **Do the work.** Only work done **after** the Start issue counts. The start time is saved once and does not change if you open another Start issue.
-5. **Submit.** Open a [Submit issue](https://github.com/Crazy-Rohit/rm-git-learning-portal/issues/new?template=submit-stage.yml). Choose the stage and enter your repository as `your-username/git-lab`. The reply lists every check.
+5. **Submit.** Open a [Submit issue](https://github.com/Crazy-Rohit/rm-git-learning-portal/issues/new?template=submit-stage.yml). Choose the same stage and enter your repository as `your-username/git-lab`. The reply lists every check. If something fails, [fix it](#when-a-check-fails) and open a new Submit, not a new Start.
 
 ### Why the personal code
 
@@ -365,6 +419,8 @@ For stage 1 the Start reply gives you this command with your code filled in. In 
 
 ### Read first
 
+These chapters explain the ideas. You still create `git-lab` from the template, not with `git init`. Skip [chapter 4](https://crazy-rohit.github.io/rm-git-learning-portal/handbook/#ch4) (install Git) and [chapter 5](https://crazy-rohit.github.io/rm-git-learning-portal/handbook/#ch5) (config) if you are using Codespaces.
+
 | Chapter | Topic |
 | --- | --- |
 | [6](https://crazy-rohit.github.io/rm-git-learning-portal/handbook/#ch6) | Your first repository |
@@ -381,14 +437,14 @@ For stage 1 the Start reply gives you this command with your code filled in. In 
 
 ### Step by step
 
-1. Choose [Start stage 1](https://github.com/Crazy-Rohit/rm-git-learning-portal/issues/new?template=start-stage.yml&stage=1), then **Create**. GitHub shows the issue page. That is expected.
+1. Choose [Start stage 1](https://github.com/Crazy-Rohit/rm-git-learning-portal/issues/new?template=start-stage.yml&stage=1). If **Stage** still says None, choose **1**. Then **Create**. GitHub shows the issue page. That is expected. Do not open Git CMD. Do not create a folder.
 2. Wait about a minute and refresh. The portal replies with your personal code and three steps. Follow them in order:
-   - **Create my git-lab.** The link opens GitHub's new-repository page already filled in: from `rm-git-lab-template`, named `git-lab`, public. Tick **Include all branches** and choose **Create repository**.
-   - **My git-lab in Codespaces.** Choose **Create codespace**. An editor opens with a terminal at the bottom. Paste the commands from the reply and press Enter. They save your code, change the README, ignore log files, commit each change, and push.
+   - **Create my git-lab.** The link opens GitHub's new-repository page already filled in: from `rm-git-lab-template`, named `git-lab`, public. Tick **Include all branches** and choose **Create repository**. Yellow banners for `greeting-a` and `greeting-b` are normal. Ignore them.
+   - **My git-lab in Codespaces.** Choose **Create codespace**. An editor opens with a terminal at the bottom. Copy **every** line of the command block, paste, and press Enter. If a box asks about several lines, choose **Paste**. Do not skip to `index.html` first.
    - **Submit stage 1.** The link opens the Submit form already filled in. Choose **Create**.
-3. Wait a minute and refresh the Submit issue. The reply lists every check.
+3. Wait a minute and refresh the Submit issue. The reply lists every check. If a box is empty, open [When a check fails](#when-a-check-fails) and fix that item. Then submit again.
 
-The commands in the reply, with your code in place of `YOUR-CODE`:
+The commands in the reply, with your code in place of `YOUR-CODE`. Each `git commit` is one of the three required commits:
 
 ```bash
 echo "YOUR-CODE" > .stage/stage-1.txt   # save your personal code
@@ -406,7 +462,14 @@ git log --oneline                        # list your commits
 
 To see the ignore rule work, run `echo test > debug.log` and then `git status`. `debug.log` is not listed.
 
-**Put your name on your card (optional).** In the codespace, open `index.html` from the file list on the left. Under the comment `Change the two lines below`, replace `YOUR NAME` with your name and `YOUR-USERNAME` with your GitHub username. Then run:
+If you paste only some of these lines, Submit fails with a missing code file, a missing `*.log` line, or only two commits. Paste the rest in the same codespace, then submit again. Do not open a new Start.
+
+**Put your name on your card (optional).** Do this **after** the block above has run. In the codespace, open `index.html` from the file list on the left. Under the comment `Change the two lines below`:
+
+- Replace `YOUR NAME` with your real name.
+- Replace `YOUR-USERNAME` with your GitHub login only, for example `crazy-rohit`.
+
+Then run:
 
 ```bash
 git commit -am "Put my name on the card"
@@ -455,7 +518,7 @@ git push
 
 ### Step by step
 
-1. Open a Start issue for stage **2** and save the code in `.stage/stage-2.txt` on `main`.
+1. Open a [Start issue for stage 2](https://github.com/Crazy-Rohit/rm-git-learning-portal/issues/new?template=start-stage.yml&stage=2). If **Stage** says None, choose **2**. Paste **every** line of the Start command block in the same Codespaces window you used for stage 1. That saves the code on `main`. Still ignore yellow banners for `greeting-a` and `greeting-b`. Your pull request is from `feature/about-page`.
 2. Create a feature branch. The name must start with `feature/`:
 
    ```bash
@@ -482,7 +545,7 @@ git push
    git pull
    ```
 
-8. Submit stage 2.
+8. [Submit stage 2](https://github.com/Crazy-Rohit/rm-git-learning-portal/issues/new?template=submit-stage.yml&stage=2). If a check fails, [fix it](#when-a-check-fails) and submit again. Do not Start again.
 
 ### What the check looks for
 
@@ -514,11 +577,11 @@ Your `git-lab` template came with two branches that both change the same line of
 | `greeting-a` | `Hello, welcome to the team` |
 | `greeting-b` | `Hello and good luck` |
 
-If you did not tick **Include all branches**, create a new `git-lab` from the template, or make these two branches yourself.
+If you did not tick **Include all branches**, create a new `git-lab` from the template, or make these two branches yourself. The yellow **Compare & pull request** banners you ignored in stage 1 are for this stage. You still merge from the terminal as below; you do not have to use those banners.
 
 ### Step by step
 
-1. Start stage **3** and save the code in `.stage/stage-3.txt`.
+1. [Start stage 3](https://github.com/Crazy-Rohit/rm-git-learning-portal/issues/new?template=start-stage.yml&stage=3). Paste every line of the Start block in Codespaces so `.stage/stage-3.txt` is on `main`.
 2. Merge the first branch. This one merges cleanly:
 
    ```bash
@@ -590,7 +653,7 @@ If you did not tick **Include all branches**, create a new `git-lab` from the te
 
 ### Step by step
 
-1. Start stage **4** and save the code in `.stage/stage-4.txt`.
+1. [Start stage 4](https://github.com/Crazy-Rohit/rm-git-learning-portal/issues/new?template=start-stage.yml&stage=4). Paste every line of the Start block in Codespaces so `.stage/stage-4.txt` is on `main`.
 2. Make a commit you will undo:
 
    ```bash
@@ -643,7 +706,7 @@ If you did not tick **Include all branches**, create a new `git-lab` from the te
 
 ### Step by step
 
-1. Start stage **5**. Save the code in `.stage/stage-5.txt` in your `git-lab`.
+1. [Start stage 5](https://github.com/Crazy-Rohit/rm-git-learning-portal/issues/new?template=start-stage.yml&stage=5). Paste every line of the Start block in Codespaces so `.stage/stage-5.txt` is on `main` in `git-lab`.
 2. Fork [rm-practice-repo](https://github.com/Crazy-Rohit/rm-practice-repo) to your account.
 3. Clone your fork and connect the original as `upstream`:
 
@@ -697,7 +760,7 @@ If you did not tick **Include all branches**, create a new `git-lab` from the te
 
 ### Step by step
 
-1. Start stage **6** and save the code in `.stage/stage-6.txt`.
+1. [Start stage 6](https://github.com/Crazy-Rohit/rm-git-learning-portal/issues/new?template=start-stage.yml&stage=6). Paste every line of the Start block in Codespaces so `.stage/stage-6.txt` is on `main`.
 2. Create `.github/workflows/check.yml` in `git-lab`. This version fails on purpose:
 
    ```yaml
@@ -742,7 +805,7 @@ If you did not tick **Include all branches**, create a new `git-lab` from the te
 
 ### What to build
 
-Pick something small you care about: a personal page, notes for a subject, or a tiny tool. Create a **new public repository** for it, separate from `git-lab`. Save the stage 7 code as the only line of `.stage/stage-7.txt` in that new repository. On the Submit form, enter `your-username/your-project-name`, not `git-lab`.
+Pick something small you care about: a personal page, notes for a subject, or a tiny tool. [Start stage 7](https://github.com/Crazy-Rohit/rm-git-learning-portal/issues/new?template=start-stage.yml&stage=7), then create a **new public repository** for it, separate from `git-lab`. Save the stage 7 code as the only line of `.stage/stage-7.txt` in that new repository. On the Submit form, enter `your-username/your-project-name`, not `git-lab`.
 
 ### Checklist
 
@@ -765,17 +828,94 @@ Pick something small you care about: a personal page, notes for a subject, or a 
 
 ## When a check fails
 
-The reply lists every check and says how to fix each one that failed. Fix them, push, and open a **new** Submit issue. You do not need a new Start issue, and your start time stays the same.
+The reply lists every check. An empty box is a fail. Fix those items in the **same** codespace, `git push`, and open a **new** Submit issue. You do not need a new Start issue. Your personal code and start time stay the same.
 
-| Problem | Likely cause and fix |
-| --- | --- |
-| Commits are not counted | Git used an email that is not verified on GitHub. Fix `git config user.email`, then make new commits. Old commits keep their old email |
-| Challenge code file is wrong | Extra text, quotes, or a byte-order mark. The file must contain only the code. On Windows, write it with the Git CMD line or with Notepad, not with PowerShell `echo`. Check that it is on `main` and pushed |
-| Repository not found | It is private, misspelled, or not named exactly `git-lab` |
-| Not created from the template | You created an empty repository. Make a new one with **Use this template** |
-| Commits made before the start time | Only work after your Start issue counts. Make new commits |
-| Too many checks today | You can submit five times in 24 hours. Try again tomorrow |
-| The portal says the stage is not open yet | That stage's check has not been released |
+If you skipped the bot command block, paste the remaining lines from the Start comment and push, then submit again.
+
+### Do not start the stage again
+
+A second Start does not reset the clock and does not give you a new code. Use [Submit](https://github.com/Crazy-Rohit/rm-git-learning-portal/issues/new?template=submit-stage.yml).
+
+### Challenge code file is wrong
+
+The file `.stage/stage-1.txt` on `main` must contain only the code from your Start comment, one line, no quotes.
+
+You skipped the first two commands of the block, or PowerShell `echo` hid a byte-order mark.
+
+In Codespaces:
+
+```bash
+echo "PASTE-YOUR-CODE" > .stage/stage-1.txt
+git add .stage/stage-1.txt
+git commit -m "Add stage 1 code"
+git push
+```
+
+On Windows PowerShell, do not use `echo`. Create the file in the editor, paste the code, save as UTF-8, then `git add` and commit.
+
+[Chapter 8: Making commits](https://crazy-rohit.github.io/rm-git-learning-portal/handbook/#ch8) · [Stage 1 steps](#stage-1-first-repository)
+
+### gitignore is missing the log rule
+
+`.gitignore` must contain a line that is exactly `*.log`. A comment or `*.log.txt` does not count.
+
+You skipped the `echo "*.log"` commands. Run:
+
+```bash
+echo "*.log" >> .gitignore
+git add .gitignore
+git commit -m "Ignore log files"
+git push
+```
+
+[Chapter 10: Ignoring files](https://crazy-rohit.github.io/rm-git-learning-portal/handbook/#ch10)
+
+### Only two commits
+
+The check needs **three** commits by you after the Start issue: code file, README, and `.gitignore`. Editing `index.html` is a fourth, optional commit. If you only changed the card, or only the README, paste the missing lines from the Start block.
+
+Commits made before the Start issue do not count. Make new ones.
+
+[Chapter 8: Making commits](https://crazy-rohit.github.io/rm-git-learning-portal/handbook/#ch8) · [Chapter 9: Viewing history](https://crazy-rohit.github.io/rm-git-learning-portal/handbook/#ch9)
+
+### README was not changed
+
+One of your commits after Start must edit `README.md`. The Start block appends a line and commits it. If you skipped that, run:
+
+```bash
+echo "I am learning Git with Rohit Manna." >> README.md
+git add README.md
+git commit -m "Introduce myself in the README"
+git push
+```
+
+### Wrong repository name on the form
+
+Enter `your-username/git-lab`, using your GitHub login. Stage 7 is the only stage that uses a different repository name.
+
+### Repository not found
+
+The repository is private, misspelled, or not named exactly `git-lab`. Make it public. The portal cannot read private repositories.
+
+### Not created from the template
+
+You created an empty repository. On [rm-git-lab-template](https://github.com/Crazy-Rohit/rm-git-lab-template), choose **Use this template**, tick **Include all branches**, and name the copy `git-lab`.
+
+### Commits are not counted
+
+Git used an email that is not verified on GitHub. In Codespaces this is already correct. On your computer, set `git config --global user.email` to the address on your GitHub account, then make **new** commits. Old commits keep their old email.
+
+[Chapter 5: First-time configuration](https://crazy-rohit.github.io/rm-git-learning-portal/handbook/#ch5)
+
+### Too many checks today
+
+You can submit five times in 24 hours. Try again tomorrow.
+
+### Pass the previous stage first
+
+Stages open in order. If you chose 2 on the Start form before stage 1 passed, the bot says **Pass stage 1 first**. Finish stage 1, then start stage 2.
+
+[Screens you will see](#screens-you-will-see)
 
 ## Rules and privacy
 

@@ -2,6 +2,10 @@
   <div class="ch-meta"><span class="chip git">Part 1</span><span class="chip">Chapter 4</span><span>4 min read</span></div>
   <h2>Installing Git</h2>
   <p class="lead">Installing Git takes about five minutes on any operating system, and you can confirm it worked by running <code>git --version</code>.</p>
+  <div class="callout important">
+    <div class="t"><svg class="i"><use href="#i-imp"/></svg>Course</div>
+    <p>If you are taking the Git Learning Portal, <b>skip this chapter for stage 1</b>. Work in GitHub Codespaces from the Start comment. Git is already there and signed in. Come back here only if you want Git on your own computer. <a href="https://github.com/Crazy-Rohit/rm-git-learning-portal/blob/main/HANDBOOK.md#stage-1-first-repository">Stage 1 guide</a> · <a href="https://crazy-rohit.github.io/rm-git-learning-portal/stage-1.html">Open stage 1</a></p>
+  </div>
 
   <h3>4.1 Pick your operating system</h3>
   <div class="callout tip">
@@ -24,7 +28,7 @@
             <li><b>Initial branch name:</b> choose "Override the default branch name" and enter <code>main</code>.</li>
             <li><b>PATH environment:</b> keep "Git from the command line and also from 3rd-party software".</li>
           </ul></li>
-        <li>Finish, then open <b>Git Bash</b> from the Start menu.</li>
+        <li>Finish, then open <b>Git Bash</b> from the Start menu. Git CMD is the same Git program in a different window, not a second course.</li>
       </ol>
       <p>Or use one command in PowerShell:</p>
 <pre class="term"><code><span class="p">$</span> winget install --id Git.Git -e --source winget</code></pre>
@@ -64,6 +68,7 @@
   <ul>
     <li><b>Terminal opened before installing.</b> It does not see new programs until you close it and open a new one.</li>
     <li><b>"git is not recognized" on Windows.</b> The PATH option was skipped. Run the installer again and choose the recommended PATH option.</li>
+    <li><b>Opening Git CMD because the Start issue appeared.</b> The issue page is waiting for a bot comment. Use Codespaces from that comment. You do not need Git CMD for the course.</li>
   </ul>
   <div class="callout important">
     <div class="t"><svg class="i"><use href="#i-imp"/></svg>Important</div>
@@ -84,7 +89,7 @@
     <div class="panel-h"><svg class="i"><use href="#i-task"/></svg>Practice exercise</div>
     <div class="panel-b">
       <ul class="tasks">
-        <li><input type="checkbox" data-k="ch4-1" aria-labelledby="t41"><span id="t41">Install Git, open a fresh terminal and run <code>git --version</code>.</span></li>
+        <li><input type="checkbox" data-k="ch4-1" aria-labelledby="t41"><span id="t41">If you use Codespaces, open a terminal there and run <code>git --version</code>. If you use your own computer, install Git first, then run it.</span></li>
         <li><input type="checkbox" data-k="ch4-2" aria-labelledby="t42"><span id="t42">Run <code>git help</code> and read the list of common commands. You meet most of them in Part 2.</span></li>
       </ul>
     </div>

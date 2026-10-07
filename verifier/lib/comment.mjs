@@ -31,13 +31,48 @@ export function submitUrl(stage, login, repoName = PORTAL.labName) {
   return `https://github.com/${PORTAL.owner}/${PORTAL.repo}/issues/new?${query}`;
 }
 
+export function startUrl(stage) {
+  const query = new URLSearchParams({
+    template: 'start-stage.yml',
+    stage: String(stage),
+  });
+  return `https://github.com/${PORTAL.owner}/${PORTAL.repo}/issues/new?${query}`;
+}
+
+const GUIDE = `https://github.com/${PORTAL.owner}/${PORTAL.repo}/blob/main/HANDBOOK.md`;
+
+export function guideUrl(anchor) {
+  return `${GUIDE}#${anchor}`;
+}
+
+const STAGE_GUIDE = {
+  1: 'stage-1-first-repository',
+  2: 'stage-2-branches-and-pull-requests',
+  3: 'stage-3-merge-conflicts',
+  4: 'stage-4-undo-and-history',
+  5: 'stage-5-fork-and-pull-request',
+  6: 'stage-6-automation',
+  7: 'stage-7-capstone-project',
+};
+
+const CHECK_FIX = {
+  'Challenge code file is correct': 'challenge-code-file-is-wrong',
+  '.gitignore contains *.log': 'gitignore-is-missing-the-log-rule',
+  'At least three commits by you after the start time': 'only-two-commits',
+  'README.md was changed after the start time': 'readme-was-not-changed',
+  'Lab repository exists and is public': 'repository-not-found',
+  'Created from the lab template': 'not-created-from-the-template',
+  'Submission names your git-lab repository': 'wrong-repository-name-on-the-form',
+  'Repository belongs to you': 'repository-not-found',
+};
+
 function codespaceStart({ stage, login, code, intro, commands, after = '', guide }) {
   const lines = [
     `Stage ${stage} has started for @${login}. Your personal code is \`${code}\`.`,
     '',
     intro,
     '',
-    `Open [git-lab in Codespaces](https://codespaces.new/${login}/${PORTAL.labName}). If you still have the stage 1 codespace, you can use that. Paste the lines below into the terminal and press Enter.`,
+    `Open [git-lab in Codespaces](https://codespaces.new/${login}/${PORTAL.labName}). If you still have the stage 1 codespace, you can use that. Copy **every** line below, paste them into the terminal, and press Enter. If a box asks about several lines, choose **Paste**.`,
     '',
     '```bash',
     ...commands,
@@ -46,9 +81,11 @@ function codespaceStart({ stage, login, code, intro, commands, after = '', guide
   if (after) lines.push('', after);
   lines.push(
     '',
-    `**Submit.** Open [Submit stage ${stage}](${submitUrl(stage, login)}) and choose **Create**. The form should say \`${login}/git-lab\`.`,
+    `**Submit.** Open [Submit stage ${stage}](${submitUrl(stage, login)}) and choose **Create**. The form should say \`${login}/git-lab\`. If **Stage** says None, choose ${stage}.`,
     '',
-    `[Stage guide](https://github.com/${PORTAL.owner}/${PORTAL.repo}/blob/main/HANDBOOK.md#${guide})`,
+    'If a check fails, stay in this codespace, paste any lines you skipped, push, and open a **new** Submit. Do not open another Start.',
+    '',
+    `[Stage ${stage} guide](${guideUrl(guide)}) · [If a check fails](${guideUrl('when-a-check-fails')})`,
   );
   return lines.join('\n');
 }
@@ -57,13 +94,14 @@ function stage1Start(code, login) {
   return [
     `Stage 1 has started for @${login}. Your personal code is \`${code}\`.`,
     '',
-    'You only need this browser. Do these three steps in order.',
+    'You only need this browser. Do these three steps in order. Do not open Git CMD. Do not create a folder on your computer.',
     '',
     `**Step 1. Create your lab.** Skip this if you already have \`${login}/${PORTAL.labName}\`.`,
     `Open [Create my git-lab](${labCreateUrl(login)}), tick **Include all branches**, and choose **Create repository**.`,
+    'Yellow **Compare & pull request** bars for `greeting-a` and `greeting-b` are from the template. Ignore them until stage 3.',
     '',
     '**Step 2. Do the work in Codespaces.**',
-    `Open [My git-lab in Codespaces](https://codespaces.new/${login}/${PORTAL.labName}) and choose **Create codespace**. An editor opens in the browser with a terminal at the bottom. Copy all the lines below, paste them into that terminal, and press Enter. If it asks whether to paste several lines, choose **Paste**.`,
+    `Open [My git-lab in Codespaces](https://codespaces.new/${login}/${PORTAL.labName}) and choose **Create codespace**. An editor opens in the browser with a terminal at the bottom. Copy **every** line below, paste them into that terminal, and press Enter. If it asks whether to paste several lines, choose **Paste**. Do not skip to \`index.html\` first. These three commits are what the check looks for.`,
     '',
     '```bash',
     `echo "${code}" > .stage/stage-1.txt`,
@@ -79,13 +117,15 @@ function stage1Start(code, login) {
     'git log --oneline',
     '```',
     '',
-    'The last command lists your commits. Read each command against the handbook to see what it did.',
+    'The last command lists your commits. You should see at least three new ones. Read each command against [handbook chapters 6 to 10](' + PORTAL.handbookUrl + '#ch6) to see what it did.',
     '',
-    `**Step 3. Submit.** Open [Submit stage 1](${submitUrl(1, login)}) and choose **Create**. The reply lists every check.`,
+    `**Step 3. Submit.** Open [Submit stage 1](${submitUrl(1, login)}) and choose **Create**. If **Stage** says None, choose **1**. The reply lists every check.`,
     '',
-    'Optional: in Codespaces, open `index.html` from the file list, change `YOUR NAME` and `YOUR-USERNAME`, then run `git commit -am "Put my name on the card"` and `git push`.',
+    'If a check fails, stay in this codespace, paste any lines you skipped, push, and open a **new** Submit. Do not open another Start.',
     '',
-    `[Stage guide](https://github.com/${PORTAL.owner}/${PORTAL.repo}/blob/main/HANDBOOK.md#stage-1-first-repository)`,
+    'Optional, after the block above: open `index.html`, change `YOUR NAME` to your name and `YOUR-USERNAME` to your GitHub login only (not the words YOUR-USERNAME), then run `git commit -am "Put my name on the card"` and `git push`. This does not replace the three required commits.',
+    '',
+    `[Stage 1 guide](${guideUrl('stage-1-first-repository')}) · [Screens you will see](${guideUrl('screens-you-will-see')}) · [If a check fails](${guideUrl('when-a-check-fails')})`,
   ].join('\n');
 }
 
@@ -245,7 +285,9 @@ function stage7Start(code, login) {
     '',
     `**Submit.** Open [Submit stage 7](${submitUrl(7, login, '')}) and choose **Create**. In **Your lab repository**, enter \`${login}/your-project-name\`.`,
     '',
-    `[Stage guide](https://github.com/${PORTAL.owner}/${PORTAL.repo}/blob/main/HANDBOOK.md#stage-7-capstone-project)`,
+    'If a check fails, fix the unchecked items, push, and open a **new** Submit. Do not open another Start.',
+    '',
+    `[Stage 7 guide](${guideUrl('stage-7-capstone-project')}) · [If a check fails](${guideUrl('when-a-check-fails')})`,
   ].join('\n');
 }
 
@@ -264,19 +306,32 @@ export function startMessage(stage, code, login) {
 export function renderResult({ stage, passed, checks, credentialId, signingNote }) {
   const head = passed
     ? `Stage ${stage} passed.`
-    : `Stage ${stage} did not pass. Fix the items below and open a new Submit issue.`;
+    : `Stage ${stage} did not pass. Fix the unchecked items in the same codespace, push, and open a **new** Submit issue. Do not open another Start.`;
   const lines = checks.map((check) => {
     const mark = check.ok ? 'x' : ' ';
     const detail = !check.ok && check.detail ? `\n  ${check.detail}` : '';
-    return `- [${mark}] **${check.name}**${detail}`;
+    const fix = !check.ok && CHECK_FIX[check.name] ? `\n  ${guideUrl(CHECK_FIX[check.name])}` : '';
+    return `- [${mark}] **${check.name}**${detail}${fix}`;
   });
+  const stageGuide = STAGE_GUIDE[Number(stage)] || 'when-a-check-fails';
   const parts = [
     head,
     '',
     ...lines,
     '',
-    `Handbook: ${PORTAL.handbookUrl}#ch6`,
   ];
+  if (passed) {
+    const next = Number(stage) + 1;
+    if (next <= 7) {
+      parts.push(`Stage ${next} is now open. [Start stage ${next}](${startUrl(next)})`);
+    } else {
+      parts.push(`Course complete. Open [Progress](${PORTAL.siteUrl}progress.html) to read your badges.`);
+    }
+    parts.push('', `[Stage ${stage} guide](${guideUrl(stageGuide)})`);
+  } else {
+    parts.push(`[How to fix this](${guideUrl('when-a-check-fails')}) · [Stage ${stage} guide](${guideUrl(stageGuide)}) · [Screens you will see](${guideUrl('screens-you-will-see')})`);
+    parts.push('', `Handbook: ${PORTAL.handbookUrl}#ch6`);
+  }
   if (passed && credentialId) {
     const verify = `${PORTAL.siteUrl}verify.html?id=${encodeURIComponent(credentialId)}`;
     const snippet = profileSnippet(stage, credentialId);

@@ -1,5 +1,5 @@
 import { challengeCode } from './lib/challenge.mjs';
-import { renderResult, startMessage } from './lib/comment.mjs';
+import { guideUrl, renderResult, startMessage } from './lib/comment.mjs';
 import { buildBadge, buildCertificate, chooseKey, signCredential, verifyCredential, writeCredential } from './lib/credential.mjs';
 import { parseForm } from './lib/form.mjs';
 import { loadLearner, saveLearner } from './lib/ledger.mjs';
@@ -86,7 +86,7 @@ export async function handleIssue({ gh, ledgerDir, issueNumber, portal, secret, 
   const say = (body) => closeWith(gh, portal, issueNumber, body);
 
   if (!/^[1-7]$/.test(stage)) {
-    await say('Choose a stage from 1 to 7.');
+    await say(`Choose a stage from 1 to 7. On the form, click **Stage** if it still says None.\n\n${guideUrl('the-stage-box-says-none')}`);
     return { closed: true };
   }
   if (!secret) {
@@ -102,7 +102,7 @@ export async function handleIssue({ gh, ledgerDir, issueNumber, portal, secret, 
 
   if (isStart) {
     if (!previousPassed) {
-      await say(`Pass stage ${previous} before starting stage ${stage}.`);
+      await say(`Pass stage ${previous} before starting stage ${stage}. Stages open in order. The form lists every number so later stages use the same page.\n\n${guideUrl('pass-the-previous-stage-first')}`);
       return { closed: true };
     }
     if (!learner.stages[stage].startedAt) learner.stages[stage].startedAt = now().toISOString();
@@ -115,24 +115,24 @@ export async function handleIssue({ gh, ledgerDir, issueNumber, portal, secret, 
   const recent = await submissionsInLastDay(gh, portal, login);
   if (recent > DAILY_SUBMIT_LIMIT) {
     saveLearner(ledgerDir, learner);
-    await say(`You have used the ${DAILY_SUBMIT_LIMIT} checks allowed for today. Open a new Submit issue tomorrow.`);
+    await say(`You have used the ${DAILY_SUBMIT_LIMIT} checks allowed for today. Open a new Submit issue tomorrow.\n\n${guideUrl('too-many-checks-today')}`);
     return { closed: true };
   }
   if (!previousPassed) {
     saveLearner(ledgerDir, learner);
-    await say(`Pass stage ${previous} before submitting stage ${stage}.`);
+    await say(`Pass stage ${previous} before submitting stage ${stage}.\n\n${guideUrl('pass-the-previous-stage-first')}`);
     return { closed: true };
   }
   if (!learner.stages[stage].startedAt) {
     saveLearner(ledgerDir, learner);
-    await say(`Open a Start issue for stage ${stage} first. Only work done after that start time counts.`);
+    await say(`Open a Start issue for stage ${stage} first. Only work done after that start time counts.\n\n${guideUrl('the-cycle-for-every-stage')}`);
     return { closed: true };
   }
 
   const run = CHECKS[Number(stage)];
   if (!run) {
     saveLearner(ledgerDir, learner);
-    await say(`Stage ${stage} is not open yet. You can pass stage 1 today.`);
+    await say(`Stage ${stage} is not a stage of this course.\n\n${guideUrl('how-the-portal-works')}`);
     return { closed: true };
   }
 

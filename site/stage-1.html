@@ -16,7 +16,7 @@
       <nav>
         <a href="./">Home</a>
         <a href="handbook/">Handbook</a>
-        <a href="stage-1.html" aria-current="page">Stage 1</a>
+        <a class="js-stage" href="stage-1.html" aria-current="page">Stage 1</a>
         <a href="progress.html">Progress</a>
         <a href="verify.html">Verify</a>
         <button class="theme-btn" type="button" aria-label="Switch theme">
@@ -32,7 +32,7 @@
       <div>
         <p class="by">Stage 1</p>
         <h1>Your first repository.</h1>
-        <p class="lede">You need only a browser and a free GitHub account. Nothing to install.</p>
+        <p class="lede">A browser and a free GitHub account. Work in Codespaces. Nothing to install, and no folder on your computer.</p>
         <div class="actions">
           <a class="btn pri" href="https://github.com/Crazy-Rohit/rm-git-learning-portal/issues/new?template=start-stage.yml&amp;stage=1">Start stage 1</a>
           <a class="btn" href="https://github.com/Crazy-Rohit/rm-git-learning-portal/blob/main/HANDBOOK.md#stage-1-first-repository">Stage guide</a>
@@ -41,24 +41,35 @@
     </section>
     <section class="panel">
       <h2>Read first</h2>
-      <p>These handbook chapters match the work below.</p>
+      <p>These chapters explain the ideas. Skip installing Git. Create <code>git-lab</code> from the template, not with <code>git init</code>.</p>
       <ul>
-        <li><a href="handbook/#ch4">Installing Git</a></li>
-        <li><a href="handbook/#ch5">First-time configuration</a></li>
         <li><a href="handbook/#ch6">Your first repository</a></li>
         <li><a href="handbook/#ch7">The three areas of Git</a></li>
         <li><a href="handbook/#ch8">Making commits</a></li>
+        <li><a href="handbook/#ch9">Viewing history</a></li>
         <li><a href="handbook/#ch10">Ignoring files</a></li>
       </ul>
     </section>
     <section class="panel">
       <h2>Do the work</h2>
       <ol class="steps">
-        <li>Choose <a href="https://github.com/Crazy-Rohit/rm-git-learning-portal/issues/new?template=start-stage.yml&amp;stage=1">Start stage 1</a>, then <strong>Create</strong>. GitHub shows the issue page. That is expected.</li>
-        <li>Wait about a minute and refresh. The portal replies with your personal code and three steps: a link that creates your <code>git-lab</code>, a link that opens it in Codespaces with a terminal in the browser, and the commands to paste there.</li>
-        <li>Follow the three steps in the reply. The last one is a link that submits your work. A second reply lists every check.</li>
+        <li>Choose <a href="https://github.com/Crazy-Rohit/rm-git-learning-portal/issues/new?template=start-stage.yml&amp;stage=1">Start stage 1</a>. If <strong>Stage</strong> says None, choose <strong>1</strong>. Then <strong>Create</strong>. GitHub shows the issue page. That is expected. Do not open Git CMD.</li>
+        <li>Wait about a minute and refresh. The bot comment has three steps: create <code>git-lab</code>, open it in Codespaces, and a command block. Paste <strong>every</strong> line of that block. Do not skip to <code>index.html</code>.</li>
+        <li>Yellow bars for <code>greeting-a</code> and <code>greeting-b</code> are for stage 3. Ignore them.</li>
+        <li>The last step is <strong>Submit stage 1</strong>. If a check is empty, fix it in the same codespace and submit again. Do not Start again.</li>
       </ol>
-      <p class="note">If a check fails, fix it in the same codespace and use the submit link again, up to five times a day. Copying another learner's repository fails, because the code belongs to the account that started the stage.</p>
+      <p class="note">Copying another learner's repository fails, because the code belongs to the account that started the stage.</p>
+    </section>
+    <section class="panel">
+      <h2>If a screen looks wrong</h2>
+      <ul>
+        <li><a href="https://github.com/Crazy-Rohit/rm-git-learning-portal/blob/main/HANDBOOK.md#the-stage-box-says-none">The Stage box says None</a></li>
+        <li><a href="https://github.com/Crazy-Rohit/rm-git-learning-portal/blob/main/HANDBOOK.md#github-opened-an-issue-and-nothing-else-happened">GitHub opened an issue and nothing else happened</a></li>
+        <li><a href="https://github.com/Crazy-Rohit/rm-git-learning-portal/blob/main/HANDBOOK.md#i-already-have-github-do-i-still-make-a-folder">I already have GitHub. Do I still make a folder?</a></li>
+        <li><a href="https://github.com/Crazy-Rohit/rm-git-learning-portal/blob/main/HANDBOOK.md#yellow-compare-and-pull-request-banners">Yellow Compare &amp; pull request banners</a></li>
+        <li><a href="https://github.com/Crazy-Rohit/rm-git-learning-portal/blob/main/HANDBOOK.md#where-to-put-my-name-and-github-username">Where to put my name and GitHub username</a></li>
+        <li><a href="https://github.com/Crazy-Rohit/rm-git-learning-portal/blob/main/HANDBOOK.md#when-a-check-fails">A check failed</a></li>
+      </ul>
     </section>
   </main>
   <footer>

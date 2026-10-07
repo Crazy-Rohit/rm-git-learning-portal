@@ -1,5 +1,11 @@
 blank_issues_enabled: false
 contact_links:
+  - name: Stage guide
+    url: https://github.com/Crazy-Rohit/rm-git-learning-portal/blob/main/HANDBOOK.md
+    about: What to click on each screen, and how to fix a failed check
   - name: Read the handbook
     url: https://crazy-rohit.github.io/rm-git-learning-portal/handbook/
     about: The lessons for every stage
+  - name: Course home
+    url: https://crazy-rohit.github.io/rm-git-learning-portal/
+    about: Your path, Start stage 1, and progress

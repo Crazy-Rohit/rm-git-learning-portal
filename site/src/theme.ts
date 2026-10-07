@@ -1,3 +1,7 @@
+import { paintStageTabFromStorage } from './path';
+
+paintStageTabFromStorage();
+
 const KEY = 'hb-theme';
 const root = document.documentElement;
 const media = window.matchMedia('(prefers-color-scheme: dark)');
