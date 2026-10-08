@@ -2,6 +2,7 @@ import { canonical } from './canonical';
 import { CERTIFICATE_COURSE, ISSUER, LEDGER, SITE, badgeFor, sharePageUrl } from './catalog';
 import { badgeFace, setBadgeName, setCertName, watchNameBox, fitCertName } from './badge';
 import { downloadBadgeImage, downloadCertificateImage, downloadCertificatePdf } from './export';
+import { storeName, storedName, usableName } from './path';
 
 type PublicKey = { kid: string; x: string; validFrom?: string };
 type RevokedItem = string | { id?: string };
@@ -66,26 +67,34 @@ function personName(credential: Credential) {
   return credential.recipient?.name || credential.recipient?.githubLogin || '';
 }
 
+function savedName(credential: Credential, extra = '') {
+  const login = credential.recipient?.githubLogin || '';
+  return usableName(extra, login)
+    || usableName(storedName(), login)
+    || usableName(credential.recipient?.name || '', login)
+    || '';
+}
+
 function captionFor(name: string, login?: string) {
   return name && login && name !== login ? `${name} (@${login})` : `@${login || 'unknown'}`;
 }
 
 async function displayNameFor(credential: Credential) {
-  const fallback = personName(credential);
+  const login = credential.recipient?.githubLogin || '';
+  const fallback = savedName(credential) || personName(credential);
   const id = credential.recipient?.githubId;
   if (id == null) return fallback;
   try {
     const response = await fetch(`${LEDGER}/learners/${id}.json`);
     if (!response.ok) return fallback;
     const file = await response.json() as { name?: string };
-    const named = String(file.name || '').replace(/\s+/g, ' ').trim();
-    return named || fallback;
+    return usableName(file.name || '', login) || fallback;
   } catch {
     return fallback;
   }
 }
 
-function renderNameCheck(root: HTMLElement, initial: string, apply: (name: string) => void) {
+function renderNameCheck(root: HTMLElement, initial: string, apply: (name: string, persist?: boolean) => void) {
   const form = document.createElement('form');
   form.className = 'identity-form name-check';
   form.addEventListener('submit', (event) => event.preventDefault());
@@ -93,9 +102,9 @@ function renderNameCheck(root: HTMLElement, initial: string, apply: (name: strin
   heading.textContent = 'Your name';
   const note = document.createElement('p');
   note.className = 'note';
-  note.textContent = 'Type a name here. It prints inside the dashed box. Short and long names both stay in that box.';
+  note.textContent = 'Type your real name. It is saved on this device and used on the badge and the download.';
   const label = document.createElement('label');
-  label.append('Try a name');
+  label.append('Your name');
   const field = document.createElement('input');
   field.id = 'try-name';
   field.name = 'name';
@@ -106,67 +115,49 @@ function renderNameCheck(root: HTMLElement, initial: string, apply: (name: strin
   field.value = initial;
   label.append(field);
   form.append(heading, note, label);
-  for (const [title, sample] of [
-    ['Short', 'Riya'],
-    ['Usual', 'Rohit Manna'],
-    ['Long', 'Siddharth Venkatesh Iyer'],
-    ['Extra', 'Anastasia Christopher Montgomery'],
-  ] as const) {
-    const button = document.createElement('button');
-    button.className = 'btn';
-    button.type = 'button';
-    button.textContent = title;
-    button.addEventListener('click', () => {
-      field.value = sample;
-      apply(sample);
-    });
-    form.append(button);
-  }
   field.addEventListener('input', () => {
     field.dataset.touched = '1';
-    apply(field.value);
+    apply(field.value, true);
   });
   root.append(form);
-  requestAnimationFrame(() => {
-    field.focus();
-    field.scrollIntoView({ block: 'center' });
-  });
 }
 
-function renderBadge(credential: Credential, root: HTMLElement) {
+function renderBadge(credential: Credential, root: HTMLElement, shown: { name: string }) {
   const badge = badgeFor(Number(credential.stage));
   const figure = document.createElement('figure');
   figure.className = 'issued';
   const login = credential.recipient?.githubLogin;
   const caption = document.createElement('figcaption');
-  caption.textContent = captionFor(personName(credential), login);
-  const face = badge ? badgeFace(badge.slug, badge.title, personName(credential)) : null;
+  caption.textContent = captionFor(shown.name, login);
+  const face = badge ? badgeFace(badge.slug, badge.title, shown.name) : null;
   if (face) figure.append(face);
   figure.append(caption);
-  const paint = (name: string) => {
+  const paint = (name: string, persist = false) => {
     const next = name.replace(/\s+/g, ' ').trim() || 'Your name';
+    shown.name = next;
+    const saved = usableName(next, login);
+    if (persist && saved) storeName(saved);
     if (face && badge) setBadgeName(face, next, badge.title);
     caption.textContent = captionFor(next, login);
   };
-  renderNameCheck(root, personName(credential), paint);
+  renderNameCheck(root, shown.name, paint);
   root.append(figure);
   void displayNameFor(credential).then((name) => {
     const field = root.querySelector<HTMLInputElement>('#try-name');
     if (field && !field.dataset.touched) {
       field.value = name;
-      paint(name);
+      paint(name, Boolean(usableName(name, login)));
     }
   }).catch(() => {});
 }
 
-function renderCertificate(credential: Credential, root: HTMLElement) {
-  const name = credential.recipient?.name || credential.recipient?.githubLogin || 'Learner';
+function renderCertificate(credential: Credential, root: HTMLElement, shown: { name: string }) {
   const login = credential.recipient?.githubLogin ? `@${credential.recipient.githubLogin}` : '';
   const face = document.createElement('div');
   face.className = 'cert-face';
   const image = document.createElement('img');
   image.src = `${import.meta.env.BASE_URL}badges/certificate-empty.webp`;
-  image.alt = `${credential.course || CERTIFICATE_COURSE} for ${name}`;
+  image.alt = `${credential.course || CERTIFICATE_COURSE} for ${shown.name}`;
   const area = document.createElement('div');
   area.className = 'cert-name-area';
   area.setAttribute('aria-hidden', 'true');
@@ -176,13 +167,16 @@ function renderCertificate(credential: Credential, root: HTMLElement) {
   handle.className = 'cert-login';
   handle.textContent = login;
   face.append(image, area, person, handle);
-  const paint = (next: string) => {
+  const paint = (next: string, persist = false) => {
     const text = next.replace(/\s+/g, ' ').trim() || 'Your name';
+    shown.name = text;
+    const saved = usableName(text, credential.recipient?.githubLogin);
+    if (persist && saved) storeName(saved);
     setCertName(person, text);
     image.alt = `${credential.course || CERTIFICATE_COURSE} for ${text}`;
   };
-  renderNameCheck(root, name, paint);
-  setCertName(person, name);
+  renderNameCheck(root, shown.name, paint);
+  setCertName(person, shown.name);
   watchNameBox(face, () => fitCertName(person));
   root.append(face);
 }
@@ -260,15 +254,16 @@ function renderRecord(credential: Credential, status: 'valid' | 'revoked' | 'inv
       : 'Invalid. The signature does not match the public key.';
   root.append(banner);
 
-  if (credential.type === 'GitGitHubPractitioner') renderCertificate(credential, root);
-  else renderBadge(credential, root);
+  const shown = { name: savedName(credential) || personName(credential) };
+  if (credential.type === 'GitGitHubPractitioner') renderCertificate(credential, root, shown);
+  else renderBadge(credential, root, shown);
 
   const facts = document.createElement('dl');
   facts.className = 'record';
   const badge = badgeFor(Number(credential.stage));
   facts.append(
     field('Credential', credential.type === 'GitGitHubPractitioner' ? (credential.course || CERTIFICATE_COURSE) : (credential.title || badge?.title || 'Badge')),
-    field('Name', personName(credential)),
+    field('Name', shown.name),
     field('GitHub account', `@${credential.recipient?.githubLogin || ''} (${credential.recipient?.githubId ?? ''})`),
     field('Issued', credential.issuedAt ? formatDate(credential.issuedAt) : ''),
     field('Credential ID', credential.id),
@@ -325,17 +320,28 @@ function renderRecord(credential: Credential, status: 'valid' | 'revoked' | 'inv
     downloadHead.textContent = 'Download';
     const downloads = document.createElement('div');
     downloads.className = 'share-copy';
+    const named = () => {
+      const login = credential.recipient?.githubLogin || '';
+      const next = usableName(shown.name, login) || shown.name;
+      const saved = usableName(next, login);
+      if (saved) storeName(saved);
+      return next;
+    };
+    const withName = () => ({
+      ...credential,
+      recipient: { ...credential.recipient, name: named() },
+    });
     if (credential.type === 'GitGitHubPractitioner') {
       downloads.append(
-        downloadButton('Download certificate image', async () => downloadCertificateImage(credential)),
-        downloadButton('Download certificate PDF', async () => downloadCertificatePdf(credential)),
+        downloadButton('Download certificate image', async () => downloadCertificateImage(withName())),
+        downloadButton('Download certificate PDF', async () => downloadCertificatePdf(withName())),
       );
     } else if (badge) {
       downloads.append(
         downloadButton('Download badge image', async () => {
           await downloadBadgeImage(
             badge.slug,
-            await displayNameFor(credential),
+            named(),
             `${credential.id}-${badge.slug}.png`,
           );
         }),

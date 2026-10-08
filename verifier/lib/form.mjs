@@ -7,9 +7,10 @@ export function parseForm(body = '') {
   return out;
 }
 
-export function displayName(value) {
+export function displayName(value, login = '') {
   const typed = String(value || '').replace(/\s+/g, ' ').trim();
   if (/^xyz$/i.test(typed) || /^your name$/i.test(typed)) return '';
+  if (login && typed.toLowerCase() === String(login).replace(/^@/, '').toLowerCase()) return '';
   if (typed.length >= 2 && typed.length <= 80 && !/[^\p{L}\p{M}\p{N} .'-]/u.test(typed)) return typed;
   return '';
 }

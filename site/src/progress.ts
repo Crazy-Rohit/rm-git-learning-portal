@@ -1,12 +1,16 @@
 import { BADGES, startHref } from './catalog';
-import { learnerStages, paintStageTab, storeLogin, storedLogin, storedName } from './path';
+import { learnerStages, paintStageTab, storeLogin, storeName, storedLogin, storedName } from './path';
 
 type StageRecord = { startedAt?: string; passedAt?: string; credentialId?: string };
 
 const form = document.querySelector<HTMLFormElement>('#lookup');
+const nameInput = document.querySelector<HTMLInputElement>('#learner-name');
 const loginInput = document.querySelector<HTMLInputElement>('#login');
 const status = document.querySelector<HTMLParagraphElement>('#status');
 const list = document.querySelector<HTMLOListElement>('#stages');
+
+if (nameInput && storedName()) nameInput.value = storedName();
+nameInput?.addEventListener('input', () => storeName(nameInput.value));
 
 function setStatus(message: string) {
   if (status) status.textContent = message;
@@ -56,6 +60,7 @@ function render(stages: Record<string, StageRecord>) {
 function show(login: string) {
   const name = login.trim().replace(/^@/, '');
   if (!name) return;
+  if (nameInput) storeName(nameInput.value);
   storeLogin(name);
   setStatus('Looking up the public record…');
   learnerStages(name).then((stages) => {

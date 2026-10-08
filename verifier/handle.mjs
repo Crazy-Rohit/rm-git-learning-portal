@@ -62,8 +62,12 @@ function award(ledgerDir, unsigned, signingKey, key) {
   }
 }
 
+function formName(form, login) {
+  return displayName(form['your name'] || form.name || form['name on the certificate'], login);
+}
+
 function learnerName(learner, form, login) {
-  return learner.name || displayName(form['your name'] || form['name on the certificate']) || login;
+  return displayName(learner.name, login) || formName(form, login) || login;
 }
 
 export async function handleIssue({ gh, ledgerDir, issueNumber, portal, secret, signingKey = '', keys = [], shareDir = '', now = () => new Date() }) {
@@ -104,13 +108,12 @@ export async function handleIssue({ gh, ledgerDir, issueNumber, portal, secret, 
       await say(`Pass stage ${previous} before starting stage ${stage}. Stages open in order. The form lists every number so later stages use the same page.\n\n${guideUrl('pass-the-previous-stage-first')}`);
       return { closed: true };
     }
-    const name = displayName(form['your name']);
+    const name = formName(form, login);
     if (!name) {
-      await say('Enter your name as you want it on the badge. Use letters, spaces, and hyphens. Example: Rohit Manna.');
+      await say('Enter your name as you want it on the badge. Use letters, spaces, and hyphens. Example: Rohit Manna. Do not type your GitHub username.');
       return { closed: true };
     }
-    const issued = Object.values(learner.stages).some((item) => item?.credentialId);
-    if (!learner.name || !issued) learner.name = name;
+    if (!displayName(learner.name, login)) learner.name = name;
     if (!learner.stages[stage].startedAt) learner.stages[stage].startedAt = now().toISOString();
     saveLearner(ledgerDir, learner);
     await say(`${startMessage(stage, code, login)}\n\nYour badges print **${name}** where the design shows XYZ.`);

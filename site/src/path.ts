@@ -12,6 +12,13 @@ export function tidyName(value: string) {
   return '';
 }
 
+export function usableName(value: string, login = '') {
+  const typed = tidyName(value);
+  if (!typed) return '';
+  if (login && typed.toLowerCase() === login.replace(/^@/, '').toLowerCase()) return '';
+  return typed;
+}
+
 export function storedName() {
   try { return localStorage.getItem(NAME_KEY) || ''; } catch { return ''; }
 }

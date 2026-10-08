@@ -217,7 +217,7 @@ pathForm?.addEventListener('submit', (event) => {
 const remembered = storedLogin();
 const rememberedName = storedName();
 if (pathName && rememberedName) pathName.value = rememberedName;
-pathName?.addEventListener('change', () => storeName(pathName.value));
+pathName?.addEventListener('input', () => storeName(pathName.value));
 if (pathLogin && remembered) {
   pathLogin.value = remembered;
   showPath(remembered);

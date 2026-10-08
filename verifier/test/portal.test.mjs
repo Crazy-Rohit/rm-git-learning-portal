@@ -10,7 +10,7 @@ import { challengeCode } from '../lib/challenge.mjs';
 import { canonical } from '../lib/canonical.mjs';
 import { buildBadge, buildCertificate, signCredential, verifyCredential } from '../lib/credential.mjs';
 import { parseForm, normaliseRepo, displayName } from '../lib/form.mjs';
-import { loadLearner } from '../lib/ledger.mjs';
+import { loadLearner, saveLearner } from '../lib/ledger.mjs';
 import { PORTAL } from '../lib/portal.mjs';
 
 const SECRET = 'test-secret';
@@ -33,6 +33,7 @@ test('displayName keeps a real name and rejects xyz', () => {
   assert.equal(displayName('Rohit Manna'), 'Rohit Manna');
   assert.equal(displayName('xyz'), '');
   assert.equal(displayName('x'), '');
+  assert.equal(displayName(LOGIN, LOGIN), '');
 });
 
 test('normaliseRepo accepts a GitHub URL', () => {
@@ -130,6 +131,29 @@ test('a Start issue needs a name for the badge', async () => {
   assert.equal(result.started, undefined);
   assert.match(gh.comments[0], /Enter your name/);
   assert.equal(loadLearner(dir, USER_ID, LOGIN).stages['1'], undefined);
+});
+
+test('a later Start replaces a GitHub login stored as the name', async () => {
+  const dir = mkdtempSync(path.join(tmpdir(), 'ledger-'));
+  saveLearner(dir, {
+    githubId: USER_ID,
+    login: LOGIN,
+    name: LOGIN,
+    stages: { 1: { startedAt: '2026-10-05T10:00:00.000Z', passedAt: '2026-10-05T11:00:00.000Z', credentialId: 'GGP-2026-42-S1' } },
+    attempts: {},
+    certificateId: null,
+  });
+  await handleIssue({
+    gh: issueGh({
+      title: '[Start] stage 2',
+      body: startBody('2', NAME),
+      user: { id: USER_ID, login: LOGIN },
+      created_at: '2026-10-06T10:00:00Z',
+    }),
+    ledgerDir: dir, issueNumber: 12, portal: PORTAL, secret: SECRET,
+    now: () => new Date('2026-10-06T10:00:00Z'),
+  });
+  assert.equal(loadLearner(dir, USER_ID, LOGIN).name, NAME);
 });
 
 test('a second Start issue keeps the original start time', async () => {

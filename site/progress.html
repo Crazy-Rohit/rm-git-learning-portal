@@ -33,7 +33,10 @@
         <p class="by">Public progress</p>
         <h1>See which stages are passed.</h1>
         <p class="lede">Type a GitHub username. The page reads that account's public record. The username is only for display. The record is stored by the account's permanent numeric id.</p>
-        <form id="lookup">
+        <form id="lookup" class="identity-form">
+          <label>Your name
+            <input id="learner-name" name="name" autocomplete="name" maxlength="80" placeholder="Rohit Manna" spellcheck="false">
+          </label>
           <label>GitHub username
             <input id="login" name="login" autocomplete="username" required spellcheck="false">
           </label>

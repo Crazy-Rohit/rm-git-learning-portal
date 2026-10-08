@@ -23,7 +23,10 @@ function paintName() {
   }
 }
 
-input?.addEventListener('input', paintName);
+input?.addEventListener('input', () => {
+  paintName();
+  if (tidyName(input.value)) storeName(input.value);
+});
 paintName();
 
 form?.addEventListener('submit', (event) => {
