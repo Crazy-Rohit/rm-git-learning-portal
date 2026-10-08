@@ -1,5 +1,3 @@
-import { CERTIFICATE_COURSE, ISSUER } from './catalog';
-
 type Credential = {
   id: string;
   title?: string;
@@ -24,19 +22,67 @@ export async function downloadUrl(url: string, filename: string) {
   saveBlob(await response.blob(), filename);
 }
 
-function wrap(ctx: CanvasRenderingContext2D, text: string, maxWidth: number) {
-  const words = text.split(/\s+/);
-  const lines: string[] = [];
-  let line = '';
-  for (const word of words) {
-    const next = line ? `${line} ${word}` : word;
-    if (ctx.measureText(next).width > maxWidth && line) {
-      lines.push(line);
-      line = word;
-    } else line = next;
+export async function personalizeBadge(slug: string, name: string) {
+  const { badgeImageSrc, nameLines, plaqueFromCss } = await import('./badge');
+  const image = await loadImage(badgeImageSrc(slug));
+  if (!image) throw new Error('The badge image could not be loaded.');
+  const canvas = document.createElement('canvas');
+  canvas.width = image.naturalWidth;
+  canvas.height = image.naturalHeight;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) throw new Error('This browser cannot draw the badge.');
+  ctx.drawImage(image, 0, 0);
+
+  const plaque = plaqueFromCss(slug);
+  const lines = nameLines(name.replace(/\s+/g, ' ').trim() || 'Learner');
+  const width = canvas.width;
+  const height = canvas.height;
+  const plaqueH = height * plaque.height;
+  const midY = height * plaque.top + plaqueH / 2;
+  let fontSize = width * ((plaque.font || 5.0) / 100);
+  const typeface = '"Segoe UI Variable Display", "Segoe UI", "Avenir Next", "Gill Sans", sans-serif';
+  ctx.font = `800 ${Math.round(fontSize)}px ${typeface}`;
+  const spaced = ctx as CanvasRenderingContext2D & { letterSpacing?: string };
+  if ('letterSpacing' in spaced) spaced.letterSpacing = `${Math.max(0.4, width * 0.0008)}px`;
+  const maxText = width * plaque.maxWidth * 0.88;
+  const widest = () => Math.max(...lines.map((line) => ctx.measureText(line).width));
+  const stackH = () => fontSize * (lines.length === 1 ? 1 : 2.15);
+  while (fontSize > 7 && (widest() > maxText || stackH() > plaqueH * 0.92)) {
+    fontSize -= 0.4;
+    ctx.font = `800 ${Math.round(fontSize)}px ${typeface}`;
   }
-  if (line) lines.push(line);
-  return lines;
+
+  const textW = Math.min(maxText, widest());
+  const gradient = ctx.createLinearGradient(width / 2 - textW / 2, midY, width / 2 + textW / 2, midY);
+  gradient.addColorStop(0, plaque.from || plaque.color || '#ffffff');
+  if (plaque.mid) gradient.addColorStop(0.5, plaque.mid);
+  gradient.addColorStop(1, plaque.to || plaque.color || '#ffffff');
+
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.shadowColor = plaque.glow || 'transparent';
+  ctx.shadowBlur = Math.max(2, width * 0.005);
+  ctx.fillStyle = gradient;
+  const gap = fontSize * 1.08;
+  const startY = lines.length === 1 ? midY : midY - gap / 2;
+  lines.forEach((line, index) => {
+    ctx.fillText(line, width / 2, startY + index * gap);
+  });
+  return canvas;
+}
+
+export async function downloadBadgeImage(slug: string, name: string, filename: string) {
+  const canvas = await personalizeBadge(slug, name);
+  await new Promise<void>((resolve, reject) => {
+    canvas.toBlob((blob) => {
+      if (!blob) {
+        reject(new Error('The badge image could not be created.'));
+        return;
+      }
+      saveBlob(blob, filename);
+      resolve();
+    }, 'image/png');
+  });
 }
 
 function loadImage(src: string) {
@@ -49,76 +95,56 @@ function loadImage(src: string) {
 }
 
 export async function certificateCanvas(credential: Credential) {
-  const width = 1600;
-  const height = 1000;
+  const base = import.meta.env.BASE_URL;
+  const art = await loadImage(`${base}badges/certificate-empty.webp`);
+  const width = art?.naturalWidth || 1414;
+  const height = art?.naturalHeight || 1000;
   const canvas = document.createElement('canvas');
   canvas.width = width;
   canvas.height = height;
   const ctx = canvas.getContext('2d');
   if (!ctx) throw new Error('This browser cannot draw the certificate.');
 
-  const base = import.meta.env.BASE_URL;
-  const [art, logo] = await Promise.all([
-    loadImage(`${base}badges/certificate-side.webp`),
-    loadImage(`${base}rm-logo.png`),
-  ]);
-
-  ctx.fillStyle = '#091f2c';
-  ctx.fillRect(0, 0, width, height);
-
-  if (art) ctx.drawImage(art, 980, 0, 620, height);
-
-  const fade = ctx.createLinearGradient(900, 0, 1100, 0);
-  fade.addColorStop(0, '#091f2c');
-  fade.addColorStop(1, 'rgba(9, 31, 44, 0)');
-  ctx.fillStyle = fade;
-  ctx.fillRect(900, 0, 200, height);
-
-  if (logo) ctx.drawImage(logo, 72, 56, 56, 56);
-
-  ctx.fillStyle = '#c58cff';
-  ctx.font = '600 22px sans-serif';
-  ctx.fillText('Certificate of completion', 72, 150);
-
-  ctx.fillStyle = '#f3f7ff';
-  ctx.font = '700 48px sans-serif';
-  const course = credential.course || CERTIFICATE_COURSE;
-  let y = 220;
-  for (const line of wrap(ctx, course, 860)) {
-    ctx.fillText(line, 72, y);
-    y += 58;
+  if (art) ctx.drawImage(art, 0, 0, width, height);
+  else {
+    ctx.fillStyle = '#09101c';
+    ctx.fillRect(0, 0, width, height);
   }
 
-  ctx.fillStyle = '#b4c3d6';
-  ctx.font = '500 20px sans-serif';
-  ctx.fillText('Presented to', 72, y + 28);
+  const name = credential.recipient?.name || credential.recipient?.githubLogin || 'Learner';
+  const login = credential.recipient?.githubLogin ? `@${credential.recipient.githubLogin}` : '';
+  const { nameLines } = await import('./badge');
+  const lines = nameLines(name);
 
-  ctx.fillStyle = '#f3f7ff';
-  ctx.font = 'italic 56px Georgia, "Times New Roman", serif';
-  ctx.fillText(credential.recipient?.name || credential.recipient?.githubLogin || '', 72, y + 100);
-
-  const facts = [
-    ['GitHub account', `@${credential.recipient?.githubLogin || ''} · ${credential.recipient?.githubId ?? ''}`],
-    ['Completed', credential.issuedAt
-      ? new Date(credential.issuedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })
-      : ''],
-    ['Credential ID', credential.id],
-    ['Issuer', `${credential.issuer?.name || ISSUER}, course creator`],
-  ];
-  y += 170;
-  for (const [label, value] of facts) {
-    ctx.fillStyle = '#b4c3d6';
-    ctx.font = '500 18px sans-serif';
-    ctx.fillText(label, 72, y);
-    ctx.fillStyle = '#f3f7ff';
-    ctx.font = '600 20px sans-serif';
-    ctx.fillText(value, 280, y);
-    y += 40;
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'middle';
+  const maxName = width * 0.62;
+  const boxH = height * 0.135;
+  let fontSize = height * 0.084;
+  const typeface = '"Segoe UI", "Noto Sans", sans-serif';
+  const widest = () => Math.max(...lines.map((line) => ctx.measureText(line).width));
+  const stackH = () => fontSize * (lines.length === 1 ? 1 : 2.15);
+  ctx.font = `700 ${Math.round(fontSize)}px ${typeface}`;
+  while (fontSize > 16 && (widest() > maxName || stackH() > boxH * 0.95)) {
+    fontSize -= 1;
+    ctx.font = `700 ${Math.round(fontSize)}px ${typeface}`;
   }
+  ctx.shadowColor = 'rgba(232, 121, 249, 0.55)';
+  ctx.shadowBlur = Math.max(6, width * 0.01);
+  ctx.fillStyle = '#f6f3ff';
+  const midY = height * 0.435;
+  const gap = fontSize * 1.08;
+  const startY = lines.length === 1 ? midY : midY - gap / 2;
+  lines.forEach((line, index) => {
+    ctx.fillText(line, width * 0.10, startY + index * gap);
+  });
+  ctx.shadowBlur = 0;
 
-  ctx.fillStyle = '#b4c3d6';
-  ctx.font = '16px sans-serif';
-  ctx.fillText('Checked against public GitHub repositories. This is not a GitHub certification.', 72, 940);
+  if (login) {
+    ctx.fillStyle = '#c4b5fd';
+    ctx.font = `500 ${Math.round(height * 0.022)}px "Segoe UI", "Noto Sans", sans-serif`;
+    ctx.fillText(login, width * 0.10, height * 0.542);
+  }
 
   return canvas;
 }

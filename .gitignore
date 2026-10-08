@@ -11,4 +11,8 @@ Thumbs.db
 .vite/
 *.tsbuildinfo
 Github Credentials/
+Github Credentials.zip
+Github Credentials 1.zip
 credential-previews/
+scripts/_plaque-grids/
+scripts/__pycache__/

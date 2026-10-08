@@ -18,9 +18,16 @@ export function badgeFor(stage: number) {
   return BADGES.find((item) => item.stage === stage) ?? null;
 }
 
-export function startHref(stage: number) {
+export function startIssueUrl(stage: number, name = '') {
+  const params = new URLSearchParams({ template: 'start-stage.yml', stage: String(stage) });
+  const typed = name.replace(/\s+/g, ' ').trim();
+  if (typed) params.set('name', typed);
+  return `https://github.com/Crazy-Rohit/rm-git-learning-portal/issues/new?${params}`;
+}
+
+export function startHref(stage: number, name = '') {
   if (stage === 1) return './stage-1.html';
-  return `https://github.com/Crazy-Rohit/rm-git-learning-portal/issues/new?template=start-stage.yml&stage=${stage}`;
+  return startIssueUrl(stage, name);
 }
 
 export function sharePageUrl(id: string) {

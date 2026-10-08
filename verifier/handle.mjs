@@ -1,7 +1,7 @@
 import { challengeCode } from './lib/challenge.mjs';
 import { guideUrl, renderResult, startMessage } from './lib/comment.mjs';
 import { buildBadge, buildCertificate, chooseKey, signCredential, verifyCredential, writeCredential } from './lib/credential.mjs';
-import { parseForm } from './lib/form.mjs';
+import { displayName, parseForm } from './lib/form.mjs';
 import { loadLearner, saveLearner } from './lib/ledger.mjs';
 import { writeSharePage } from './lib/share.mjs';
 import { DAILY_SUBMIT_LIMIT } from './lib/portal.mjs';
@@ -62,10 +62,8 @@ function award(ledgerDir, unsigned, signingKey, key) {
   }
 }
 
-function certificateName(form, login) {
-  const typed = String(form['name on the certificate'] || '').replace(/\s+/g, ' ').trim();
-  if (typed.length >= 2 && typed.length <= 80 && !/[^\p{L}\p{M}\p{N} .'-]/u.test(typed)) return typed;
-  return login;
+function learnerName(learner, form, login) {
+  return learner.name || displayName(form['your name'] || form['name on the certificate']) || login;
 }
 
 export async function handleIssue({ gh, ledgerDir, issueNumber, portal, secret, signingKey = '', keys = [], shareDir = '', now = () => new Date() }) {
@@ -95,6 +93,7 @@ export async function handleIssue({ gh, ledgerDir, issueNumber, portal, secret, 
   }
 
   const learner = loadLearner(ledgerDir, authorId, login);
+  const form = parseForm(issue.body || '');
   const code = challengeCode(authorId, stage, secret);
   learner.stages[stage] ??= {};
   const previous = String(Number(stage) - 1);
@@ -105,9 +104,16 @@ export async function handleIssue({ gh, ledgerDir, issueNumber, portal, secret, 
       await say(`Pass stage ${previous} before starting stage ${stage}. Stages open in order. The form lists every number so later stages use the same page.\n\n${guideUrl('pass-the-previous-stage-first')}`);
       return { closed: true };
     }
+    const name = displayName(form['your name']);
+    if (!name) {
+      await say('Enter your name as you want it on the badge. Use letters, spaces, and hyphens. Example: Rohit Manna.');
+      return { closed: true };
+    }
+    const issued = Object.values(learner.stages).some((item) => item?.credentialId);
+    if (!learner.name || !issued) learner.name = name;
     if (!learner.stages[stage].startedAt) learner.stages[stage].startedAt = now().toISOString();
     saveLearner(ledgerDir, learner);
-    await say(startMessage(stage, code, login));
+    await say(`${startMessage(stage, code, login)}\n\nYour badges print **${name}** where the design shows XYZ.`);
     return { closed: true, started: true };
   }
 
@@ -136,7 +142,6 @@ export async function handleIssue({ gh, ledgerDir, issueNumber, portal, secret, 
     return { closed: true };
   }
 
-  const form = parseForm(issue.body || '');
   const result = await run({
     gh,
     login,
@@ -161,6 +166,7 @@ export async function handleIssue({ gh, ledgerDir, issueNumber, portal, secret, 
           stage,
           githubId: authorId,
           login,
+          name: learnerName(learner, form, login),
           issuedAt,
           kid: key.kid,
           repo: result.evidence?.repo || '',
@@ -180,7 +186,7 @@ export async function handleIssue({ gh, ledgerDir, issueNumber, portal, secret, 
         const signed = award(ledgerDir, buildCertificate({
           githubId: authorId,
           login,
-          name: certificateName(form, login),
+          name: learnerName(learner, form, login),
           issuedAt,
           kid: key.kid,
           issuerName: portal.issuerName,

@@ -9,18 +9,30 @@ import { handleIssue } from '../handle.mjs';
 import { challengeCode } from '../lib/challenge.mjs';
 import { canonical } from '../lib/canonical.mjs';
 import { buildBadge, buildCertificate, signCredential, verifyCredential } from '../lib/credential.mjs';
-import { parseForm, normaliseRepo } from '../lib/form.mjs';
+import { parseForm, normaliseRepo, displayName } from '../lib/form.mjs';
 import { loadLearner } from '../lib/ledger.mjs';
 import { PORTAL } from '../lib/portal.mjs';
 
 const SECRET = 'test-secret';
 const LOGIN = 'learner';
 const USER_ID = 42;
+const NAME = 'Rohit Learner';
+
+function startBody(stage = '1', name = NAME) {
+  return `### Stage\n\n${stage}\n\n### Your name\n\n${name}\n`;
+}
 
 test('parseForm reads issue form labels', () => {
-  const form = parseForm('### Stage\n\n1\n\n### Your lab repository\n\nlearner/git-lab\n');
+  const form = parseForm('### Stage\n\n1\n\n### Your name\n\nRohit Learner\n\n### Your lab repository\n\nlearner/git-lab\n');
   assert.equal(form.stage, '1');
+  assert.equal(form['your name'], 'Rohit Learner');
   assert.equal(form['your lab repository'], 'learner/git-lab');
+});
+
+test('displayName keeps a real name and rejects xyz', () => {
+  assert.equal(displayName('Rohit Manna'), 'Rohit Manna');
+  assert.equal(displayName('xyz'), '');
+  assert.equal(displayName('x'), '');
 });
 
 test('normaliseRepo accepts a GitHub URL', () => {
@@ -78,7 +90,7 @@ test('a Start issue records the time and returns a code', async () => {
   const dir = mkdtempSync(path.join(tmpdir(), 'ledger-'));
   const gh = issueGh({
     title: '[Start] stage 1',
-    body: '### Stage\n\n1\n',
+    body: startBody(),
     user: { id: USER_ID, login: LOGIN },
     created_at: '2026-10-05T10:00:00Z',
   });
@@ -98,14 +110,33 @@ test('a Start issue records the time and returns a code', async () => {
   assert.match(gh.comments[0], /greeting-a/);
   assert.match(gh.comments[0], /screens-you-will-see/);
   assert.match(gh.comments[0], /when-a-check-fails/);
-  assert.equal(loadLearner(dir, USER_ID, LOGIN).stages['1'].startedAt, '2026-10-05T10:00:00.000Z');
+  assert.match(gh.comments[0], /Rohit Learner/);
+  const started = loadLearner(dir, USER_ID, LOGIN);
+  assert.equal(started.name, NAME);
+  assert.equal(started.stages['1'].startedAt, '2026-10-05T10:00:00.000Z');
+});
+
+test('a Start issue needs a name for the badge', async () => {
+  const dir = mkdtempSync(path.join(tmpdir(), 'ledger-'));
+  const gh = issueGh({
+    title: '[Start] stage 1',
+    body: '### Stage\n\n1\n',
+    user: { id: USER_ID, login: LOGIN },
+    created_at: '2026-10-05T10:00:00Z',
+  });
+  const result = await handleIssue({
+    gh, ledgerDir: dir, issueNumber: 7, portal: PORTAL, secret: SECRET,
+  });
+  assert.equal(result.started, undefined);
+  assert.match(gh.comments[0], /Enter your name/);
+  assert.equal(loadLearner(dir, USER_ID, LOGIN).stages['1'], undefined);
 });
 
 test('a second Start issue keeps the original start time', async () => {
   const dir = mkdtempSync(path.join(tmpdir(), 'ledger-'));
   const issue = {
     title: '[Start] stage 1',
-    body: '### Stage\n\n1\n',
+    body: startBody(),
     user: { id: USER_ID, login: LOGIN },
     created_at: '2026-10-05T10:00:00Z',
   };
@@ -143,7 +174,7 @@ test('a complete stage 1 submission passes and records evidence', async () => {
   await handleIssue({
     gh: issueGh({
       title: '[Start] ',
-      body: '### Stage\n\n1\n',
+      body: startBody(),
       user: author,
       created_at: '2026-10-05T09:00:00Z',
     }),
@@ -174,7 +205,7 @@ test('a wrong challenge code fails the stage', async () => {
   const dir = mkdtempSync(path.join(tmpdir(), 'ledger-'));
   const author = { id: USER_ID, login: LOGIN };
   await handleIssue({
-    gh: issueGh({ title: '[Start] ', body: '### Stage\n\n1\n', user: author, created_at: '2026-10-05T09:00:00Z' }),
+    gh: issueGh({ title: '[Start] ', body: startBody(), user: author, created_at: '2026-10-05T09:00:00Z' }),
     ledgerDir: dir, issueNumber: 1, portal: PORTAL, secret: SECRET,
     now: () => new Date('2026-10-05T09:00:00Z'),
   });
@@ -198,7 +229,7 @@ test('stage 2 cannot start before stage 1 is passed', async () => {
   const dir = mkdtempSync(path.join(tmpdir(), 'ledger-'));
   const gh = issueGh({
     title: '[Start] ',
-    body: '### Stage\n\n2\n',
+    body: startBody('2'),
     user: { id: USER_ID, login: LOGIN },
     created_at: '2026-10-05T12:00:00Z',
   });
@@ -240,7 +271,7 @@ test('a passed stage 1 issues a signed badge and keeps it on a later pass', asyn
   const code = challengeCode(USER_ID, '1', SECRET);
   const author = { id: USER_ID, login: LOGIN };
   await handleIssue({
-    gh: issueGh({ title: '[Start] ', body: '### Stage\n\n1\n', user: author, created_at: '2026-10-05T09:00:00Z' }),
+    gh: issueGh({ title: '[Start] ', body: startBody(), user: author, created_at: '2026-10-05T09:00:00Z' }),
     ledgerDir: dir, issueNumber: 1, portal: PORTAL, secret: SECRET, signingKey: pem, keys,
     now: () => new Date('2026-10-05T09:00:00Z'),
   });
@@ -261,13 +292,15 @@ test('a passed stage 1 issues a signed badge and keeps it on a later pass', asyn
   const stored = JSON.parse(readFileSync(path.join(dir, 'certificates', 'GGP-2026-42-S1.json'), 'utf8'));
   assert.equal(verifyCredential(stored, keys[0]), true);
   assert.equal(stored.recipient.githubId, USER_ID);
+  assert.equal(stored.recipient.name, NAME);
+  assert.equal(saved.name, NAME);
   assert.equal(stored.evidence.repo, 'learner/git-lab');
   assert.match(gh.comments[0], /verify\.html\?id=GGP-2026-42-S1/);
   assert.match(gh.comments[0], /share\/GGP-2026-42-S1\.html/);
   assert.match(gh.comments[0], /badges\/first-repository\.png/);
   const card = readFileSync(path.join(shareDir, 'GGP-2026-42-S1.html'), 'utf8');
   assert.match(card, /property="og:title" content="First Repository"/);
-  assert.match(card, /Awarded to @learner by Rohit Manna/);
+  assert.match(card, /Awarded to Rohit Learner \(@learner\) by Rohit Manna/);
   assert.match(card, /badges\/first-repository\.png/);
   const again = issueGh({
     title: '[Submit] ',
@@ -292,7 +325,7 @@ function textFile(text) {
 
 async function passStage1(dir) {
   await handleIssue({
-    gh: issueGh({ title: '[Start] ', body: '### Stage\n\n1\n', user: AUTHOR, created_at: '2026-10-05T09:00:00Z' }),
+    gh: issueGh({ title: '[Start] ', body: startBody(), user: AUTHOR, created_at: '2026-10-05T09:00:00Z' }),
     ledgerDir: dir, issueNumber: 1, portal: PORTAL, secret: SECRET,
     now: () => new Date('2026-10-05T09:00:00Z'),
   });
@@ -310,7 +343,7 @@ async function passStage1(dir) {
 }
 
 async function openStage(dir, stage) {
-  const gh = issueGh({ title: '[Start] ', body: `### Stage\n\n${stage}\n`, user: AUTHOR, created_at: LATER });
+  const gh = issueGh({ title: '[Start] ', body: startBody(String(stage)), user: AUTHOR, created_at: LATER });
   await handleIssue({
     gh, ledgerDir: dir, issueNumber: 20 + stage, portal: PORTAL, secret: SECRET,
     now: () => new Date(LATER),

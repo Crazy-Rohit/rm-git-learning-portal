@@ -1,0 +1,255 @@
+/* Name sits in the official empty plaque as text. No covering box. */
+.badge-face {
+  --plaque-top: 76%;
+  --plaque-height: 10.4%;
+  --plaque-min-width: 16%;
+  --plaque-max-width: 26%;
+  --plaque-font: 5.0;
+  --plaque-color: #ffffff;
+  --plaque-from: #e0f2fe;
+  --plaque-mid: #e879f9;
+  --plaque-to: #fb7185;
+  --plaque-glow: rgba(232, 121, 249, 0.45);
+  container-type: inline-size;
+  position: relative;
+  display: inline-block;
+  width: min(360px, 100%);
+  line-height: 0;
+}
+
+.badge-face img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.badge-name-area,
+.badge-name {
+  position: absolute;
+  left: 50%;
+  top: var(--plaque-top);
+  height: var(--plaque-height);
+  width: var(--plaque-max-width);
+  min-width: var(--plaque-min-width);
+  transform: translateX(-50%);
+  box-sizing: border-box;
+}
+
+.badge-name-area {
+  pointer-events: none;
+  border: 2px dashed #67e8f9;
+  border-radius: 0.55cqi;
+  background: rgba(103, 232, 249, 0.1);
+  box-shadow: 0 0 0 1px rgba(7, 7, 18, 0.55);
+}
+
+.badge-name {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.2cqi 0.5cqi;
+  overflow: hidden;
+  white-space: nowrap;
+  flex-direction: column;
+  font-family: "Segoe UI Variable Display", "Segoe UI", "Avenir Next", "Gill Sans", "Trebuchet MS", sans-serif;
+  font-weight: 800;
+  font-size: 5.0cqi;
+  letter-spacing: 0.02em;
+  line-height: 1.02;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  background-image: linear-gradient(90deg, var(--plaque-from), var(--plaque-mid), var(--plaque-to));
+  background-size: 100% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  filter: drop-shadow(0 0 0.35cqi var(--plaque-glow));
+  border: 0;
+}
+
+.badge-name-line {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  line-height: 1.05;
+}
+
+.badge-face--first-repository {
+  --plaque-top: 76.8%;
+  --plaque-height: 10.4%;
+  --plaque-min-width: 18%;
+  --plaque-max-width: 24%;
+  --plaque-font: 5.1;
+  --plaque-from: #7dd3fc;
+  --plaque-mid: #e879f9;
+  --plaque-to: #fb7185;
+  --plaque-color: #f5d0fe;
+  --plaque-glow: rgba(244, 114, 182, 0.45);
+}
+
+.badge-face--branches-and-prs {
+  --plaque-top: 78.2%;
+  --plaque-height: 10.6%;
+  --plaque-min-width: 18%;
+  --plaque-max-width: 28%;
+  --plaque-font: 5.0;
+  --plaque-from: #c4b5fd;
+  --plaque-mid: #e879f9;
+  --plaque-to: #fda4af;
+  --plaque-color: #f5d0fe;
+  --plaque-glow: rgba(232, 121, 249, 0.4);
+}
+
+.badge-face--merge-conflicts {
+  --plaque-top: 80.6%;
+  --plaque-height: 9.6%;
+  --plaque-min-width: 16%;
+  --plaque-max-width: 24%;
+  --plaque-font: 4.0;
+  --plaque-from: #ffe4f1;
+  --plaque-mid: #fda4d0;
+  --plaque-to: #fb7185;
+  --plaque-color: #ffe4f1;
+  --plaque-glow: rgba(251, 113, 133, 0.4);
+}
+
+.badge-face--undo-and-tags {
+  --plaque-top: 76.4%;
+  --plaque-height: 11%;
+  --plaque-min-width: 18%;
+  --plaque-max-width: 28%;
+  --plaque-font: 5.1;
+  --plaque-from: #fff7ed;
+  --plaque-mid: #fdba74;
+  --plaque-to: #e879f9;
+  --plaque-color: #ffffff;
+  --plaque-glow: rgba(253, 186, 116, 0.35);
+}
+
+.badge-face--fork-and-pr {
+  --plaque-top: 68.6%;
+  --plaque-height: 10.4%;
+  --plaque-min-width: 18%;
+  --plaque-max-width: 28%;
+  --plaque-font: 5.0;
+  --plaque-from: #7dd3fc;
+  --plaque-mid: #c084fc;
+  --plaque-to: #fb7185;
+  --plaque-color: #f0c8ff;
+  --plaque-glow: rgba(192, 132, 252, 0.5);
+}
+
+.badge-face--github-actions {
+  --plaque-top: 77.0%;
+  --plaque-height: 12.2%;
+  --plaque-min-width: 20%;
+  --plaque-max-width: 32%;
+  --plaque-font: 5.6;
+  --plaque-from: #7dd3fc;
+  --plaque-mid: #38bdf8;
+  --plaque-to: #818cf8;
+  --plaque-color: #7dd3fc;
+  --plaque-glow: rgba(56, 189, 248, 0.4);
+}
+
+.badge-face--capstone-practitioner {
+  --plaque-top: 78.6%;
+  --plaque-height: 10.2%;
+  --plaque-min-width: 16%;
+  --plaque-max-width: 24%;
+  --plaque-font: 4.8;
+  --plaque-from: #67e8f9;
+  --plaque-mid: #e879f9;
+  --plaque-to: #fdba74;
+  --plaque-color: #f5d0fe;
+  --plaque-glow: rgba(232, 121, 249, 0.4);
+}
+
+.cert-face {
+  --cert-name-top: 36.8%;
+  --cert-name-height: 13.5%;
+  --cert-name-left: 10%;
+  --cert-name-width: 62%;
+  --cert-name-font: 8.4;
+  --cert-login-top: 52.2%;
+  container-type: inline-size;
+  position: relative;
+  display: block;
+  width: min(920px, 100%);
+  line-height: 0;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.cert-face img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.cert-name-area,
+.cert-name,
+.cert-login,
+.cert-id,
+.cert-verify {
+  position: absolute;
+  left: var(--cert-name-left);
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+.cert-name-area {
+  top: var(--cert-name-top);
+  width: var(--cert-name-width);
+  height: var(--cert-name-height);
+  pointer-events: none;
+  border: 2px dashed #67e8f9;
+  border-radius: 6px;
+  background: rgba(103, 232, 249, 0.08);
+  box-shadow: 0 0 0 1px rgba(7, 7, 18, 0.55);
+}
+
+.cert-name {
+  top: var(--cert-name-top);
+  width: var(--cert-name-width);
+  height: var(--cert-name-height);
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  font-weight: 700;
+  font-size: 7.2cqi;
+  line-height: 1.05;
+  letter-spacing: 0.04em;
+  color: #ffffff;
+  text-shadow:
+    0 0 0.6cqi rgba(232, 121, 249, 0.45),
+    0 1px 2px rgba(7, 7, 18, 0.95),
+    0 2px 10px rgba(7, 7, 18, 0.75);
+}
+
+.cert-name .badge-name-line {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  line-height: 1.05;
+}
+
+.cert-login {
+  top: var(--cert-login-top);
+  height: 4%;
+  width: 40%;
+  font-weight: 500;
+  font-size: 2.1cqi;
+  color: #c4b5fd;
+}
+
+.issued .badge-face {
+  width: min(360px, 100%);
+}
+
+.issued .badge-face img {
+  width: 100%;
+  border-radius: 0;
+}

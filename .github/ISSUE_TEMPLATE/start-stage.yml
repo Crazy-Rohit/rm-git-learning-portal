@@ -6,11 +6,21 @@ body:
   - type: markdown
     attributes:
       value: |
-        This form only asks which stage you are starting. After **Create**, GitHub shows an issue. That is expected. Wait one minute, refresh, and follow the bot comment. Do not open Git CMD. Do not create a folder on your computer.
+        After **Create**, GitHub shows an issue. That is expected. Wait one minute, refresh, and follow the bot comment. Do not open Git CMD. Do not create a folder on your computer.
+
+        Type your **real name**. It is printed on your badges in place of XYZ. Example: `Rohit Manna`.
 
         The **Stage** box may say **None** until you click it. Choose **1** the first time. Later numbers open only after the previous stage is passed. If you pick too soon, the bot tells you.
 
         [Stage 1 steps](https://github.com/Crazy-Rohit/rm-git-learning-portal/blob/main/HANDBOOK.md#stage-1-first-repository) · [If the Stage box says None](https://github.com/Crazy-Rohit/rm-git-learning-portal/blob/main/HANDBOOK.md#the-stage-box-says-none)
+  - type: input
+    id: name
+    attributes:
+      label: Your name
+      description: The name printed on your badges. Use your real name, not xyz and not your GitHub username unless that is the name you want shown.
+      placeholder: Rohit Manna
+    validations:
+      required: true
   - type: dropdown
     id: stage
     attributes:

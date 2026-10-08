@@ -1,8 +1,29 @@
 import { BADGES, LEDGER, startHref } from './catalog';
 
 export const LOGIN_KEY = 'rm-portal-login';
+export const NAME_KEY = 'rm-portal-name';
 
 export type StageRecord = { startedAt?: string; passedAt?: string; credentialId?: string };
+
+export function tidyName(value: string) {
+  const typed = String(value || '').replace(/\s+/g, ' ').trim();
+  if (/^xyz$/i.test(typed) || /^your name$/i.test(typed)) return '';
+  if (typed.length >= 2 && typed.length <= 80 && !/[^\p{L}\p{M}\p{N} .'-]/u.test(typed)) return typed;
+  return '';
+}
+
+export function storedName() {
+  try { return localStorage.getItem(NAME_KEY) || ''; } catch { return ''; }
+}
+
+export function storeName(value: string) {
+  const typed = tidyName(value);
+  try {
+    if (typed) localStorage.setItem(NAME_KEY, typed);
+    else localStorage.removeItem(NAME_KEY);
+  } catch { /* storage can be blocked */ }
+  return typed;
+}
 
 export function storedLogin() {
   try { return localStorage.getItem(LOGIN_KEY) || ''; } catch { return ''; }
@@ -53,7 +74,7 @@ export function paintStageTab(stages: Record<string, StageRecord>) {
       return;
     }
     tab.textContent = `Stage ${next.stage}`;
-    tab.href = startHref(next.stage);
+    tab.href = startHref(next.stage, storedName());
     if (next.stage === 1 && onStage1) tab.setAttribute('aria-current', 'page');
     else tab.removeAttribute('aria-current');
   });

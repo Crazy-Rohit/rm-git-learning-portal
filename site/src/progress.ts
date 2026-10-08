@@ -1,5 +1,5 @@
 import { BADGES, startHref } from './catalog';
-import { learnerStages, paintStageTab, storeLogin, storedLogin } from './path';
+import { learnerStages, paintStageTab, storeLogin, storedLogin, storedName } from './path';
 
 type StageRecord = { startedAt?: string; passedAt?: string; credentialId?: string };
 
@@ -41,7 +41,7 @@ function render(stages: Record<string, StageRecord>) {
     } else if (previousPassed) {
       state.className = 'open';
       const link = document.createElement('a');
-      link.href = startHref(number);
+      link.href = startHref(number, storedName());
       link.textContent = record?.startedAt ? 'In progress' : 'Open now';
       state.append(link);
     } else {

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Badge name preview</title>
+  <link rel="stylesheet" href="/src/styles.css">
+  <style>
+    body { margin: 0; background: #070712; color: #f3f7ff; font: 16px/1.4 "Segoe UI", sans-serif; }
+    .name-check {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 12px;
+      align-items: end;
+      padding: 20px 24px 4px;
+    }
+    .name-check p { flex: 1 1 100%; margin: 0; color: #c4b5fd; font-size: 0.92rem; }
+    .name-check label { display: grid; gap: 6px; color: #c4b5fd; font-size: 0.92rem; }
+    .name-check input {
+      min-width: min(280px, 100%);
+      height: 38px;
+      border-radius: 6px;
+      border: 1px solid #3f3f68;
+      background: #12122a;
+      color: #f3f7ff;
+      padding: 0 12px;
+      font: inherit;
+    }
+    .name-check button { cursor: pointer; }
+    .name-check .toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #c4b5fd;
+      font-size: 0.92rem;
+    }
+    #fit-summary {
+      margin: 0 24px 8px;
+      color: #a5f3fc;
+      font-size: 0.92rem;
+    }
+    #fit-summary[data-ok="false"] { color: #fda4af; }
+    main { display: grid; gap: 28px; padding: 24px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+    figure { margin: 0; text-align: center; }
+    figcaption { margin-top: 10px; color: #c4b5fd; }
+    figcaption[data-ok="true"] { color: #86efac; }
+    figcaption[data-ok="false"] { color: #fda4af; }
+    .badge-face { width: min(360px, 100%); }
+    body:not(.show-areas) .badge-name-area,
+    body:not(.show-areas) .cert-name-area {
+      border-color: transparent;
+      background: transparent;
+      box-shadow: none;
+    }
+  </style>
+</head>
+<body class="show-areas">
+  <form class="name-check" id="name-check">
+    <p>Each name stays inside the plaque box. Short, usual, and long names all use the same area — the type just scales down.</p>
+    <label>Try any name
+      <input id="name-input" name="name" maxlength="80" placeholder="Rohit Manna" spellcheck="false">
+    </label>
+    <button class="btn" type="button" data-name="Riya">Short</button>
+    <button class="btn" type="button" data-name="Rohit Manna">Usual</button>
+    <button class="btn" type="button" data-name="Siddharth Venkatesh Iyer">Long</button>
+    <button class="btn" type="button" data-name="Anastasia Christopher Montgomery">Extra</button>
+    <label class="toggle"><input id="show-areas" type="checkbox" checked> Show name area</label>
+  </form>
+  <p id="fit-summary"></p>
+  <main id="gallery"></main>
+  <script type="module">
+    import { BADGES } from './src/catalog.ts';
+    import { badgeFace, setBadgeName, setCertName, fitCertName, watchNameBox, nameOverflows } from './src/badge.ts';
+    const params = new URLSearchParams(location.search);
+    const input = document.getElementById('name-input');
+    const gallery = document.getElementById('gallery');
+    const summary = document.getElementById('fit-summary');
+    const faces = [];
+    let name = params.get('name') || 'Rohit Manna';
+    input.value = name;
+
+    for (const badge of BADGES) {
+      const figure = document.createElement('figure');
+      const face = badgeFace(badge.slug, badge.title, name);
+      faces.push({ face, badge });
+      const caption = document.createElement('figcaption');
+      caption.dataset.slug = badge.slug;
+      figure.append(face, caption);
+      gallery.append(figure);
+    }
+    const cert = document.createElement('figure');
+    cert.style.gridColumn = '1 / -1';
+    const face = document.createElement('div');
+    face.className = 'cert-face';
+    const image = document.createElement('img');
+    image.src = `${import.meta.env.BASE_URL}badges/certificate-empty.webp`;
+    const area = document.createElement('div');
+    area.className = 'cert-name-area';
+    area.setAttribute('aria-hidden', 'true');
+    const person = document.createElement('span');
+    person.className = 'cert-name';
+    const handle = document.createElement('span');
+    handle.className = 'cert-login';
+    handle.textContent = '@Crazy-Rohit';
+    face.append(image, area, person, handle);
+    const caption = document.createElement('figcaption');
+    caption.dataset.slug = 'certificate';
+    cert.append(face, caption);
+    gallery.append(cert);
+    watchNameBox(face, () => {
+      fitCertName(person);
+      markFits();
+    });
+
+    function markFits() {
+      let ok = 0;
+      let total = 0;
+      for (const item of faces) {
+        const label = item.face.querySelector('.badge-name');
+        const note = gallery.querySelector(`[data-slug="${item.badge.slug}"]`);
+        const fits = label ? !nameOverflows(label) : false;
+        total += 1;
+        if (fits) ok += 1;
+        if (note) {
+          note.dataset.ok = String(fits);
+          note.textContent = `${item.badge.title} · ${name} · ${fits ? 'Fits' : 'Overflows'}`;
+        }
+      }
+      const certFits = !nameOverflows(person);
+      total += 1;
+      if (certFits) ok += 1;
+      caption.dataset.ok = String(certFits);
+      caption.textContent = `Certificate · ${name} · ${certFits ? 'Fits' : 'Overflows'}`;
+      summary.dataset.ok = String(ok === total);
+      summary.textContent = `${ok} of ${total} name areas fit “${name}”.`;
+    }
+
+    function paint(next) {
+      name = next.replace(/\s+/g, ' ').trim() || 'Your name';
+      input.value = name === 'Your name' ? '' : name;
+      for (const item of faces) {
+        setBadgeName(item.face, name, item.badge.title);
+      }
+      setCertName(person, name);
+      image.alt = `Certificate for ${name}`;
+      markFits();
+      requestAnimationFrame(markFits);
+    }
+
+    document.getElementById('show-areas').addEventListener('change', (event) => {
+      document.body.classList.toggle('show-areas', event.target.checked);
+    });
+    paint(name);
+    input.addEventListener('input', () => paint(input.value));
+    document.getElementById('name-check').addEventListener('click', (event) => {
+      const sample = event.target.closest('[data-name]');
+      if (!sample) return;
+      paint(sample.dataset.name);
+    });
+  </script>
+</body>
+</html>

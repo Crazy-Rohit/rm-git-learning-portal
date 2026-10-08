@@ -1,5 +1,5 @@
 import { startHref } from './catalog';
-import { learnerStages, nextStage, paintStageTab, storeLogin, storedLogin, type StageRecord } from './path';
+import { learnerStages, nextStage, paintStageTab, storeLogin, storeName, storedLogin, storedName, type StageRecord } from './path';
 
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -185,12 +185,14 @@ function paintPath(stages: Record<string, StageRecord>) {
 }
 
 const pathForm = document.querySelector<HTMLFormElement>('#path-lookup');
+const pathName = document.querySelector<HTMLInputElement>('#path-name');
 const pathLogin = document.querySelector<HTMLInputElement>('#path-login');
 const pathStatus = document.querySelector<HTMLElement>('#path-status');
 
 function showPath(login: string) {
   const name = login.trim().replace(/^@/, '');
   if (!name) return;
+  if (pathName) storeName(pathName.value);
   storeLogin(name);
   if (pathStatus) pathStatus.textContent = 'Reading the public record…';
   learnerStages(name).then((stages) => {
@@ -213,6 +215,9 @@ pathForm?.addEventListener('submit', (event) => {
 });
 
 const remembered = storedLogin();
+const rememberedName = storedName();
+if (pathName && rememberedName) pathName.value = rememberedName;
+pathName?.addEventListener('change', () => storeName(pathName.value));
 if (pathLogin && remembered) {
   pathLogin.value = remembered;
   showPath(remembered);

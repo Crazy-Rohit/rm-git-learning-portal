@@ -1,6 +1,7 @@
 import { canonical } from './canonical';
 import { CERTIFICATE_COURSE, ISSUER, LEDGER, SITE, badgeFor, sharePageUrl } from './catalog';
-import { downloadCertificateImage, downloadCertificatePdf, downloadUrl } from './export';
+import { badgeFace, setBadgeName, setCertName, watchNameBox, fitCertName } from './badge';
+import { downloadBadgeImage, downloadCertificateImage, downloadCertificatePdf } from './export';
 
 type PublicKey = { kid: string; x: string; validFrom?: string };
 type RevokedItem = string | { id?: string };
@@ -61,56 +62,129 @@ function field(label: string, value: string) {
   return row;
 }
 
+function personName(credential: Credential) {
+  return credential.recipient?.name || credential.recipient?.githubLogin || '';
+}
+
+function captionFor(name: string, login?: string) {
+  return name && login && name !== login ? `${name} (@${login})` : `@${login || 'unknown'}`;
+}
+
+async function displayNameFor(credential: Credential) {
+  const fallback = personName(credential);
+  const id = credential.recipient?.githubId;
+  if (id == null) return fallback;
+  try {
+    const response = await fetch(`${LEDGER}/learners/${id}.json`);
+    if (!response.ok) return fallback;
+    const file = await response.json() as { name?: string };
+    const named = String(file.name || '').replace(/\s+/g, ' ').trim();
+    return named || fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function renderNameCheck(root: HTMLElement, initial: string, apply: (name: string) => void) {
+  const form = document.createElement('form');
+  form.className = 'identity-form name-check';
+  form.addEventListener('submit', (event) => event.preventDefault());
+  const heading = document.createElement('h2');
+  heading.textContent = 'Your name';
+  const note = document.createElement('p');
+  note.className = 'note';
+  note.textContent = 'Type a name here. It prints inside the dashed box. Short and long names both stay in that box.';
+  const label = document.createElement('label');
+  label.append('Try a name');
+  const field = document.createElement('input');
+  field.id = 'try-name';
+  field.name = 'name';
+  field.maxLength = 80;
+  field.placeholder = 'Rohit Manna';
+  field.spellcheck = false;
+  field.autocomplete = 'name';
+  field.value = initial;
+  label.append(field);
+  form.append(heading, note, label);
+  for (const [title, sample] of [
+    ['Short', 'Riya'],
+    ['Usual', 'Rohit Manna'],
+    ['Long', 'Siddharth Venkatesh Iyer'],
+    ['Extra', 'Anastasia Christopher Montgomery'],
+  ] as const) {
+    const button = document.createElement('button');
+    button.className = 'btn';
+    button.type = 'button';
+    button.textContent = title;
+    button.addEventListener('click', () => {
+      field.value = sample;
+      apply(sample);
+    });
+    form.append(button);
+  }
+  field.addEventListener('input', () => {
+    field.dataset.touched = '1';
+    apply(field.value);
+  });
+  root.append(form);
+  requestAnimationFrame(() => {
+    field.focus();
+    field.scrollIntoView({ block: 'center' });
+  });
+}
+
 function renderBadge(credential: Credential, root: HTMLElement) {
   const badge = badgeFor(Number(credential.stage));
   const figure = document.createElement('figure');
   figure.className = 'issued';
-  if (badge) {
-    const image = document.createElement('img');
-    image.src = `${import.meta.env.BASE_URL}badges/${badge.slug}.png`;
-    image.alt = badge.title;
-    figure.append(image);
-  }
+  const login = credential.recipient?.githubLogin;
   const caption = document.createElement('figcaption');
-  caption.textContent = `@${credential.recipient?.githubLogin || 'unknown'}`;
+  caption.textContent = captionFor(personName(credential), login);
+  const face = badge ? badgeFace(badge.slug, badge.title, personName(credential)) : null;
+  if (face) figure.append(face);
   figure.append(caption);
+  const paint = (name: string) => {
+    const next = name.replace(/\s+/g, ' ').trim() || 'Your name';
+    if (face && badge) setBadgeName(face, next, badge.title);
+    caption.textContent = captionFor(next, login);
+  };
+  renderNameCheck(root, personName(credential), paint);
   root.append(figure);
+  void displayNameFor(credential).then((name) => {
+    const field = root.querySelector<HTMLInputElement>('#try-name');
+    if (field && !field.dataset.touched) {
+      field.value = name;
+      paint(name);
+    }
+  }).catch(() => {});
 }
 
 function renderCertificate(credential: Credential, root: HTMLElement) {
-  const sheet = document.createElement('article');
-  sheet.className = 'sheet';
-  const copy = document.createElement('div');
-  copy.className = 'sheet-copy';
-  const kicker = document.createElement('p');
-  kicker.className = 'by';
-  kicker.textContent = 'Certificate of completion';
-  const title = document.createElement('h2');
-  title.textContent = credential.course || CERTIFICATE_COURSE;
-  const presented = document.createElement('p');
-  presented.className = 'sheet-kicker';
-  presented.textContent = 'Presented to';
-  const person = document.createElement('p');
-  person.className = 'sheet-name';
-  person.textContent = credential.recipient?.name || credential.recipient?.githubLogin || '';
-  const facts = document.createElement('dl');
-  facts.append(
-    field('GitHub account', `@${credential.recipient?.githubLogin || ''} · ${credential.recipient?.githubId ?? ''}`),
-    field('Completed', credential.issuedAt ? formatDate(credential.issuedAt) : ''),
-    field('Credential ID', credential.id),
-    field('Issuer', `${credential.issuer?.name || ISSUER}, course creator`),
-  );
-  const note = document.createElement('p');
-  note.className = 'note';
-  note.textContent = 'Checked against the learner\'s public GitHub repositories. This is not a GitHub certification.';
-  copy.append(kicker, title, presented, person, facts, note);
-  const art = document.createElement('div');
-  art.className = 'sheet-art';
-  art.style.backgroundImage = `url("${import.meta.env.BASE_URL}badges/certificate-side.webp")`;
-  art.setAttribute('role', 'img');
-  art.setAttribute('aria-label', '');
-  sheet.append(copy, art);
-  root.append(sheet);
+  const name = credential.recipient?.name || credential.recipient?.githubLogin || 'Learner';
+  const login = credential.recipient?.githubLogin ? `@${credential.recipient.githubLogin}` : '';
+  const face = document.createElement('div');
+  face.className = 'cert-face';
+  const image = document.createElement('img');
+  image.src = `${import.meta.env.BASE_URL}badges/certificate-empty.webp`;
+  image.alt = `${credential.course || CERTIFICATE_COURSE} for ${name}`;
+  const area = document.createElement('div');
+  area.className = 'cert-name-area';
+  area.setAttribute('aria-hidden', 'true');
+  const person = document.createElement('span');
+  person.className = 'cert-name';
+  const handle = document.createElement('span');
+  handle.className = 'cert-login';
+  handle.textContent = login;
+  face.append(image, area, person, handle);
+  const paint = (next: string) => {
+    const text = next.replace(/\s+/g, ' ').trim() || 'Your name';
+    setCertName(person, text);
+    image.alt = `${credential.course || CERTIFICATE_COURSE} for ${text}`;
+  };
+  renderNameCheck(root, name, paint);
+  setCertName(person, name);
+  watchNameBox(face, () => fitCertName(person));
+  root.append(face);
 }
 
 function svgMark(path: string) {
@@ -180,7 +254,7 @@ function renderRecord(credential: Credential, status: 'valid' | 'revoked' | 'inv
   const banner = document.createElement('p');
   banner.className = `verdict ${status}`;
   banner.textContent = status === 'valid'
-    ? `Valid. Signed for @${credential.recipient?.githubLogin || 'this account'} by ${ISSUER}.`
+    ? `Valid. Signed for ${captionFor(personName(credential), credential.recipient?.githubLogin)} by ${ISSUER}.`
     : status === 'revoked'
       ? 'Revoked. This record was withdrawn by the issuer.'
       : 'Invalid. The signature does not match the public key.';
@@ -194,6 +268,7 @@ function renderRecord(credential: Credential, status: 'valid' | 'revoked' | 'inv
   const badge = badgeFor(Number(credential.stage));
   facts.append(
     field('Credential', credential.type === 'GitGitHubPractitioner' ? (credential.course || CERTIFICATE_COURSE) : (credential.title || badge?.title || 'Badge')),
+    field('Name', personName(credential)),
     field('GitHub account', `@${credential.recipient?.githubLogin || ''} (${credential.recipient?.githubId ?? ''})`),
     field('Issued', credential.issuedAt ? formatDate(credential.issuedAt) : ''),
     field('Credential ID', credential.id),
@@ -222,7 +297,7 @@ function renderRecord(credential: Credential, status: 'valid' | 'revoked' | 'inv
 
   if (status === 'valid') {
     const page = sharePageUrl(credential.id);
-    const text = `${credential.title || credential.course || 'Credential'}\nAwarded by Rohit Manna\n${page}`;
+    const text = `${credential.title || credential.course || 'Credential'}\nAwarded to ${captionFor(personName(credential), credential.recipient?.githubLogin)} by Rohit Manna\n${page}`;
     const panel = document.createElement('section');
     panel.className = 'share-panel';
     const heading = document.createElement('h2');
@@ -258,7 +333,11 @@ function renderRecord(credential: Credential, status: 'valid' | 'revoked' | 'inv
     } else if (badge) {
       downloads.append(
         downloadButton('Download badge image', async () => {
-          await downloadUrl(`${import.meta.env.BASE_URL}badges/${badge.slug}.png`, `${credential.id}-${badge.slug}.png`);
+          await downloadBadgeImage(
+            badge.slug,
+            await displayNameFor(credential),
+            `${credential.id}-${badge.slug}.png`,
+          );
         }),
       );
     }

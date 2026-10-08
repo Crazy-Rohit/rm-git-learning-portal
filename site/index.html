@@ -65,7 +65,7 @@
       <article class="card reveal">
         <span class="icon"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z"/><path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Z"/></svg></span>
         <h2>2. Start</h2>
-        <p>Open a Start issue. If Stage says None, choose 1. The reply is your worksheet.</p>
+        <p>Open a Start issue. Type your real name. If Stage says None, choose 1. The reply is your worksheet.</p>
       </article>
       <article class="card reveal">
         <span class="icon"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M11.93 8.5a4.002 4.002 0 0 1-7.86 0H.75a.75.75 0 0 1 0-1.5h3.32a4.002 4.002 0 0 1 7.86 0h3.32a.75.75 0 0 1 0 1.5Zm-1.43-.75a2.5 2.5 0 1 0-5 0 2.5 2.5 0 0 0 5 0Z"/></svg></span>
@@ -83,7 +83,10 @@
       <h2>Your path</h2>
       <p>The next stage opens when the one before it passes.</p>
     </div>
-    <form id="path-lookup" class="reveal">
+    <form id="path-lookup" class="reveal identity-form">
+      <label>Your name
+        <input id="path-name" name="name" autocomplete="name" maxlength="80" placeholder="Rohit Manna" spellcheck="false">
+      </label>
       <label>GitHub username
         <input id="path-login" name="login" autocomplete="username" spellcheck="false" placeholder="your-username">
       </label>

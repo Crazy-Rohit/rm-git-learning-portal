@@ -13,7 +13,7 @@ export function credentialId(githubId, stage, issuedAt) {
   return id;
 }
 
-export function buildBadge({ stage, githubId, login, issuedAt, kid, repo, issue, issuerName, siteUrl }) {
+export function buildBadge({ stage, githubId, login, name, issuedAt, kid, repo, issue, issuerName, siteUrl }) {
   const badge = badgeFor(stage);
   if (!badge) throw new Error('Unknown stage.');
   return {
@@ -22,7 +22,7 @@ export function buildBadge({ stage, githubId, login, issuedAt, kid, repo, issue,
     version: 1,
     stage: Number(stage),
     title: badge.title,
-    recipient: { githubId: Number(githubId), githubLogin: login },
+    recipient: { githubId: Number(githubId), githubLogin: login, name: name || login },
     issuedAt,
     issuer: { name: issuerName, url: siteUrl },
     kid,

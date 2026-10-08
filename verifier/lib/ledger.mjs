@@ -2,7 +2,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 
 export function emptyLearner(githubId, login) {
-  return { githubId, login, stages: {}, attempts: {}, certificateId: null };
+  return { githubId, login, name: null, stages: {}, attempts: {}, certificateId: null };
 }
 
 export function learnerPath(dir, githubId) {
@@ -18,6 +18,7 @@ export function loadLearner(dir, githubId, login) {
   data.stages ??= {};
   data.attempts ??= {};
   if (!Object.hasOwn(data, 'certificateId')) data.certificateId = null;
+  if (!Object.hasOwn(data, 'name')) data.name = null;
   return data;
 }
 

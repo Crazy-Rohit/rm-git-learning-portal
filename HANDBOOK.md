@@ -41,7 +41,7 @@ These are the screens that most often look like errors. They are not. Match what
 
 ### The Stage box says None
 
-The Start form is a GitHub issue form. The **Stage** box often starts as **None**. Click it, choose **1** the first time, then **Create**. GitHub will not let you submit while it still says None.
+Type your **real name** on the Stage 1 page first. That name is printed on your badges in place of XYZ. The Start form is a GitHub issue form. Check **Your name**, then the **Stage** box. Stage often starts as **None**. Click it, choose **1** the first time, then **Create**. GitHub will not let you submit while Stage still says None.
 
 Do not pick 2 to 7 until the previous stage is passed. The list is there so later stages use the same form.
 
@@ -65,12 +65,14 @@ After you create `git-lab`, GitHub may show yellow bars for `greeting-a` and `gr
 
 ### Where to put my name and GitHub username
 
-In Codespaces, open `index.html` from the file list. Find the comment `Change the two lines below`.
+There are two different places. Do not mix them up.
 
-- `YOUR NAME` becomes your display name, for example `Rohit Manna`.
-- `YOUR-USERNAME` becomes your GitHub login, for example `crazy-rohit`. Leave out the `YOUR-` prefix. Do not type the words `YOUR-USERNAME`.
+1. **Badges.** On the Stage 1 page, type your real name, for example `Rohit Manna`. The badge preview shows that name. The Start form keeps the same **Your name** box. Do not type `xyz`.
+2. **Lab card (optional).** In Codespaces, open `index.html` from the file list. Find the comment `Change the two lines below`.
+   - `YOUR NAME` becomes your display name, for example `Rohit Manna`.
+   - `YOUR-USERNAME` becomes your GitHub login, for example `crazy-rohit`. Leave out the `YOUR-` prefix. Do not type the words `YOUR-USERNAME`.
 
-This card is optional. It does **not** replace the three required commits in the bot command block. If you only edit `index.html` and submit, the check fails.
+The lab card does **not** replace the three required commits in the bot command block, and it does not print the name on the signed badge. If you only edit `index.html` and submit, the check fails.
 
 [Stage 1 steps](#stage-1-first-repository) · [Only two commits](#only-two-commits)
 
@@ -122,7 +124,7 @@ The prompt tells you which window you have:
 Do not skip ahead, and do not create the lab with `git init`. A folder on your computer is not a GitHub repository.
 
 1. A GitHub account, in the browser. Skip this if you already have one.
-2. A Start issue for the stage. On the form, click **Stage**, choose the number, then **Create**. The reply contains your personal code. Copy it.
+2. A Start issue for the stage. Type your real name in **Your name**. On the form, click **Stage**, choose the number, then **Create**. The reply contains your personal code. Copy it.
 3. The `git-lab` repository, in the browser, from the template. Name it exactly `git-lab`, set it to Public, and tick **Include all branches**. This happens on github.com, not in the terminal. Ignore yellow **Compare & pull request** banners for `greeting-a` and `greeting-b`.
 4. A place to type commands: the **My git-lab in Codespaces** link in the Start reply. A local app is optional.
 5. Three required commits from the bot command block: the code file, a README line, and a `.gitignore` line. Optionally a fourth commit for your name in `index.html`. Paste the **whole** block. Editing the card first is not enough.
@@ -388,7 +390,7 @@ A pull request is not a Git command. You open it on GitHub from the branch you p
 Every stage follows the same five steps.
 
 1. **Read.** Each stage below lists the handbook chapters to read first. Those chapters teach the idea. This guide tells you what to type.
-2. **Start.** Open a [Start issue](https://github.com/Crazy-Rohit/rm-git-learning-portal/issues/new?template=start-stage.yml). If **Stage** says None, click it and choose the number. Then **Create**. Within a minute the portal replies with your **personal code** and closes the issue. Stay on that issue until the bot comment appears.
+2. **Start.** Open a [Start issue](https://github.com/Crazy-Rohit/rm-git-learning-portal/issues/new?template=start-stage.yml). Type your real name in **Your name** (this prints on your badges). If **Stage** says None, click it and choose the number. Then **Create**. Within a minute the portal replies with your **personal code** and closes the issue. Stay on that issue until the bot comment appears.
 3. **Save the code.** Commit the code as the only line of `.stage/stage-N.txt` on `main`, where `N` is the stage number. The Start reply already has this command filled in. Paste the whole block.
 4. **Do the work.** Only work done **after** the Start issue counts. The start time is saved once and does not change if you open another Start issue.
 5. **Submit.** Open a [Submit issue](https://github.com/Crazy-Rohit/rm-git-learning-portal/issues/new?template=submit-stage.yml). Choose the same stage and enter your repository as `your-username/git-lab`. The reply lists every check. If something fails, [fix it](#when-a-check-fails) and open a new Submit, not a new Start.
@@ -437,7 +439,7 @@ These chapters explain the ideas. You still create `git-lab` from the template, 
 
 ### Step by step
 
-1. Choose [Start stage 1](https://github.com/Crazy-Rohit/rm-git-learning-portal/issues/new?template=start-stage.yml&stage=1). If **Stage** still says None, choose **1**. Then **Create**. GitHub shows the issue page. That is expected. Do not open Git CMD. Do not create a folder.
+1. On the [Stage 1 page](https://crazy-rohit.github.io/rm-git-learning-portal/stage-1.html), type your real name, then **Start stage 1**. The GitHub form should already show that name. If **Stage** still says None, choose **1**. Then **Create**. GitHub shows the issue page. That is expected. Do not open Git CMD. Do not create a folder.
 2. Wait about a minute and refresh. The portal replies with your personal code and three steps. Follow them in order:
    - **Create my git-lab.** The link opens GitHub's new-repository page already filled in: from `rm-git-lab-template`, named `git-lab`, public. Tick **Include all branches** and choose **Create repository**. Yellow banners for `greeting-a` and `greeting-b` are normal. Ignore them.
    - **My git-lab in Codespaces.** Choose **Create codespace**. An editor opens with a terminal at the bottom. Copy **every** line of the command block, paste, and press Enter. If a box asks about several lines, choose **Paste**. Do not skip to `index.html` first.

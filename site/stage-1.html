@@ -33,10 +33,17 @@
         <p class="by">Stage 1</p>
         <h1>Your first repository.</h1>
         <p class="lede">A browser and a free GitHub account. Work in Codespaces. Nothing to install, and no folder on your computer.</p>
-        <div class="actions">
-          <a class="btn pri" href="https://github.com/Crazy-Rohit/rm-git-learning-portal/issues/new?template=start-stage.yml&amp;stage=1">Start stage 1</a>
-          <a class="btn" href="https://github.com/Crazy-Rohit/rm-git-learning-portal/blob/main/HANDBOOK.md#stage-1-first-repository">Stage guide</a>
-        </div>
+        <form id="start-stage" class="identity-form">
+          <label>Your name
+            <input id="learner-name" name="name" autocomplete="name" maxlength="80" placeholder="Rohit Manna" required spellcheck="false">
+          </label>
+          <p class="note" id="name-hint">This name is printed on your badges. Use your real name, not xyz.</p>
+          <div id="badge-preview" class="name-preview"></div>
+          <div class="actions">
+            <button class="btn pri" type="submit">Start stage 1</button>
+            <a class="btn" href="https://github.com/Crazy-Rohit/rm-git-learning-portal/blob/main/HANDBOOK.md#stage-1-first-repository">Stage guide</a>
+          </div>
+        </form>
       </div>
     </section>
     <section class="panel">
@@ -53,7 +60,7 @@
     <section class="panel">
       <h2>Do the work</h2>
       <ol class="steps">
-        <li>Choose <a href="https://github.com/Crazy-Rohit/rm-git-learning-portal/issues/new?template=start-stage.yml&amp;stage=1">Start stage 1</a>. If <strong>Stage</strong> says None, choose <strong>1</strong>. Then <strong>Create</strong>. GitHub shows the issue page. That is expected. Do not open Git CMD.</li>
+        <li>Type your real name above. The badge preview shows how it will print. Then <strong>Start stage 1</strong>. The GitHub form should already have that name. If <strong>Stage</strong> says None, choose <strong>1</strong>. Then <strong>Create</strong>. GitHub shows the issue page. That is expected. Do not open Git CMD.</li>
         <li>Wait about a minute and refresh. The bot comment has three steps: create <code>git-lab</code>, open it in Codespaces, and a command block. Paste <strong>every</strong> line of that block. Do not skip to <code>index.html</code>.</li>
         <li>Yellow bars for <code>greeting-a</code> and <code>greeting-b</code> are for stage 3. Ignore them.</li>
         <li>The last step is <strong>Submit stage 1</strong>. If a check is empty, fix it in the same codespace and submit again. Do not Start again.</li>
@@ -78,6 +85,7 @@
       <a href="https://github.com/Crazy-Rohit/rm-git-learning-portal">Source on GitHub</a>
     </div>
   </footer>
+  <script type="module" src="/src/stage1.ts"></script>
   <script type="module" src="/src/theme.ts"></script>
 </body>
 </html>
