@@ -22,7 +22,7 @@ function paintLines(label: HTMLElement, name: string) {
 }
 
 function lineOverflow(label: HTMLElement) {
-  return [...label.querySelectorAll<HTMLElement>('.badge-name-line')]
+  return Array.from(label.querySelectorAll<HTMLElement>('.badge-name-line'))
     .some((line) => line.scrollWidth > line.clientWidth + 1);
 }
 
