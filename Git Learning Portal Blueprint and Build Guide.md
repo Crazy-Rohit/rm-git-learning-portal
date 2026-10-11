@@ -742,7 +742,7 @@ openssl rand -hex 32 | gh secret set CHALLENGE_SECRET
 gh secret set SIGNING_KEY_PEM < private.pem
 ```
 
-**Step 4. Build the lab template repository.** Create `git-lab-template` with a `README.md`, a `.stage/` folder with a short note, and the pre-made conflicting branches for stage 3:
+**Step 4. Build the lab template repository.** Create `git-lab-template` with a `README.md`, a `.stage/` folder with a short note, and two extra branches so learners see yellow Compare & pull request banners:
 
 ```bash
 echo "Hello" > greeting.txt
@@ -757,7 +757,9 @@ git switch main
 git push -u origin --all
 ```
 
-In the repository's Settings, tick **Template repository**. Tell learners to choose **Include all branches** when they click **Use this template**, and to name their copy `git-lab`. The stage 3 instructions then say: merge `greeting-a` and `greeting-b` into `main`, resolve the conflict, and make `greeting.txt` contain both "welcome" and "good luck".
+In the repository's Settings, tick **Template repository**. Tell learners to choose **Include all branches** when they click **Use this template**, and to name their copy `git-lab`.
+
+Do not tell them to merge those template branches. **Use this template** with **Include all branches** gives `greeting-a` and `greeting-b` their own root commits, so `git merge origin/greeting-a` stops with `fatal: refusing to merge unrelated histories`. Stage 3 creates both branches from the learner's `main` inside Codespaces, merges those local branches, resolves the conflict, and makes `greeting.txt` contain both "welcome" and "good luck". The yellow banners stay in the template so learners practise ignoring them.
 
 **Step 5. Build `practice-repo`.** Add a `contributors/` folder and a `CONTRIBUTING.md` that explains the stage 5 task. Add one workflow that merges valid pull requests automatically, so you do not have to merge hundreds by hand. It must never check out the pull request's code. It only reads the list of changed files through the API:
 

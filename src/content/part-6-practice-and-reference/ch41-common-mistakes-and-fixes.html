@@ -40,7 +40,7 @@
         <tr><td><code>error: failed to push some refs</code></td><td>The remote has new work. Run <code>git pull</code>, then push</td></tr>
         <tr><td><code>Permission denied (publickey)</code></td><td>GitHub does not accept your SSH key. Check <code>ssh -T git@github.com</code> and <code>ssh-add -l</code></td></tr>
         <tr><td><code>Authentication failed</code></td><td>Use a personal access token or SSH; passwords are not accepted</td></tr>
-        <tr><td><code>refusing to merge unrelated histories</code></td><td>Two repositories started separately. Use <code>--allow-unrelated-histories</code> once, knowingly</td></tr>
+        <tr><td><code>refusing to merge unrelated histories</code></td><td>Two histories share no common commit. On stage 3, do not add <code>--allow-unrelated-histories</code> and do not merge <code>origin/greeting-a</code> or <code>origin/greeting-b</code>. Create both branches from <code>main</code>. Elsewhere, use the flag once, knowingly, only when you mean to join two separate repositories</td></tr>
         <tr><td><code>src refspec main does not match any</code></td><td>There is no commit yet, or your branch has another name. Commit, then <code>git branch -M main</code></td></tr>
         <tr><td><code>Your local changes would be overwritten</code></td><td>Commit or <code>git stash</code> before switching or pulling</td></tr>
         <tr><td><code>CONFLICT (content)</code></td><td>Fix the markers, <code>git add</code>, then commit or <code>--continue</code> (Chapter 16)</td></tr>

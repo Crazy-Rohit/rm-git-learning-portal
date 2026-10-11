@@ -15,7 +15,7 @@ export async function checkStage3({ gh, login, userId, startedAt, code, declared
   add(
     'greeting.txt keeps both messages',
     lower.includes('welcome') && lower.includes('good luck'),
-    'Merge greeting-a and greeting-b so greeting.txt contains both "welcome" and "good luck".',
+    'Create greeting-a and greeting-b from main, then merge both, so greeting.txt contains both "welcome" and "good luck". Do not merge origin/greeting-a.',
   );
   add(
     'Conflict markers are gone',
@@ -39,7 +39,7 @@ export async function checkStage3({ gh, login, userId, startedAt, code, declared
   add(
     'A merge commit is on main',
     !!merge,
-    'Merge greeting-b into main and finish the merge with a commit. That commit has two parents.',
+    'Merge the greeting-b branch you created from main, and finish the merge with a commit. That commit has two parents. Do not merge origin/greeting-b.',
   );
   evidence.commits = own.slice(0, 20).map((commit) => commit.sha);
   return { checks, evidence };

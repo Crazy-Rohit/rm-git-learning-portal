@@ -61,7 +61,7 @@ No. You already have an account, so skip signup. You still do **not** create a f
 
 ### Yellow Compare and pull request banners
 
-After you create `git-lab`, GitHub may show yellow bars for `greeting-a` and `greeting-b`. Those branches come with the template. They are for [stage 3](#stage-3-merge-conflicts). **Do not open those pull requests in stage 1 or 2.** Ignore the banners and open Codespaces.
+After you create `git-lab`, GitHub may show yellow bars for `greeting-a` and `greeting-b`. Those branches come with the template. **Do not open those pull requests, and do not merge those branches.** [Stage 3](#stage-3-merge-conflicts) makes its own greeting branches in Codespaces. Ignore the banners and open Codespaces.
 
 ### Where to put my name and GitHub username
 
@@ -125,7 +125,7 @@ Do not skip ahead, and do not create the lab with `git init`. A folder on your c
 
 1. A GitHub account, in the browser. Skip this if you already have one.
 2. A Start issue for the stage. Type your real name in **Your name**. On the form, click **Stage**, choose the number, then **Create**. The reply contains your personal code. Copy it.
-3. The `git-lab` repository, in the browser, from the template. Name it exactly `git-lab`, set it to Public, and tick **Include all branches**. This happens on github.com, not in the terminal. Ignore yellow **Compare & pull request** banners for `greeting-a` and `greeting-b`.
+3. The `git-lab` repository, in the browser, from the template. Name it exactly `git-lab`, set it to Public, and tick **Include all branches**. This happens on github.com, not in the terminal. Ignore yellow **Compare & pull request** banners for `greeting-a` and `greeting-b`. Do not merge those branches. Stage 3 makes its own.
 4. A place to type commands: the **My git-lab in Codespaces** link in the Start reply. A local app is optional.
 5. Three required commits from the bot command block: the code file, a README line, and a `.gitignore` line. Optionally a fourth commit for your name in `index.html`. Paste the **whole** block. Editing the card first is not enough.
 6. A push, so GitHub has the commits. The last line of the block does this.
@@ -357,8 +357,9 @@ These are the same on every platform. Angle brackets mean you substitute a real 
 | `git switch -c feature/about-page` | Creates `feature/about-page` and moves onto it. Stage 2 needs a name that starts with `feature/` |
 | `git push -u origin feature/about-page` | Sends that branch to GitHub and remembers the link, so later `git push` is enough |
 | `git pull` | Downloads new commits from GitHub and merges them into the branch you are on |
-| `git fetch origin` | Downloads commits and branches without merging them |
-| `git merge origin/greeting-a` | Merges that branch into the branch you are on. Stage 3 merges `greeting-a`, then `greeting-b` |
+| `git fetch origin` | Downloads commits and branches without merging them. Stage 3 does not merge `origin/greeting-a` or `origin/greeting-b` |
+| `git switch -C greeting-a` | Creates the branch `greeting-a` from where you are and switches to it. Stage 3 builds this from `main`, not from the template branch |
+| `git merge greeting-a` | Merges that local branch into the branch you are on. Stage 3 merges `greeting-a`, then `greeting-b` |
 | `git log --oneline --graph` | Draws the branch lines. A merge commit has two parents |
 | `git revert <sha>` | Adds a new commit that undoes the named commit. Safe after a push. Stage 4 |
 | `git reset` | Moves the branch pointer. Use it only on commits you have not pushed |
@@ -441,7 +442,7 @@ These chapters explain the ideas. You still create `git-lab` from the template, 
 
 1. On the [Stage 1 page](https://crazy-rohit.github.io/rm-git-learning-portal/stage-1.html), type your real name, then **Start stage 1**. The GitHub form should already show that name. If **Stage** still says None, choose **1**. Then **Create**. GitHub shows the issue page. That is expected. Do not open Git CMD. Do not create a folder.
 2. Wait about a minute and refresh. The portal replies with your personal code and three steps. Follow them in order:
-   - **Create my git-lab.** The link opens GitHub's new-repository page already filled in: from `rm-git-lab-template`, named `git-lab`, public. Tick **Include all branches** and choose **Create repository**. Yellow banners for `greeting-a` and `greeting-b` are normal. Ignore them.
+   - **Create my git-lab.** The link opens GitHub's new-repository page already filled in: from `rm-git-lab-template`, named `git-lab`, public. Tick **Include all branches** and choose **Create repository**. Yellow banners for `greeting-a` and `greeting-b` come with the template. Ignore them and do not merge those branches.
    - **My git-lab in Codespaces.** Choose **Create codespace**. An editor opens with a terminal at the bottom. Copy **every** line of the command block, paste, and press Enter. If a box asks about several lines, choose **Paste**. Do not skip to `index.html` first.
    - **Submit stage 1.** The link opens the Submit form already filled in. Choose **Create**.
 3. Wait a minute and refresh the Submit issue. The reply lists every check. If a box is empty, open [When a check fails](#when-a-check-fails) and fix that item. Then submit again.
@@ -520,7 +521,7 @@ git push
 
 ### Step by step
 
-1. Open a [Start issue for stage 2](https://github.com/Crazy-Rohit/rm-git-learning-portal/issues/new?template=start-stage.yml&stage=2). If **Stage** says None, choose **2**. Paste **every** line of the Start command block in the same Codespaces window you used for stage 1. That saves the code on `main`. Still ignore yellow banners for `greeting-a` and `greeting-b`. Your pull request is from `feature/about-page`.
+1. Open a [Start issue for stage 2](https://github.com/Crazy-Rohit/rm-git-learning-portal/issues/new?template=start-stage.yml&stage=2). If **Stage** says None, choose **2**. Paste **every** line of the Start command block in the same Codespaces window you used for stage 1. That saves the code on `main`. Still ignore yellow banners for `greeting-a` and `greeting-b`, and do not merge those branches. Your pull request is from `feature/about-page`.
 2. Create a feature branch. The name must start with `feature/`:
 
    ```bash
@@ -571,7 +572,7 @@ git push
 
 ### The setup
 
-Your `git-lab` template came with two branches that both change the same line of `greeting.txt`:
+You make two branches from `main`. Both change the same line of `greeting.txt`:
 
 | Branch | `greeting.txt` |
 | --- | --- |
@@ -579,52 +580,67 @@ Your `git-lab` template came with two branches that both change the same line of
 | `greeting-a` | `Hello, welcome to the team` |
 | `greeting-b` | `Hello and good luck` |
 
-If you did not tick **Include all branches**, create a new `git-lab` from the template, or make these two branches yourself. The yellow **Compare & pull request** banners you ignored in stage 1 are for this stage. You still merge from the terminal as below; you do not have to use those banners.
+Do not merge `origin/greeting-a` or `origin/greeting-b`, the branches that came with the template. GitHub copies each template branch with its own first commit, so they share no history with your `main`. Git stops with `fatal: refusing to merge unrelated histories`. Ignore those branches and their yellow banners.
 
 ### Step by step
 
 1. [Start stage 3](https://github.com/Crazy-Rohit/rm-git-learning-portal/issues/new?template=start-stage.yml&stage=3). Paste every line of the Start block in Codespaces so `.stage/stage-3.txt` is on `main`.
-2. Merge the first branch. This one merges cleanly:
+2. Make the two branches from `main`:
 
    ```bash
    git switch main
    git pull
-   git fetch origin
-   git merge origin/greeting-a
+   echo "Hello" > greeting.txt
+   git add greeting.txt
+   git commit --allow-empty -m "Set the starting greeting"
+   git switch -C greeting-a
+   echo "Hello, welcome to the team" > greeting.txt
+   git commit -am "Welcome the team"
+   git switch main
+   git switch -C greeting-b
+   echo "Hello and good luck" > greeting.txt
+   git commit -am "Wish good luck"
+   git switch main
    ```
 
-3. Merge the second branch. This one conflicts:
+3. Merge the first branch. This one merges cleanly:
 
    ```bash
-   git merge origin/greeting-b
+   git merge greeting-a
    ```
 
-4. Open `greeting.txt`. You see markers like these:
+4. Merge the second branch. This one conflicts. That is the exercise:
+
+   ```bash
+   git merge greeting-b
+   ```
+
+5. Open `greeting.txt`. You see markers like these:
 
    ```text
    <<<<<<< HEAD
    Hello, welcome to the team
    =======
    Hello and good luck
-   >>>>>>> origin/greeting-b
+   >>>>>>> greeting-b
    ```
 
-5. Replace the whole block with one line that keeps both ideas, and delete every marker line:
+6. Replace the whole block with one line that keeps both ideas, and delete every marker line:
 
    ```text
    Hello, welcome to the team and good luck
    ```
 
-6. Finish the merge:
+7. Finish the merge:
 
    ```bash
    git add greeting.txt
-   git commit
+   git commit --no-edit
    git push
    ```
 
-7. Run `git log --oneline --graph` and find the merge commit with two parents.
-8. Submit stage 3.
+8. Run `git log --oneline --graph` and find the merge commit with two parents.
+9. Submit stage 3.
 
 ### What the check looks for
 
@@ -912,6 +928,12 @@ Git used an email that is not verified on GitHub. In Codespaces this is already 
 ### Too many checks today
 
 You can submit five times in 24 hours. Try again tomorrow.
+
+### Refusing to merge unrelated histories
+
+This happens on stage 3 if you run `git merge origin/greeting-a` or `git merge origin/greeting-b`. Those branches came with the template. GitHub copied each one with its own first commit, so they share no history with your `main`.
+
+Do not add `--allow-unrelated-histories`. Stay on `main` and follow [Stage 3](#stage-3-merge-conflicts), which creates `greeting-a` and `greeting-b` from your own `main`.
 
 ### Pass the previous stage first
 
