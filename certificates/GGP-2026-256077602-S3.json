@@ -1,0 +1,23 @@
+{
+  "id": "GGP-2026-256077602-S3",
+  "type": "StageBadge",
+  "version": 1,
+  "stage": 3,
+  "title": "Merge Conflicts",
+  "recipient": {
+    "githubId": 256077602,
+    "githubLogin": "rohit-manna-healthplans-ai",
+    "name": "Rohit Manna"
+  },
+  "issuedAt": "2026-10-13T10:31:46.838Z",
+  "issuer": {
+    "name": "Rohit Manna",
+    "url": "https://crazy-rohit.github.io/rm-git-learning-portal/"
+  },
+  "kid": "2026-1",
+  "evidence": {
+    "repo": "rohit-manna-healthplans-ai/git-lab",
+    "issue": 11
+  },
+  "signature": "ZF405BU3U7fa5NHA1-lzg8vfr7MiY7jnllte0XCUQseEGW6jzmY_9Ox1vnUHp7-RWtMFVYADPCwvYwv8emeiDw"
+}
