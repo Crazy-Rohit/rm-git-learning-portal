@@ -68,11 +68,12 @@ After you create `git-lab`, GitHub may show yellow bars for `greeting-a` and `gr
 There are two different places. Do not mix them up.
 
 1. **Badges.** On the Stage 1 page, type your real name, for example `Rohit Manna`. The badge preview shows that name. The Start form keeps the same **Your name** box. Do not type `xyz`.
-2. **Lab card (optional).** In Codespaces, open `index.html` from the file list. Find the comment `Change the two lines below`.
-   - `YOUR NAME` becomes your display name, for example `Rohit Manna`.
-   - `YOUR-USERNAME` becomes your GitHub login, for example `crazy-rohit`. Leave out the `YOUR-` prefix. Do not type the words `YOUR-USERNAME`.
+2. **Portfolio.** In Codespaces, open `data/profile.json`.
+   - `name` becomes your real name, for example `Rohit Manna`.
+   - `headline` becomes what you are, for example `Student` or `Working professional`.
+   - `githubUsername` becomes your GitHub login, for example `crazy-rohit`.
 
-The lab card does **not** replace the three required commits in the bot command block, and it does not print the name on the signed badge. If you only edit `index.html` and submit, the check fails.
+The portfolio does **not** replace the required commits in the bot command block, and it does not print the name on the signed badge. The badge uses the name from the Stage 1 page. If `data/profile.json` still says `YOUR NAME` when you submit, the identity check fails.
 
 [Stage 1 steps](#stage-1-first-repository) · [Only two commits](#only-two-commits)
 
@@ -127,7 +128,7 @@ Do not skip ahead, and do not create the lab with `git init`. A folder on your c
 2. A Start issue for the stage. Type your real name in **Your name**. On the form, click **Stage**, choose the number, then **Create**. The reply contains your personal code. Copy it.
 3. The `git-lab` repository, in the browser, from the template. Name it exactly `git-lab`, set it to Public, and tick **Include all branches**. This happens on github.com, not in the terminal. Ignore yellow **Compare & pull request** banners for `greeting-a` and `greeting-b`. Do not merge those branches. Stage 3 makes its own.
 4. A place to type commands: the **My git-lab in Codespaces** link in the Start reply. A local app is optional.
-5. Three required commits from the bot command block: the code file, a README line, and a `.gitignore` line. Optionally a fourth commit for your name in `index.html`. Paste the **whole** block. Editing the card first is not enough.
+5. Three required commits from the bot command block: the code file, a README line together with `data/profile.json`, and a `.gitignore` line. Paste the **whole** block. Editing the portfolio first is not enough until those commits exist.
 6. A push, so GitHub has the commits. The last line of the block does this.
 7. A Submit issue. If it fails, fix and submit again. Do not Start again.
 
@@ -144,7 +145,7 @@ This is the path the Start reply uses. Nothing is installed.
 5. `git push` does not ask you to sign in. The codespace is already your GitHub account.
 6. `git log --oneline` lists the commits. Your GitHub username should be the author.
 
-To edit `index.html`, click it in the file list, change the two lines, press Ctrl+S (Command+S on a Mac), then run `git commit -am "Put my name on the card"` and `git push`.
+To edit `data/profile.json`, click it in the file list, replace `YOUR NAME`, `YOUR HEADLINE`, and `YOUR-USERNAME`, press Ctrl+S (Command+S on a Mac), then run `git add data/profile.json`, `git commit -m "Add my name to the portfolio"`, and `git push`.
 
 ### Windows
 
@@ -258,7 +259,7 @@ echo YOUR-CODE> .stage\stage-1.txt
 git add .stage\stage-1.txt
 git commit -m "Add stage 1 code"
 echo I am learning Git with Rohit Manna.>> README.md
-git add README.md
+git add README.md data\profile.json
 git commit -m "Introduce myself in the README"
 echo *.log> .gitignore
 git add .gitignore
@@ -269,11 +270,11 @@ git log --oneline
 
 `echo *.log> .gitignore` writes the exact line `*.log`. In Git CMD, `echo *.log >> .gitignore` can also work, but a brand-new file should use one `>`.
 
-Open `index.html` with `notepad index.html`, change `YOUR NAME` and `YOUR-USERNAME`, save, then:
+Open `data\profile.json` with `notepad data\profile.json`, replace `YOUR NAME`, `YOUR HEADLINE`, and `YOUR-USERNAME`, save, then:
 
 ```bat
-git add index.html
-git commit -m "Put my name on the card"
+git add data\profile.json
+git commit -m "Add my name to the portfolio"
 git push
 ```
 
@@ -339,7 +340,7 @@ Run them from inside `git-lab`. Replace `YOUR-CODE` with the code from your Star
 | `git commit -m "Ignore log files"` | Third commit | `1 file changed` |
 | `git push` | Sends the commits on this branch to GitHub | `main -> main`. The first time, a browser may ask you to sign in |
 | `git log --oneline` | Lists commits, newest first, one line each | At least three commits with your messages |
-| `git commit -am "Put my name on the card"` | Stages tracked files and commits in one step. It does not add brand-new files | `1 file changed`, after you saved `index.html` |
+| `git commit -am "Add my name to the portfolio"` | Stages tracked files and commits in one step. It does not add brand-new files | `1 file changed`, after you saved `data/profile.json` |
 | `git diff` | Shows edits that are not staged yet | The changed lines, in the terminal |
 | `git diff --staged` | Shows what the next commit will contain | The staged lines |
 | `git restore --staged <file>` | Takes a file back out of the staging area. The edit stays in the file | No output |
@@ -354,8 +355,8 @@ These are the same on every platform. Angle brackets mean you substitute a real 
 | Command | What it does |
 | --- | --- |
 | `git switch main` | Moves you onto the `main` branch |
-| `git switch -c feature/about-page` | Creates `feature/about-page` and moves onto it. Stage 2 needs a name that starts with `feature/` |
-| `git push -u origin feature/about-page` | Sends that branch to GitHub and remembers the link, so later `git push` is enough |
+| `git switch -c feature/about-me` | Creates `feature/about-me` and moves onto it. Stage 2 needs a name that starts with `feature/` |
+| `git push -u origin feature/about-me` | Sends that branch to GitHub and remembers the link, so later `git push` is enough |
 | `git pull` | Downloads new commits from GitHub and merges them into the branch you are on |
 | `git fetch origin` | Downloads commits and branches without merging them. Stage 3 does not merge `origin/greeting-a` or `origin/greeting-b` |
 | `git switch -C greeting-a` | Creates the branch `greeting-a` from where you are and switches to it. Stage 3 builds this from `main`, not from the template branch |
@@ -443,45 +444,47 @@ These chapters explain the ideas. You still create `git-lab` from the template, 
 1. On the [Stage 1 page](https://crazy-rohit.github.io/rm-git-learning-portal/stage-1.html), type your real name, then **Start stage 1**. The GitHub form should already show that name. If **Stage** still says None, choose **1**. Then **Create**. GitHub shows the issue page. That is expected. Do not open Git CMD. Do not create a folder.
 2. Wait about a minute and refresh. The portal replies with your personal code and three steps. Follow them in order:
    - **Create my git-lab.** The link opens GitHub's new-repository page already filled in: from `rm-git-lab-template`, named `git-lab`, public. Tick **Include all branches** and choose **Create repository**. Yellow banners for `greeting-a` and `greeting-b` come with the template. Ignore them and do not merge those branches.
-   - **My git-lab in Codespaces.** Choose **Create codespace**. An editor opens with a terminal at the bottom. Copy **every** line of the command block, paste, and press Enter. If a box asks about several lines, choose **Paste**. Do not skip to `index.html` first.
+   - **My git-lab in Codespaces.** Choose **Create codespace**. An editor opens with a terminal at the bottom. Open `data/profile.json` first. Replace `YOUR NAME`, `YOUR HEADLINE`, and `YOUR-USERNAME`. Then copy **every** line of the command block, paste, and press Enter. If a box asks about several lines, choose **Paste**.
    - **Submit stage 1.** The link opens the Submit form already filled in. Choose **Create**.
 3. Wait a minute and refresh the Submit issue. The reply lists every check. If a box is empty, open [When a check fails](#when-a-check-fails) and fix that item. Then submit again.
 
 The commands in the reply, with your code in place of `YOUR-CODE`. Each `git commit` is one of the three required commits:
 
 ```bash
-echo "YOUR-CODE" > .stage/stage-1.txt   # save your personal code
-git add .stage/stage-1.txt               # stage it
-git commit -m "Add stage 1 code"         # commit 1
+echo "YOUR-CODE" > .stage/stage-1.txt
+git add .stage/stage-1.txt
+git commit -m "Add stage 1 code"
 echo "I am learning Git with Rohit Manna." >> README.md
-git add README.md
-git commit -m "Introduce myself in the README"   # commit 2
-echo "*.log" >> .gitignore               # ignore log files
+git add README.md data/profile.json
+git commit -m "Introduce myself in the README"
+echo "*.log" >> .gitignore
 git add .gitignore
-git commit -m "Ignore log files"         # commit 3
-git push                                 # send the commits to GitHub
-git log --oneline                        # list your commits
+git commit -m "Ignore log files"
+git push
+git log --oneline
 ```
+
+`data/profile.json` is your portfolio identity. Set `name` to your real name, `headline` to Student, Developer, or Working professional, and `githubUsername` to your GitHub login. Do not leave `YOUR NAME` in the file. The page reads this file. Do not type the name into `index.html`.
+
+If `data/profile.json` is missing, the first lines of the Start block download the portfolio into an older lab. Paste those lines too.
 
 To see the ignore rule work, run `echo test > debug.log` and then `git status`. `debug.log` is not listed.
 
 If you paste only some of these lines, Submit fails with a missing code file, a missing `*.log` line, or only two commits. Paste the rest in the same codespace, then submit again. Do not open a new Start.
 
-**Put your name on your card (optional).** Do this **after** the block above has run. In the codespace, open `index.html` from the file list on the left. Under the comment `Change the two lines below`:
+**Put your name on the portfolio.** This is part of the second commit, not an extra optional step. In Codespaces, open `data/profile.json` from the file list.
 
-- Replace `YOUR NAME` with your real name.
-- Replace `YOUR-USERNAME` with your GitHub login only, for example `crazy-rohit`.
+- `YOUR NAME` becomes your real name, for example `Rohit Manna`.
+- `YOUR HEADLINE` becomes what you are, for example `Student` or `Working professional`.
+- `YOUR-USERNAME` becomes your GitHub login, for example `crazy-rohit`.
 
-Then run:
+Save the file before you paste the command block. If you already pasted it, run `git add data/profile.json`, `git commit -m "Add my name to the portfolio"`, and `git push`.
 
-```bash
-git commit -am "Put my name on the card"
-git push
-```
+### Your portfolio on the web
 
-### Your card on the web
+`index.html` reads the files in `data/`. Stage 1 fills your name. Later stages fill About, Education, Skills, Experience, Projects, and Contact. Empty sections stay hidden.
 
-`index.html` in `git-lab` is a small portfolio card. To put it online, open your repository's **Settings → Pages**, choose **Deploy from a branch**, pick `main` and `/ (root)`, and save. After a minute the card is live at `https://your-username.github.io/git-lab/`. Every time you change the file and push, the page updates.
+To put the page online, open the repository's **Settings → Pages**, choose **Deploy from a branch**, pick `main` and `/ (root)`, and save. After a minute the portfolio is live at `https://your-username.github.io/git-lab/`. Opening `index.html` as a file on your computer does not load the JSON. Use Pages or the Codespaces preview.
 
 ### What the check looks for
 
@@ -495,6 +498,7 @@ git push
 | `.gitignore` contains `*.log` | One line is exactly `*.log` |
 | At least three commits by you after the start time | Three or more commits after your Start issue, linked to your GitHub account |
 | `README.md` was changed after the start time | One of those commits edits `README.md` |
+| Portfolio identity is filled | `data/profile.json` has your real name, a headline, and your GitHub username |
 
 ### Practise more
 
@@ -521,24 +525,20 @@ git push
 
 ### Step by step
 
-1. Open a [Start issue for stage 2](https://github.com/Crazy-Rohit/rm-git-learning-portal/issues/new?template=start-stage.yml&stage=2). If **Stage** says None, choose **2**. Paste **every** line of the Start command block in the same Codespaces window you used for stage 1. That saves the code on `main`. Still ignore yellow banners for `greeting-a` and `greeting-b`, and do not merge those branches. Your pull request is from `feature/about-page`.
-2. Create a feature branch. The name must start with `feature/`:
+1. Open a [Start issue for stage 2](https://github.com/Crazy-Rohit/rm-git-learning-portal/issues/new?template=start-stage.yml&stage=2). If **Stage** says None, choose **2**. Paste **every** line of the Start command block in the same Codespaces window you used for stage 1. That saves the code on `main`. Still ignore yellow banners for `greeting-a` and `greeting-b`, and do not merge those branches. Your pull request is from `feature/about-me`.
+2. Open `data/about.json`. Replace `YOUR SUMMARY` with a few sentences about you. Set `careerGoal`, or add one interest. A student, a developer, and a working professional can each write what is true for them. Leave a field empty when it does not apply.
+3. Create the feature branch and commit that file. The branch name must start with `feature/`:
 
    ```bash
    git switch main
    git pull
-   git switch -c feature/about-page
+   git switch -c feature/about-me
+   git add data/about.json
+   git commit -m "Add my about section"
+   git push -u origin feature/about-me
    ```
 
-3. Make a change, for example a new file `about.md`, and commit it with a message that says what changed:
-
-   ```bash
-   git add about.md
-   git commit -m "Add an about page with my learning goals"
-   git push -u origin feature/about-page
-   ```
-
-4. On GitHub, open a pull request from `feature/about-page` into `main`.
+4. On GitHub, open a pull request from `feature/about-me` into `main`.
 5. Write a description of at least a couple of sentences: what changed and why.
 6. Merge the pull request on GitHub.
 7. Update your local copy:
@@ -556,6 +556,7 @@ git push
 - A written description on that pull request.
 - No commit messages that are only `update` or `fix`.
 - The stage 2 code in `.stage/stage-2.txt`.
+- `data/about.json` has your own summary, plus a goal or an interest. `YOUR SUMMARY` does not pass.
 
 ---
 
@@ -890,7 +891,7 @@ git push
 
 ### Only two commits
 
-The check needs **three** commits by you after the Start issue: code file, README, and `.gitignore`. Editing `index.html` is a fourth, optional commit. If you only changed the card, or only the README, paste the missing lines from the Start block.
+The check needs **three** commits by you after the Start issue: code file, README, and `.gitignore`. Filling `data/profile.json` belongs with the README commit. If you only changed the portfolio, or only the README, paste the missing lines from the Start block.
 
 Commits made before the Start issue do not count. Make new ones.
 

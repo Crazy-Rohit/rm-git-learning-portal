@@ -1,5 +1,6 @@
 import { PORTAL } from '../lib/portal.mjs';
 import { normaliseRepo } from '../lib/form.mjs';
+import { parseData, profileProblem } from '../lib/portfolio.mjs';
 
 async function readText(gh, repo, filePath) {
   try {
@@ -108,6 +109,9 @@ export async function checkStage1({ gh, login, userId, startedAt, code, declared
     readmeChanged,
     'Edit README.md and commit that change after you start the stage.',
   );
+
+  const profileDetail = profileProblem(parseData(await readText(gh, repo, 'data/profile.json')), login);
+  add('Portfolio identity is filled', !profileDetail, profileDetail);
 
   return { checks, evidence };
 }

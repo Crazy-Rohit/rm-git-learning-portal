@@ -1,4 +1,5 @@
-import { beginLab, codeFileCheck, isVagueMessage, labOf, publicRepo } from '../lib/github.mjs';
+import { beginLab, codeFileCheck, isVagueMessage, labOf, publicRepo, readText } from '../lib/github.mjs';
+import { aboutProblem, parseData } from '../lib/portfolio.mjs';
 
 async function listPulls(gh, repo) {
   try {
@@ -58,5 +59,8 @@ export async function checkStage2({ gh, login, userId, startedAt, code, declared
       : 'Each commit on the pull request needs a message that says what changed.',
   );
   if (pull) evidence.pull = pull.number;
+
+  const aboutDetail = aboutProblem(parseData(await readText(gh, repo, 'data/about.json')));
+  add('About section is filled', !aboutDetail, aboutDetail);
   return { checks, evidence };
 }

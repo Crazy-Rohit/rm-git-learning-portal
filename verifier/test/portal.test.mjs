@@ -79,8 +79,15 @@ function passingRepos(code) {
       },
     }),
     getContent: async ({ path: filePath }) => {
-      const text = filePath.endsWith('stage-1.txt') ? code : '*.log\n';
-      return { data: { type: 'file', content: Buffer.from(text).toString('base64') } };
+      if (filePath.endsWith('stage-1.txt')) return textFile(code);
+      if (filePath === 'data/profile.json') {
+        return textFile(JSON.stringify({
+          name: NAME,
+          headline: 'Student learning Git',
+          githubUsername: LOGIN,
+        }));
+      }
+      return textFile('*.log\n');
     },
     listCommits: async () => ({ data: commits }),
     getCommit: async () => ({ data: { files: [{ filename: 'README.md' }] } }),
@@ -108,7 +115,7 @@ test('a Start issue records the time and returns a code', async () => {
   assert.match(gh.comments[0], /https:\/\/codespaces\.new\/learner\/git-lab/);
   assert.match(gh.comments[0], /template_name=rm-git-lab-template/);
   assert.match(gh.comments[0], /repo=learner%2Fgit-lab/);
-  assert.match(gh.comments[0], /greeting-a/);
+  assert.match(gh.comments[0], /data\/profile\.json/);
   assert.match(gh.comments[0], /screens-you-will-see/);
   assert.match(gh.comments[0], /when-a-check-fails/);
   assert.match(gh.comments[0], /Rohit Learner/);
@@ -379,7 +386,7 @@ test('stages 2 to 7 pass when the public evidence is present', async () => {
   const dir = mkdtempSync(path.join(tmpdir(), 'ledger-'));
   await passStage1(dir);
   const stage2 = await openStage(dir, 2);
-  assert.match(stage2.comments[0], /feature\/about-page/);
+  assert.match(stage2.comments[0], /feature\/about-me/);
   const code2 = challengeCode(USER_ID, '2', SECRET);
   const gh2 = issueGh({
     title: '[Submit] ',
@@ -388,7 +395,13 @@ test('stages 2 to 7 pass when the public evidence is present', async () => {
     created_at: '2026-10-06T12:00:00Z',
   }, {
     get: async () => ({ data: { private: false, owner: { id: USER_ID } } }),
-    getContent: async ({ path: filePath }) => textFile(filePath.endsWith('stage-2.txt') ? code2 : ''),
+    getContent: async ({ path: filePath }) => textFile(filePath.endsWith('stage-2.txt') ? code2 : filePath === 'data/about.json'
+      ? JSON.stringify({
+        summary: 'I am learning Git so I can publish my work and collaborate with other people.',
+        careerGoal: 'Work on real projects with a team.',
+        interests: ['Open source'],
+      })
+      : ''),
   });
   gh2.pulls = {
     list: async () => ({ data: [{
