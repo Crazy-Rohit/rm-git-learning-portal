@@ -61,7 +61,7 @@ No. You already have an account, so skip signup. You still do **not** create a f
 
 ### Yellow Compare and pull request banners
 
-After you create `git-lab`, GitHub may show yellow bars for `greeting-a` and `greeting-b`. Those branches come with the template. **Do not open those pull requests, and do not merge those branches.** [Stage 3](#stage-3-merge-conflicts) makes its own greeting branches in Codespaces. Ignore the banners and open Codespaces.
+After you create `git-lab`, GitHub may show yellow bars for `greeting-a` and `greeting-b`. Those branches come with the template. **Do not open those pull requests, and do not merge those branches.** [Stage 3](#stage-3-merge-conflicts) edits `data/education.json` instead. Ignore the banners and open Codespaces.
 
 ### Where to put my name and GitHub username
 
@@ -132,7 +132,7 @@ Do not skip ahead, and do not create the lab with `git init`. A folder on your c
 6. A push, so GitHub has the commits. The last line of the block does this.
 7. A Submit issue. If it fails, fix and submit again. Do not Start again.
 
-Stages 1 to 4 and stage 6 all use this same `git-lab`. Stage 5 also uses a fork of `rm-practice-repo`. Stage 7 uses a new repository that you choose.
+Stages 1 to 7 all use this same `git-lab`. Stage 5 also uses a fork of `rm-practice-repo`. Stage 7 publishes `git-lab`. It does not use a second repository.
 
 ### Codespaces, in the browser
 
@@ -358,14 +358,14 @@ These are the same on every platform. Angle brackets mean you substitute a real 
 | `git switch -c feature/about-me` | Creates `feature/about-me` and moves onto it. Stage 2 needs a name that starts with `feature/` |
 | `git push -u origin feature/about-me` | Sends that branch to GitHub and remembers the link, so later `git push` is enough |
 | `git pull` | Downloads new commits from GitHub and merges them into the branch you are on |
-| `git fetch origin` | Downloads commits and branches without merging them. Stage 3 does not merge `origin/greeting-a` or `origin/greeting-b` |
-| `git switch -C greeting-a` | Creates the branch `greeting-a` from where you are and switches to it. Stage 3 builds this from `main`, not from the template branch |
-| `git merge greeting-a` | Merges that local branch into the branch you are on. Stage 3 merges `greeting-a`, then `greeting-b` |
+| `git fetch origin` | Downloads commits and branches without merging them. Do not merge `origin/greeting-a` or `origin/greeting-b` |
+| `git switch -C education-details` | Creates `education-details` from where you are and switches to it. Stage 3 builds this from `main` |
+| `git merge education-details` | Merges that local branch into the branch you are on. Stage 3 then merges `education-study` |
 | `git log --oneline --graph` | Draws the branch lines. A merge commit has two parents |
 | `git revert <sha>` | Adds a new commit that undoes the named commit. Safe after a push. Stage 4 |
 | `git reset` | Moves the branch pointer. Use it only on commits you have not pushed |
 | `git reflog` | Lists where your branch has been, including commits you reset away |
-| `git tag -a v1.0.0 -m "First stable version of my lab"` | Creates an annotated tag. A message, author, and date are stored |
+| `git tag -a v1.0.0 -m "First stable version of my portfolio"` | Creates an annotated tag. A message, author, and date are stored. Stage 4 uses `v1.0.0`. Stage 7 uses `v2.0.0` |
 | `git push origin v1.0.0` | Sends that tag to GitHub. `git push` alone does not send tags |
 | `git clone <url>` | Copies a GitHub repository onto your computer, including its history |
 | `git remote add upstream <url>` | Remembers a second remote. Stage 5 uses `upstream` for the original project and `origin` for your fork |
@@ -573,80 +573,30 @@ To put the page online, open the repository's **Settings → Pages**, choose **D
 
 ### The setup
 
-You make two branches from `main`. Both change the same line of `greeting.txt`:
+You make two branches from `main`. Both change `data/education.json`. The second merge conflicts. That file is the Education section of your portfolio.
 
-| Branch | `greeting.txt` |
-| --- | --- |
-| `main` | `Hello` |
-| `greeting-a` | `Hello, welcome to the team` |
-| `greeting-b` | `Hello and good luck` |
-
-Do not merge `origin/greeting-a` or `origin/greeting-b`, the branches that came with the template. GitHub copies each template branch with its own first commit, so they share no history with your `main`. Git stops with `fatal: refusing to merge unrelated histories`. Ignore those branches and their yellow banners.
+Do not merge `origin/greeting-a` or `origin/greeting-b`. Those branches came with the template and do not share history with your `main`.
 
 ### Step by step
 
-1. [Start stage 3](https://github.com/Crazy-Rohit/rm-git-learning-portal/issues/new?template=start-stage.yml&stage=3). Paste every line of the Start block in Codespaces so `.stage/stage-3.txt` is on `main`.
-2. Make the two branches from `main`:
+1. [Start stage 3](https://github.com/Crazy-Rohit/rm-git-learning-portal/issues/new?template=start-stage.yml&stage=3). Paste every line of the Start block. It creates `education-details` and `education-study` from your `main`, then merges both.
+2. The last command conflicts. Open `data/education.json` and delete every `<<<<<<<`, `=======`, and `>>>>>>>` line. Keep one JSON list.
+3. Replace `YOUR INSTITUTION` and `YOUR QUALIFICATION` with a school, college, or course. Write a real description. A student, a developer, and a working professional can each use what is true for them.
+4. Finish the merge:
 
    ```bash
-   git switch main
-   git pull
-   echo "Hello" > greeting.txt
-   git add greeting.txt
-   git commit --allow-empty -m "Set the starting greeting"
-   git switch -C greeting-a
-   echo "Hello, welcome to the team" > greeting.txt
-   git commit -am "Welcome the team"
-   git switch main
-   git switch -C greeting-b
-   echo "Hello and good luck" > greeting.txt
-   git commit -am "Wish good luck"
-   git switch main
-   ```
-
-3. Merge the first branch. This one merges cleanly:
-
-   ```bash
-   git merge greeting-a
-   ```
-
-4. Merge the second branch. This one conflicts. That is the exercise:
-
-   ```bash
-   git merge greeting-b
-   ```
-
-5. Open `greeting.txt`. You see markers like these:
-
-   ```text
-   <<<<<<< HEAD
-   Hello, welcome to the team
-   =======
-   Hello and good luck
-   >>>>>>> greeting-b
-   ```
-
-6. Replace the whole block with one line that keeps both ideas, and delete every marker line:
-
-   ```text
-   Hello, welcome to the team and good luck
-   ```
-
-7. Finish the merge:
-
-   ```bash
-   git add greeting.txt
+   git add data/education.json
    git commit --no-edit
    git push
    ```
 
-8. Run `git log --oneline --graph` and find the merge commit with two parents.
-9. Submit stage 3.
+5. Run `git log --oneline --graph` and find the merge commit with two parents.
+6. Submit stage 3.
 
 ### What the check looks for
 
 - A merge commit with two parents on `main` after your start time.
-- `greeting.txt` contains both `welcome` and `good luck`.
+- `data/education.json` is valid JSON with an institution, a qualification, and a description.
 - No `<<<<<<<`, `=======` or `>>>>>>>` lines left in the file.
 - The stage 3 code in `.stage/stage-3.txt`.
 
@@ -672,40 +622,17 @@ Do not merge `origin/greeting-a` or `origin/greeting-b`, the branches that came 
 
 ### Step by step
 
-1. [Start stage 4](https://github.com/Crazy-Rohit/rm-git-learning-portal/issues/new?template=start-stage.yml&stage=4). Paste every line of the Start block in Codespaces so `.stage/stage-4.txt` is on `main`.
-2. Make a commit you will undo:
-
-   ```bash
-   echo "This line is a mistake" >> notes.txt
-   git add notes.txt
-   git commit -m "Add a note that should not be here"
-   git push
-   ```
-
-3. Revert it, and keep the message Git writes:
-
-   ```bash
-   git log --oneline
-   git revert <sha-of-that-commit>
-   git push
-   ```
-
-   The message starts with `Revert "..."` and contains `This reverts commit <sha>`.
-
-4. Try `git reset` locally on a throwaway commit you do **not** push, then use `git reflog` to find it again.
-5. Create an annotated tag and push it:
-
-   ```bash
-   git tag -a v1.0.0 -m "First stable version of my lab"
-   git push origin v1.0.0
-   ```
-
-6. Submit stage 4.
+1. [Start stage 4](https://github.com/Crazy-Rohit/rm-git-learning-portal/issues/new?template=start-stage.yml&stage=4). Before you paste, open `data/skills.json` and replace `YOUR SKILL` with at least one real skill.
+2. Paste the Start block. It commits your skills, adds the fake skill `Gittt`, pushes, reverts that commit, and tags `v1.0.0`.
+3. If `git revert` opens an editor, save and close it. Keep the message Git writes. It starts with `Revert "` and contains `This reverts commit`.
+4. After the revert, `data/skills.json` must not contain `Gittt`.
+5. Submit stage 4.
 
 ### What the check looks for
 
 - A commit made by `git revert` that reverts one of your own commits.
 - An annotated tag named `v1.0.0` on GitHub.
+- `data/skills.json` has a real technical skill and does not contain `Gittt`.
 - The stage 4 code in `.stage/stage-4.txt`.
 
 ---
@@ -725,8 +652,8 @@ Do not merge `origin/greeting-a` or `origin/greeting-b`, the branches that came 
 
 ### Step by step
 
-1. [Start stage 5](https://github.com/Crazy-Rohit/rm-git-learning-portal/issues/new?template=start-stage.yml&stage=5). Paste every line of the Start block in Codespaces so `.stage/stage-5.txt` is on `main` in `git-lab`.
-2. Fork [rm-practice-repo](https://github.com/Crazy-Rohit/rm-practice-repo) to your account.
+1. [Start stage 5](https://github.com/Crazy-Rohit/rm-git-learning-portal/issues/new?template=start-stage.yml&stage=5). Open `data/experience.json` first. Replace `YOUR ROLE` with a job, internship, college activity, or a fresher profile, and write what you did. Then paste the Start block so `.stage/stage-5.txt` and that file are on `main` in `git-lab`.
+2. Fork [rm-practice-repo](https://github.com/Crazy-Rohit/rm-practice-repo) to your account. If you are signed in as the owner of that repository, use the learner account instead. GitHub will not let you fork your own repository.
 3. Clone your fork and connect the original as `upstream`:
 
    ```bash
@@ -747,8 +674,8 @@ Do not merge `origin/greeting-a` or `origin/greeting-b`, the branches that came 
    git push -u origin add-your-username
    ```
 
-5. Open a pull request from your fork into `Crazy-Rohit/rm-practice-repo`.
-6. Wait until it is merged, then submit stage 5.
+5. Open the pull request into `Crazy-Rohit/rm-practice-repo`, not into your own fork. The base is that repository and `main`. The compare side is your fork and your branch. The yellow bar on your fork opens the wrong pull request.
+6. Wait until it says **Merged**, then submit stage 5. The form repository is still `your-username/git-lab`.
 7. Keep your fork up to date:
 
    ```bash
@@ -762,6 +689,7 @@ Do not merge `origin/greeting-a` or `origin/greeting-b`, the branches that came 
 
 - A fork of `rm-practice-repo` on your account.
 - A merged pull request from that fork that adds only `contributors/<your-username>.md`.
+- `data/experience.json` has a real role and a description. `YOUR ROLE` does not pass.
 - The stage 5 code in `.stage/stage-5.txt` in your `git-lab`.
 
 ---
@@ -779,8 +707,8 @@ Do not merge `origin/greeting-a` or `origin/greeting-b`, the branches that came 
 
 ### Step by step
 
-1. [Start stage 6](https://github.com/Crazy-Rohit/rm-git-learning-portal/issues/new?template=start-stage.yml&stage=6). Paste every line of the Start block in Codespaces so `.stage/stage-6.txt` is on `main`.
-2. Create `.github/workflows/check.yml` in `git-lab`. This version fails on purpose:
+1. [Start stage 6](https://github.com/Crazy-Rohit/rm-git-learning-portal/issues/new?template=start-stage.yml&stage=6). Open `data/projects.json` and `data/contact.json` first. Add one project, and one email or link. Then paste the Start block.
+2. The block creates `.github/workflows/check.yml` in `git-lab`. This version fails on purpose:
 
    ```yaml
    name: Check
@@ -803,6 +731,7 @@ Do not merge `origin/greeting-a` or `origin/greeting-b`, the branches that came 
 
 - A workflow file in `.github/workflows/` in `git-lab`.
 - A failed run followed by a successful run on the same branch, both after your start time.
+- `data/projects.json` has a real project. `data/contact.json` has one way to reach you.
 - The stage 6 code in `.stage/stage-6.txt`.
 
 ---
@@ -824,18 +753,16 @@ Do not merge `origin/greeting-a` or `origin/greeting-b`, the branches that came 
 
 ### What to build
 
-Pick something small you care about: a personal page, notes for a subject, or a tiny tool. [Start stage 7](https://github.com/Crazy-Rohit/rm-git-learning-portal/issues/new?template=start-stage.yml&stage=7), then create a **new public repository** for it, separate from `git-lab`. Save the stage 7 code as the only line of `.stage/stage-7.txt` in that new repository. On the Submit form, enter `your-username/your-project-name`, not `git-lab`.
+The project is the portfolio in `git-lab`. [Start stage 7](https://github.com/Crazy-Rohit/rm-git-learning-portal/issues/new?template=start-stage.yml&stage=7) and keep working in that same repository. On the Submit form, enter `your-username/git-lab`.
 
 ### Checklist
 
-- [ ] `README.md` that says what the project is and how to use it
-- [ ] A licence file, for example MIT
-- [ ] A `.gitignore` that suits the project
-- [ ] A GitHub Actions workflow that passes on `main`
-- [ ] GitHub Pages turned on and the site live
-- [ ] At least three merged pull requests
-- [ ] At least one issue closed by a pull request, using `Fixes #12` in the pull request description
-- [ ] A tagged release, for example `v1.0.0`, with release notes
+- [ ] Every file in `data/` uses your own information. Nothing still starts with `YOUR`
+- [ ] `README.md`, `LICENSE`, and `.gitignore` are still present
+- [ ] The GitHub Actions workflow from stage 6 passes on `main`
+- [ ] GitHub Pages is on, and `https://your-username.github.io/git-lab/` loads
+- [ ] An issue named for the publish, closed by a pull request whose description says `Fixes #` and that issue number
+- [ ] A GitHub release tagged `v2.0.0` with release notes. `v1.0.0` was stage 4
 
 ### Tips
 

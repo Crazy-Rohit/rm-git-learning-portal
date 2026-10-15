@@ -1,5 +1,7 @@
-import { normaliseRepo } from '../lib/form.mjs';
-import { codeFileCheck, listPath, publicRepo, readText } from '../lib/github.mjs';
+import { beginLab, codeFileCheck, labOf, listPath, publicRepo, readText } from '../lib/github.mjs';
+import {
+  aboutProblem, contactProblem, educationProblem, experienceProblem, parseData, profileProblem, projectsProblem, skillsProblem,
+} from '../lib/portfolio.mjs';
 
 const FIXES = /(?:fix(?:es|ed)?|close[sd]?|resolve[sd]?)\s+#(\d+)/i;
 
@@ -29,32 +31,12 @@ async function hasFile(gh, repo, paths) {
 }
 
 export async function checkStage7({ gh, login, userId, startedAt, code, declaredRepo }) {
-  const checks = [];
-  const add = (name, ok, detail = '') => checks.push({ name, ok, detail });
-  const full = normaliseRepo(declaredRepo);
-  const [owner, name] = full.split('/');
-  const named = owner?.toLowerCase() === login.toLowerCase()
-    && !!name
-    && name.toLowerCase() !== 'git-lab';
-  add(
-    'Submission names your capstone repository',
-    named,
-    `In the form, enter ${login}/your-project. Stage 7 uses a new public repository, not git-lab.`,
-  );
-  const evidence = { repo: named ? full : '' };
-  if (!named) return { checks, evidence };
-
-  const repo = { owner, repo: name };
+  const repo = labOf(login);
   const info = await publicRepo(gh, repo);
-  add(
-    'Capstone repository exists and is public',
-    !!info && info.private === false,
-    'Create a new public repository. The portal cannot read a private one.',
-  );
-  if (!info || info.private) return { checks, evidence };
-  const owned = Number(info.owner?.id) === Number(userId);
-  add('Repository belongs to you', owned, 'The capstone must be owned by the account that opened this issue.');
-  if (!owned) return { checks, evidence };
+  const begun = beginLab({ login, userId, declaredRepo, info });
+  const { checks, evidence } = begun;
+  const add = (name, ok, detail = '') => checks.push({ name, ok, detail });
+  if (begun.stop) return { checks, evidence };
 
   checks.push(await codeFileCheck(gh, repo, 7, code));
 
@@ -104,9 +86,9 @@ export async function checkStage7({ gh, login, userId, startedAt, code, declared
 
   const merged = (await closedPulls(gh, repo)).filter((pull) => pull.merged_at && new Date(pull.merged_at) > started && pull.base?.ref === 'main');
   add(
-    'At least three pull requests were merged',
-    merged.length >= 3,
-    `Found ${merged.length}. Merge three pull requests into main after you start this stage.`,
+    'A pull request was merged into main',
+    merged.length >= 1,
+    'Open an issue, then merge a pull request into main after you start this stage.',
   );
 
   let closedByPull = false;
@@ -131,7 +113,7 @@ export async function checkStage7({ gh, login, userId, startedAt, code, declared
 
   let released = false;
   try {
-    const release = await gh.repos.getReleaseByTag({ ...repo, tag: 'v1.0.0' });
+    const release = await gh.repos.getReleaseByTag({ ...repo, tag: 'v2.0.0' });
     const when = new Date(release.data.published_at || release.data.created_at || 0);
     released = String(release.data.body || '').trim().length >= 20 && when > started;
   } catch {
@@ -140,7 +122,20 @@ export async function checkStage7({ gh, login, userId, startedAt, code, declared
   add(
     'Release v1.0.0 has notes',
     released,
-    'Publish a GitHub release tagged v1.0.0 with release notes of at least a sentence, after you start this stage.',
+    'Publish a GitHub release tagged v2.0.0 with release notes of at least a sentence, after you start this stage. v1.0.0 was the stage 4 tag.',
   );
+  const sections = [
+    ['Portfolio identity is filled', profileProblem, 'data/profile.json'],
+    ['About section is filled', aboutProblem, 'data/about.json'],
+    ['Education section is filled', educationProblem, 'data/education.json'],
+    ['Skills section is filled', skillsProblem, 'data/skills.json'],
+    ['Experience section is filled', experienceProblem, 'data/experience.json'],
+    ['Projects section is filled', projectsProblem, 'data/projects.json'],
+    ['Contact section is filled', contactProblem, 'data/contact.json'],
+  ];
+  for (const [name, problem, file] of sections) {
+    const detail = problem(parseData(await readText(gh, repo, file)), login);
+    add(name, !detail, detail);
+  }
   return { checks, evidence };
 }

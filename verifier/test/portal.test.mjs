@@ -424,7 +424,9 @@ test('stages 2 to 7 pass when the public evidence is present', async () => {
     created_at: '2026-10-06T13:00:00Z',
   }, {
     get: async () => ({ data: { private: false, owner: { id: USER_ID } } }),
-    getContent: async ({ path: filePath }) => textFile(filePath === 'greeting.txt' ? 'Hello, welcome to the team and good luck\n' : code3),
+    getContent: async ({ path: filePath }) => textFile(filePath.endsWith('stage-3.txt') ? code3 : filePath === 'data/education.json'
+      ? JSON.stringify([{ institution: 'State University', qualification: 'B.Tech', description: 'I studied computer science and built a final project.' }])
+      : ''),
     listCommits: async () => ({ data: [{ sha: 'merge', author: { id: USER_ID }, commit: { committer: { date: '2026-10-06T12:30:00Z' }, message: 'Merge' } }] }),
     getCommit: async () => ({ data: { parents: [{ sha: 'a' }, { sha: 'b' }] } }),
   });
@@ -442,7 +444,9 @@ test('stages 2 to 7 pass when the public evidence is present', async () => {
     created_at: '2026-10-06T14:00:00Z',
   }, {
     get: async () => ({ data: { private: false, owner: { id: USER_ID } } }),
-    getContent: async () => textFile(code4),
+    getContent: async ({ path: filePath }) => textFile(filePath === 'data/skills.json'
+      ? JSON.stringify({ technical: ['Git'], tools: [], professional: [] })
+      : code4),
     listCommits: async () => ({ data: [{
       sha: 'rev', author: { id: USER_ID },
       commit: { committer: { date: '2026-10-06T13:30:00Z' }, message: 'Revert "Add a note"\n\nThis reverts commit abcdef1.' },
@@ -470,7 +474,9 @@ test('stages 2 to 7 pass when the public evidence is present', async () => {
         ? { fork: true, private: false, owner: { id: USER_ID }, parent: { full_name: 'Crazy-Rohit/rm-practice-repo' } }
         : { private: false, owner: { id: USER_ID } },
     }),
-    getContent: async () => textFile(code5),
+    getContent: async ({ path: filePath }) => textFile(filePath === 'data/experience.json'
+      ? JSON.stringify([{ role: 'Student developer', organization: 'Personal projects', period: '2026', description: 'I build small sites and learn pull requests.' }])
+      : code5),
   });
   gh5.pulls = {
     list: async () => ({ data: [{ number: 3, merged_at: '2026-10-06T14:30:00Z', user: { id: USER_ID } }] }),
@@ -491,7 +497,12 @@ test('stages 2 to 7 pass when the public evidence is present', async () => {
   }, {
     get: async () => ({ data: { private: false, owner: { id: USER_ID } } }),
     getContent: async ({ path: filePath }) => (
-      filePath === '.github/workflows' ? { data: [{ name: 'check.yml', type: 'file' }] } : textFile(code6)
+      filePath === '.github/workflows' ? { data: [{ name: 'check.yml', type: 'file' }] }
+        : textFile(filePath === 'data/projects.json'
+          ? JSON.stringify([{ name: 'git-lab', description: 'My portfolio site for this course.', technologies: ['HTML'], repositoryUrl: '', liveUrl: '' }])
+          : filePath === 'data/contact.json'
+            ? JSON.stringify({ email: '', github: 'https://github.com/learner', linkedin: '', portfolio: '', resume: '' })
+            : code6)
     ),
   });
   gh6.actions = {
@@ -512,10 +523,17 @@ test('stages 2 to 7 pass when the public evidence is present', async () => {
     LICENSE: 'MIT License',
     '.gitignore': '*.log\n',
     '.stage/stage-7.txt': code7,
+    'data/profile.json': JSON.stringify({ name: 'Rohit Learner', headline: 'Student', githubUsername: 'learner' }),
+    'data/about.json': JSON.stringify({ summary: 'I am learning Git so I can publish my work and collaborate with other people.', careerGoal: 'Build useful projects.', interests: [] }),
+    'data/education.json': JSON.stringify([{ institution: 'State University', qualification: 'B.Tech', description: 'I studied computer science and built a final project.' }]),
+    'data/skills.json': JSON.stringify({ technical: ['Git'], tools: [], professional: [] }),
+    'data/experience.json': JSON.stringify([{ role: 'Student developer', description: 'I build small sites and learn pull requests.' }]),
+    'data/projects.json': JSON.stringify([{ name: 'git-lab', description: 'My portfolio site for this course.' }]),
+    'data/contact.json': JSON.stringify({ github: 'https://github.com/learner' }),
   };
   const gh7 = issueGh({
     title: '[Submit] ',
-    body: '### Stage\n\n7\n\n### Your lab repository\n\nlearner/notes\n',
+    body: '### Stage\n\n7\n\n### Your lab repository\n\nlearner/git-lab\n',
     user: AUTHOR,
     created_at: '2026-10-06T17:00:00Z',
   }, {
@@ -523,7 +541,7 @@ test('stages 2 to 7 pass when the public evidence is present', async () => {
     getContent: async ({ path: filePath }) => (
       filePath === '.github/workflows' ? { data: [{ name: 'check.yml', type: 'file' }] } : textFile(files[filePath] || '')
     ),
-    getPages: async () => ({ data: { html_url: 'https://learner.github.io/notes/' } }),
+    getPages: async () => ({ data: { html_url: 'https://learner.github.io/git-lab/' } }),
     getReleaseByTag: async () => ({ data: { body: 'First public release of my notes.', published_at: '2026-10-06T16:30:00Z' } }),
   });
   gh7.pulls = {
@@ -537,7 +555,7 @@ test('stages 2 to 7 pass when the public evidence is present', async () => {
       { id: 9, head_branch: 'main', conclusion: 'success', created_at: '2026-10-06T16:10:00Z' },
     ] } }),
   };
-  const portalIssue = { title: '[Submit] ', body: '### Stage\n\n7\n\n### Your lab repository\n\nlearner/notes\n', user: AUTHOR };
+  const portalIssue = { title: '[Submit] ', body: '### Stage\n\n7\n\n### Your lab repository\n\nlearner/git-lab\n', user: AUTHOR };
   gh7.issues.get = async (params) => ({
     data: params.owner === 'learner' ? { state: 'closed' } : portalIssue,
   });

@@ -1,4 +1,5 @@
-import { beginLab, codeFileCheck, labOf, listCommits, ownCommits, publicRepo } from '../lib/github.mjs';
+import { beginLab, codeFileCheck, labOf, listCommits, ownCommits, publicRepo, readText } from '../lib/github.mjs';
+import { parseData, skillsProblem } from '../lib/portfolio.mjs';
 
 function isRevert(commit) {
   const message = String(commit.commit?.message || '');
@@ -36,8 +37,10 @@ export async function checkStage4({ gh, login, userId, startedAt, code, declared
   add(
     'An annotated tag v1.0.0 is on GitHub',
     annotated,
-    'Create it with git tag -a v1.0.0 -m "First stable version of my lab" and run git push origin v1.0.0. A lightweight tag does not count.',
+    'Create it with git tag -a v1.0.0 -m "First stable version of my portfolio" and run git push origin v1.0.0. A lightweight tag does not count.',
   );
+  const skillsDetail = skillsProblem(parseData(await readText(gh, repo, 'data/skills.json')));
+  add('Skills section is filled', !skillsDetail, skillsDetail);
   evidence.commits = own.slice(0, 20).map((commit) => commit.sha);
   return { checks, evidence };
 }

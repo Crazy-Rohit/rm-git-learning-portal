@@ -1,5 +1,6 @@
 import { PORTAL } from '../lib/portal.mjs';
-import { beginLab, codeFileCheck, labOf, publicRepo } from '../lib/github.mjs';
+import { beginLab, codeFileCheck, labOf, publicRepo, readText } from '../lib/github.mjs';
+import { experienceProblem, parseData } from '../lib/portfolio.mjs';
 
 const PRACTICE = { owner: PORTAL.owner, repo: PORTAL.practiceName };
 
@@ -58,5 +59,7 @@ export async function checkStage5({ gh, login, userId, startedAt, code, declared
     `Open a pull request into ${PORTAL.practiceFullName} that adds only ${expected}, then wait until it is merged.`,
   );
   if (matched) evidence.pull = matched.number;
+  const experienceDetail = experienceProblem(parseData(await readText(gh, lab, 'data/experience.json')));
+  add('Experience section is filled', !experienceDetail, experienceDetail);
   return { checks, evidence };
 }

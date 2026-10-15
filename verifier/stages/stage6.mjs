@@ -1,4 +1,5 @@
-import { beginLab, codeFileCheck, labOf, listPath, publicRepo } from '../lib/github.mjs';
+import { beginLab, codeFileCheck, labOf, listPath, publicRepo, readText } from '../lib/github.mjs';
+import { contactProblem, parseData, projectsProblem } from '../lib/portfolio.mjs';
 
 async function workflowRuns(gh, repo) {
   try {
@@ -42,5 +43,9 @@ export async function checkStage6({ gh, login, userId, startedAt, code, declared
     'Push a workflow that fails, then fix it and push again. Both runs must be on the same branch, after you start this stage.',
   );
   evidence.runs = runs.slice(0, 10).map((run) => run.id).filter(Boolean);
+  const projectsDetail = projectsProblem(parseData(await readText(gh, repo, 'data/projects.json')));
+  add('Projects section is filled', !projectsDetail, projectsDetail);
+  const contactDetail = contactProblem(parseData(await readText(gh, repo, 'data/contact.json')));
+  add('Contact section is filled', !contactDetail, contactDetail);
   return { checks, evidence };
 }

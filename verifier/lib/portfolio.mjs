@@ -32,6 +32,75 @@ export function profileProblem(data, login) {
   return '';
 }
 
+function listProblem(data, file) {
+  if (!Array.isArray(data)) {
+    return `${file} must be a JSON list. Open it in Codespaces and keep the square brackets.`;
+  }
+  if (JSON.stringify(data).includes('<<<<<<<')) {
+    return `Delete every <<<<<<<, =======, and >>>>>>> line from ${file}, then keep one valid list.`;
+  }
+  return '';
+}
+
+export function educationProblem(data) {
+  const broken = listProblem(data, 'data/education.json');
+  if (broken) return broken;
+  const ready = data.some((item) => (
+    filledText(item?.institution, 2)
+    && filledText(item?.qualification, 2)
+    && filledText(item?.description, 8)
+  ));
+  if (!ready) {
+    return 'In data/education.json, add one school, college, or course. Fill institution, qualification, and description. Replace every YOUR value.';
+  }
+  return '';
+}
+
+export function skillsProblem(data) {
+  if (!data || typeof data !== 'object' || Array.isArray(data)) {
+    return 'data/skills.json must be a JSON object. Open it in Codespaces and keep the quotes and commas.';
+  }
+  if (JSON.stringify(data).includes('Gittt')) {
+    return 'data/skills.json still contains Gittt. Revert that commit and push. Do not leave the mistake in the file.';
+  }
+  const technical = Array.isArray(data.technical) && data.technical.some((item) => filledText(item, 2));
+  if (!technical) {
+    return 'In data/skills.json, replace YOUR SKILL with at least one real technical skill.';
+  }
+  return '';
+}
+
+export function experienceProblem(data) {
+  const broken = listProblem(data, 'data/experience.json');
+  if (broken) return broken;
+  const ready = data.some((item) => filledText(item?.role, 2) && filledText(item?.description, 8));
+  if (!ready) {
+    return 'In data/experience.json, add one role. A job, internship, college activity, or fresher profile is fine. Replace YOUR ROLE and write what you did.';
+  }
+  return '';
+}
+
+export function projectsProblem(data) {
+  const broken = listProblem(data, 'data/projects.json');
+  if (broken) return broken;
+  const ready = data.some((item) => filledText(item?.name, 2) && filledText(item?.description, 8));
+  if (!ready) {
+    return 'In data/projects.json, add one project with a name and a description. Replace YOUR PROJECT.';
+  }
+  return '';
+}
+
+export function contactProblem(data) {
+  if (!data || typeof data !== 'object' || Array.isArray(data)) {
+    return 'data/contact.json must be a JSON object. Open it in Codespaces and keep the quotes and commas.';
+  }
+  const ready = ['email', 'github', 'linkedin', 'portfolio', 'resume'].some((key) => filledText(data[key], 3));
+  if (!ready) {
+    return 'In data/contact.json, add one way to reach you, such as a GitHub URL, email, or LinkedIn URL.';
+  }
+  return '';
+}
+
 export function aboutProblem(data) {
   if (!data || typeof data !== 'object' || Array.isArray(data)) {
     return 'data/about.json must be a JSON object. Open it in Codespaces and keep the quotes and commas.';

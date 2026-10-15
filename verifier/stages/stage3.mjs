@@ -1,4 +1,5 @@
 import { beginLab, codeFileCheck, labOf, listCommits, ownCommits, publicRepo, readText } from '../lib/github.mjs';
+import { educationProblem, parseData } from '../lib/portfolio.mjs';
 
 export async function checkStage3({ gh, login, userId, startedAt, code, declaredRepo }) {
   const repo = labOf(login);
@@ -10,17 +11,17 @@ export async function checkStage3({ gh, login, userId, startedAt, code, declared
 
   checks.push(await codeFileCheck(gh, repo, 3, code));
 
-  const greeting = await readText(gh, repo, 'greeting.txt');
-  const lower = greeting.toLowerCase();
-  add(
-    'greeting.txt keeps both messages',
-    lower.includes('welcome') && lower.includes('good luck'),
-    'Create greeting-a and greeting-b from main, then merge both, so greeting.txt contains both "welcome" and "good luck". Do not merge origin/greeting-a.',
-  );
+  const education = await readText(gh, repo, 'data/education.json');
   add(
     'Conflict markers are gone',
-    greeting.length > 0 && !/^(<<<<<<<|=======|>>>>>>>)/m.test(greeting),
-    'Delete every <<<<<<<, =======, and >>>>>>> line from greeting.txt, then commit the merge.',
+    education.length > 0 && !/^(<<<<<<<|=======|>>>>>>>)/m.test(education),
+    'Delete every <<<<<<<, =======, and >>>>>>> line from data/education.json, then commit the merge.',
+  );
+  const educationDetail = educationProblem(parseData(education));
+  add(
+    'Education section is filled',
+    !educationDetail,
+    educationDetail,
   );
 
   const own = ownCommits(await listCommits(gh, repo, startedAt), userId, startedAt);
@@ -39,7 +40,7 @@ export async function checkStage3({ gh, login, userId, startedAt, code, declared
   add(
     'A merge commit is on main',
     !!merge,
-    'Merge the greeting-b branch you created from main, and finish the merge with a commit. That commit has two parents. Do not merge origin/greeting-b.',
+    'Merge education-study into main and finish the merge with a commit. That commit has two parents. Do not merge origin/greeting-b.',
   );
   evidence.commits = own.slice(0, 20).map((commit) => commit.sha);
   return { checks, evidence };
